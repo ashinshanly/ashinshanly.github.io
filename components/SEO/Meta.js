@@ -5,9 +5,9 @@ export default function Meta() {
     return (
         <Head>
            /* Primary Meta Tags */
-            <title>ashin shanly Portfolio - Computer Engineering Student</title>
+            <title>ashin shanly Portfolio</title>
             <meta charSet="utf-8" />
-            <meta name="title" content="ashin shanly Portfolio - Computer Engineering Student" />
+            <meta name="title" content="ashin shanly Portfolio" />
             <meta name="description"
                 content="ashin shanly's (ashinshanly) Personal Portfolio Website. Made with Ubuntu 20.4 (Linux) theme by Next.js and Tailwind CSS." />
             <meta name="author" content="ashin shanly (ashinshanly)" />
