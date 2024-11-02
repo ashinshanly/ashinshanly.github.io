@@ -1,0 +1,32 @@
+{
+  "name": "ashinshanly-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "homepage": "https://ashinshanly.github.io/",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
+  },
+  "engines": {
+    "node": ">=16.x"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "autoprefixer": "^10.4.20",
+    "expr-eval": "^2.0.2",
+    "jquery": "^3.7.1",
+    "next": "^15.0.2",
+    "postcss": "^8.4.47",
+    "prop-types": "^15.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.4.6",
+    "react-ga4": "^2.1.0",
+    "react-onclickoutside": "^6.13.1",
+    "serve": "^14.2.4",
+    "tailwindcss": "^3.4.14",
+    "yarn": "^1.22.22"
+  }
+}
