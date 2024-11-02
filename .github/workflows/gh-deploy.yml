@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
@@ -31,10 +31,10 @@ jobs:
       - name: Building 🧱
         run: yarn build
         env:
-          NEXT_PUBLIC_TRACKING_ID: G-8FBXBFXC10
-          NEXT_PUBLIC_SERVICE_ID: service_qt4ryip
+          #NEXT_PUBLIC_TRACKING_ID: G-8FBXBFXC10
+          NEXT_PUBLIC_SERVICE_ID: service_hlxjzp1
           NEXT_PUBLIC_TEMPLATE_ID: template_2ni69n8
-          NEXT_PUBLIC_USER_ID: user_Do31sKneP4eYfn5n1nLTD
+          NEXT_PUBLIC_USER_ID: Ashin
 
       - name: Exporting Bundle Files 🎪
         run: yarn export
