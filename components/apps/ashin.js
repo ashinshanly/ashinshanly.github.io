@@ -82,7 +82,7 @@ export class AboutAshin extends Component {
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
                 </div>
                 <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
-                    <iframe src="https://github.com/ashinshanly" title="Sponsor ashinshanly" width={"100%"} height={"100%"} ></iframe>
+                     <a href="https://github.com/ashinshanly">GitHub</a>
                 </div>
             </>
         );
