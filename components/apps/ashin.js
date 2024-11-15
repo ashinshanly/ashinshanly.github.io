@@ -11,7 +11,7 @@ export class AboutAshin extends Component {
             active_screen: "about", // by default 'about' screen is active
             navbar: false,
         }
-    }
+    }f
 
     componentDidMount() {
         this.screens = {
@@ -81,10 +81,10 @@ export class AboutAshin extends Component {
                     <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
                 </div>
-                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
+                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
                      <a href="https://github.com/ashinshanly">GitHub</a>
                 </div>
-                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
+                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
                      <a href="https://www.linkedin.com/in/ashinshanly/">LinkedIn</a>
                 </div>
             </>
