@@ -367,15 +367,6 @@ function Projects() {
 
     return (
         <>
-            <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
-                Projects
-                <div className="absolute pt-px bg-white mt-px top-full w-full">
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
-                </div>
-            </div>
-            <!--<iframe src="https://github.com/ashinshanly" title="Sponsor ashinshanly" className='my-4 w-5/6 md:w-3/4' ></iframe>-->
-
             {
                 project_list.map((project, index) => {
                     const projectNameFromLink = project.link.split('/')
