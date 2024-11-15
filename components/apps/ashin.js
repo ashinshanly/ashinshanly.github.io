@@ -84,6 +84,9 @@ export class AboutAshin extends Component {
                 <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
                      <a href="https://github.com/ashinshanly">GitHub</a>
                 </div>
+                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
+                     <a href="https://www.linkedin.com/in/ashinshanly/">LinkedIn</a>
+                </div>
             </>
         );
     }
