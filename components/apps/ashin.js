@@ -136,8 +136,7 @@ function About() {
             </div>
             <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
                 <li className=" list-pc">I'm a <span className=" font-medium">Software Engineer</span> with a Master’s in Computer Science and Engineering, proficient in cloud platforms (OCI, GCP), machine learning, and data engineering, with a focus on creating scalable, high-performance
-solutions. Adept at leveraging technical expertise and leadership to enhance business decision-making, drive system efficiency, and innovate in cloud-based architectures. I'm seeking opportunities to apply my skills and contribute
-to transformative projects in cutting-edge technology environments! <br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
+solutions. I'm seeking opportunities to apply my skills and contribute to transformative projects in cutting-edge technology environments! <br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
                 <li className=" mt-3 list-building"> I enjoy building awesome softwares that solve practical problems.</li>
                 <li className=" mt-3 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
                 <li className=" mt-3 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
