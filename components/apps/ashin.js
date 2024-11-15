@@ -85,7 +85,7 @@ export class AboutAshin extends Component {
                      <a href="https://github.com/ashinshanly" style={{ color: 'green', textDecoration: 'none' }}>GitHub</a>
                 </div>
                 <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
-                     <a href="https://www.linkedin.com/in/ashinshanly/" style={{ color: 'blue', textDecoration: 'none' }}>LinkedIn</a>
+                     <a href="https://www.linkedin.com/in/ashinshanly/" style={{ color: 'green', textDecoration: 'none' }}>LinkedIn</a>
                 </div>
             </>
         );
