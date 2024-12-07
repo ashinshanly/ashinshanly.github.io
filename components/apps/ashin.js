@@ -423,3 +423,4 @@ function Resume() {
         <iframe className="h-full w-full" src="./files/AshinShanly-Resume.pdf" title="ashin shanly resume" frameBorder="0"></iframe>
     )
 }
+<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
