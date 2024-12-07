@@ -124,7 +124,7 @@ function About() {
                 <img className="w-full" src="./images/logos/bitmoji.png" alt="Ashin Shanly Logo" />
             </div>
             <div className=" mt-4 md:mt-8 text-lg md:text-2xl text-center px-1">
-                <div className="font-normal ml-1">My name is <span className="text-pink-600 font-bold">Ashin Shanly</span></div>
+                <div className="font-normal ml-1">My name is <span className="text-pink-600 font-bold">Ashin Shanly,</span></div>
                 <div className="font-normal ml-1">I'm a <span className="text-pink-600 font-bold">Software Engineer!</span></div>
             </div>
             <div className=" mt-4 relative md:my-8 pt-px bg-white w-32 md:w-48">
