@@ -81,13 +81,14 @@ export class AboutAshin extends Component {
                     <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
                 </div>
-                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
-                     <a href="https://github.com/ashinshanly" style={{ color: 'green', textDecoration: 'none' }}>GitHub</a>
+                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 "><a href="https://github.com/ashinshanly">GitHub</a></span>
                 </div>
-                <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
-                     <a href="https://www.linkedin.com/in/ashinshanly/" style={{ color: 'green', textDecoration: 'none' }}>LinkedIn</a>
+                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 "><a href="https://www.linkedin.com/in/ashinshanly/">LinkedIn</a></span>
                 </div>
-              
             </>
         );
     }
@@ -128,7 +129,7 @@ function About() {
                 <img className="w-full" src="./images/logos/bitmoji.png" alt="Ashin Shanly Logo" />
             </div>
             <div className=" mt-4 md:mt-8 text-lg md:text-2xl text-center px-1">
-                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="ashinshanly" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ashinshanly?trk=profile-badge"><span className="font-bold">Ashin Shanly</span></a></div>
+                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="ashinshanly" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ashinshanly?trk=profile-badge">My name is <span className="font-bold">Ashin Shanly</span></a></div>
                 <div className="font-normal ml-1">I'm a <span className="text-pink-600 font-bold">Software Engineer!</span></div>
             </div>
             <div className=" mt-4 relative md:my-8 pt-px bg-white w-32 md:w-48">
@@ -138,7 +139,7 @@ function About() {
             <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
                 <li className=" list-pc">I'm a <span className=" font-medium">Software Engineer</span> with a Master’s in Computer Science and Engineering, proficient in cloud platforms (OCI, GCP), machine learning, and data engineering, with a focus on creating scalable, high-performance
 solutions. I'm seeking opportunities to apply my skills and contribute to transformative projects in cutting-edge technology environments! <br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
-                <li className=" mt-3 list-building"> I enjoy building awesome software that solve practical problems.</li>
+                <li className=" mt-3 list-building"> I enjoy building awesome software that solves practical problems.</li>
                 <li className=" mt-3 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
                 <li className=" mt-3 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
             </ul>
