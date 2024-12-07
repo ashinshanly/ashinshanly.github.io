@@ -81,14 +81,6 @@ export class AboutAshin extends Component {
                     <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
                 </div>
-                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "github" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's github" src="./themes/Yaru/status/download.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 "><a href="https://github.com/ashinshanly">GitHub</a></span>
-                </div>
-                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "linkedin" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's linkedin" src="./themes/Yaru/status/download.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 "><a href="https://www.linkedin.com/in/ashinshanly/">LinkedIn</a></span>
-                </div>
             </>
         );
     }
@@ -142,6 +134,7 @@ solutions. I'm seeking opportunities to apply my skills and contribute to transf
                 <li className=" mt-3 list-building"> I enjoy building awesome software that solves practical problems.</li>
                 <li className=" mt-3 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
                 <li className=" mt-3 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
+                <li className=" mt-3 list-star"> Here are my <u><a href="https://www.github.com/ashinshanly" target="_blank" rel="noreferrer">GitHub</a></u> and <u><a href="https://www.linkedin.com/in/ashinshanly/" target="_blank" rel="noreferrer">LinkedIn</a></u> profiles</li>
             </ul>
         </>
     )
