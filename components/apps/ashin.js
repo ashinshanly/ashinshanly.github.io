@@ -87,10 +87,6 @@ export class AboutAshin extends Component {
                 <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex justify-center items-center' >
                      <a href="https://www.linkedin.com/in/ashinshanly/" style={{ color: 'green', textDecoration: 'none' }}>LinkedIn</a>
                 </div>
-                
-                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="ashinshanly" data-version="v1">
-                    <a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ashinshanly?trk=profile-badge">Ashin Shanly</a>
-                </div>
               
             </>
         );
@@ -133,6 +129,7 @@ function About() {
             </div>
             <div className=" mt-4 md:mt-8 text-lg md:text-2xl text-center px-1">
                 <div>My name is <span className="font-bold">Ashin Shanly</span> ,</div>
+                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="ashinshanly" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ashinshanly?trk=profile-badge">Ashin Shanly</a></div>
                 <div className="font-normal ml-1">I'm a <span className="text-pink-600 font-bold">Software Engineer!</span></div>
             </div>
             <div className=" mt-4 relative md:my-8 pt-px bg-white w-32 md:w-48">
