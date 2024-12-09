@@ -418,6 +418,6 @@ function Projects() {
 }
 function Resume() {
     return (
-        <iframe className="h-full w-full" src="./files/AshinShanly-Resume.pdf" title="ashin shanly resume" frameBorder="0"></iframe>
+        <iframe className="h-full w-full" src="./files/AshinShanly_RESUME.pdf" title="ashin shanly resume" frameBorder="0"></iframe>
     )
 }
