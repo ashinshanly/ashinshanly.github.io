@@ -35,32 +35,79 @@ export class DevAdventure extends Component {
     }
 
     handleKeyPress = (e) => {
-        if (e.code === 'Space' && !this.state.isJumping) {
-            this.setState({ isJumping: true });
-            this.velocity = this.jumpForce;
+        if (this.state.gameOver) return;
+    
+        switch(e.code) {
+            case 'Space':
+                if (!this.state.isJumping) {
+                    this.setState({ isJumping: true });
+                    this.velocity = this.jumpForce;
+                }
+                break;
+            case 'ArrowLeft':
+                this.setState(prevState => ({
+                    playerPosition: {
+                        ...prevState.playerPosition,
+                        x: Math.max(0, prevState.playerPosition.x - 10)
+                    }
+                }));
+                break;
+            case 'ArrowRight':
+                this.setState(prevState => ({
+                    playerPosition: {
+                        ...prevState.playerPosition,
+                        x: Math.min(window.innerWidth - 40, prevState.playerPosition.x + 10)
+                    }
+                }));
+                break;
         }
     }
+    
 
     updateGame = () => {
         this.setState(prevState => {
             const newY = prevState.playerPosition.y + this.velocity;
             this.velocity += this.gravity;
-
+    
+            // Check collectible collisions
+            const updatedCollectibles = prevState.collectibles.map(item => {
+                if (!item.collected &&
+                    Math.abs(prevState.playerPosition.x - item.x) < 30 &&
+                    Math.abs(prevState.playerPosition.y - item.y) < 30) {
+                    return { ...item, collected: true };
+                }
+                return item;
+            });
+    
+            // Check obstacle collisions
+            const hitObstacle = prevState.obstacles.some(obstacle =>
+                Math.abs(prevState.playerPosition.x - obstacle.x) < 30 &&
+                Math.abs(prevState.playerPosition.y - obstacle.y) < 30
+            );
+    
+            if (hitObstacle) {
+                return { ...prevState, gameOver: true };
+            }
+    
             // Ground collision
             if (newY >= 250) {
                 this.velocity = 0;
                 return {
                     playerPosition: { ...prevState.playerPosition, y: 250 },
-                    isJumping: false
+                    isJumping: false,
+                    collectibles: updatedCollectibles,
+                    score: updatedCollectibles.filter(item => item.collected).length * 10
                 };
             }
-
+    
             return {
-                playerPosition: { ...prevState.playerPosition, y: newY }
+                playerPosition: { ...prevState.playerPosition, y: newY },
+                collectibles: updatedCollectibles,
+                score: updatedCollectibles.filter(item => item.collected).length * 10
             };
         });
     }
-
+    
     render() {
         const { playerPosition, score, gameOver } = this.state;
         
@@ -89,6 +136,34 @@ export class DevAdventure extends Component {
                         </div>
                     </div>
                 )}
+                {/* Collectibles */}
+                {this.state.collectibles.map((item, index) => (
+                    !item.collected && (
+                        <div
+                            key={index}
+                            className="absolute w-8 h-8 bg-blue-500 rounded-full"
+                            style={{
+                                left: `${item.x}px`,
+                                top: `${item.y}px`
+                            }}
+                        >
+                            <span className="text-xs text-white">{item.type}</span>
+                        </div>
+                    )
+                ))}
+
+                {/* Obstacles */}
+                {this.state.obstacles.map((obstacle, index) => (
+                    <div
+                        key={index}
+                        className="absolute w-12 h-20 bg-red-500"
+                        style={{
+                            left: `${obstacle.x}px`,
+                            top: `${obstacle.y}px`
+                        }}
+                    />
+                ))}
+
             </div>
         );
     }
