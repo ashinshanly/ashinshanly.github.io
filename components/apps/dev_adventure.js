@@ -23,7 +23,7 @@ export class DevAdventure extends Component {
         this.jumpForce = -10;
         this.velocity = 0;
     }
-
+    
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyPress);
         this.gameLoop = setInterval(this.updateGame, 20);
@@ -93,3 +93,8 @@ export class DevAdventure extends Component {
         );
     }
 }
+
+export const displayDevAdventure = () => {
+    return <DevAdventure />
+}
+

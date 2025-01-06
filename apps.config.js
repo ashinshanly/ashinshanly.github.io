@@ -7,7 +7,9 @@ import { displayTrash } from './components/apps/trash';
 import { displayGedit } from './components/apps/gedit';
 import { displayAboutAshin } from './components/apps/ashin';
 import { displayTerminalCalc } from './components/apps/calc';
-import { DevAdventure } from './components/apps/dev_adventure';
+//import { DevAdventure } from './components/apps/dev_adventure';
+import { displayDevAdventure } from './components/apps/dev_adventure';
+
 
 
 const apps = [
@@ -72,7 +74,7 @@ const apps = [
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
-        screen: <DevAdventure />,
+        screen: displayDevAdventure,
     },
     {
         id: "settings",
