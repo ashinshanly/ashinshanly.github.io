@@ -160,28 +160,19 @@ function Experience() {
                     </div>
                     <div className=" text-sm text-gray-400 mt-0.5">Oracle India Pvt Ltd &nbsp;&nbsp;(2022-Current)</div>
                     <ul>
-                        <li>Developed and optimized petabyte-scale ETL pipelines using Apache Spark and OCI services, reducing
-                        data processing time by 20% and improving cost efficiency by 15%. Led the development of Spark pipelines
-                        in OCI for ingesting and aggregating real-time global customer usage data. Designed a scalable, fault-tolerant
-                        architecture processing billions of records daily, providing actionable insights through real-time reporting.
+                        <li>Developed and optimized petabyte-scale ETL pipelines using Apache Spark and OCI services, reducing data processing time by 20% and improving cost efficiency by 15%. Led the development of Spark pipelines in OCI for ingesting and aggregating real-time global customer usage data. Designed a scalable, fault-tolerant architecture processing billions of records daily, providing actionable insights through real-time reporting.
                         </li>   
                         <br></br>
-                        <li>Developed an Instance and Rack Decommissioning Dashboard to increase throughput for decommis-
-                        sioning bare metal and virtual machine instances. Enhanced visibility across several dimensions including
-                        rack, host, and instance level views, optimizing data center resource allocation.
+                        <li>Engineered an enterprise-wide Generative AI RAG chatbot utilizing a vector database for high-speed document retrieval and fine-tuned LLMs for precise, context-aware query responses. Streamlined internal operations by automating 60% of manual query handling, improving query resolution accuracy by 30%, and boosting cross-departmental efficiency.
                         </li>  
                         <br></br>
-                        <li>Implemented Data Archival and Purging Frameworks: Led the design and implementation of robust
-                        data archival and purging systems, automating the identification of cold and inactive data. Migrated historical
-                        data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies.
-                        Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by
-                        optimizing active data sets.
+                        <li>Automated Cloud-Native Data Pipelines: Led initiatives to automate cloud-native ETL and data processing pipelines, reducing manual intervention by integrating CI/CD practices, automated testing, and monitoring. This automation led to a 30% reduction in operational overhead and increased system reliability by streamlining end-to-end data processing workflow.
                         </li> 
                         <br></br> 
-                        <li>Automated Cloud-Native Data Pipelines: Led initiatives to automate cloud-native ETL and data
-                        processing pipelines, reducing manual intervention by integrating CI/CD practices, automated testing, and
-                        monitoring. This automation led to a 30% reduction in operational overhead and increased system
-                        reliability by streamlining end-to-end data processing workflow.
+                        <li> Developed an Instance and Rack Decommissioning Dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
+                        </li>
+                        <br></br> 
+                        <li> Implemented Data Archival and Purging Frameworks: Led the design and implementation of robust data archival and purging systems, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimizing active data sets.
                         </li>
                     </ul>            
                 </li>
@@ -193,24 +184,16 @@ function Experience() {
                     </div>
                     <div className=" text-sm text-gray-400 mt-0.5">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
                     <ul>
-                        <li>Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR
-                        technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis
-                        for forestry applications.
+                        <li>Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
                         </li>   
                         <br></br>
-                        <li>Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal
-                        processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for
-                        high-precision environmental monitoring systems.
+                        <li>Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
                         </li>  
                         <br></br>
-                        <li>Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data
-                        with hyperspectral imagery to significantly enhance classification models, leading to more refined and action-
-                        able environmental insights.
+                        <li>Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
                         </li> 
                     </ul>            
                 </li>
-
-
             </ul>
         </>
     )
