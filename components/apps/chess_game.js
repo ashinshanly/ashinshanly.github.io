@@ -184,16 +184,25 @@ export function ChessGame() {
             
             if (isValidMove) {
                 const newBoard = JSON.parse(JSON.stringify(gameState.board));
-                // Move the piece
                 newBoard[y][x] = gameState.board[selectedSquare.y][selectedSquare.x];
                 newBoard[selectedSquare.y][selectedSquare.x] = null;
                 
-                // Update the game state
-                setGameState(prevState => ({
-                    ...prevState,
-                    board: newBoard,
-                    currentTurn: prevState.currentTurn === 'white' ? 'black' : 'white'
-                }));
+                const nextTurn = gameState.currentTurn === 'white' ? 'black' : 'white';
+                
+                if (isCheckmate(newBoard, nextTurn)) {
+                    setGameState({
+                        board: newBoard,
+                        currentTurn: nextTurn,
+                        gameStatus: 'checkmate',
+                        winner: gameState.currentTurn
+                    });
+                } else {
+                    setGameState({
+                        board: newBoard,
+                        currentTurn: nextTurn,
+                        gameStatus: isInCheck(newBoard, nextTurn) ? 'check' : 'active'
+                    });
+                }
             }
             
             // Reset selection
@@ -211,7 +220,62 @@ export function ChessGame() {
         });
         setSelectedSquare(null);
         setPossibleMoves([]);
-    };    
+    };   
+    const isInCheck = (board, color) => {
+        // Find king's position
+        let kingPos;
+        const kingPiece = color === 'white' ? 'K' : 'k';
+        
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                if (board[y][x] === kingPiece) {
+                    kingPos = { x, y };
+                    break;
+                }
+            }
+        }
+    
+        // Check if any opponent piece can capture the king
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const piece = board[y][x];
+                if (piece && getPieceColor(piece) !== color) {
+                    const moves = calculatePossibleMoves(piece, x, y);
+                    if (moves.some(([moveX, moveY]) => moveX === kingPos.x && moveY === kingPos.y)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+    
+    const isCheckmate = (board, color) => {
+        if (!isInCheck(board, color)) return false;
+    
+        // Try all possible moves for all pieces
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const piece = board[y][x];
+                if (piece && getPieceColor(piece) === color) {
+                    const moves = calculatePossibleMoves(piece, x, y);
+                    
+                    // Try each move to see if it gets out of check
+                    for (const [moveX, moveY] of moves) {
+                        const testBoard = JSON.parse(JSON.stringify(board));
+                        testBoard[moveY][moveX] = piece;
+                        testBoard[y][x] = null;
+                        
+                        if (!isInCheck(testBoard, color)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+     
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
