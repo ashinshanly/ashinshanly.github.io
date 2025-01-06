@@ -16,6 +16,7 @@
     "@emailjs/browser": "^4.4.1",
     "autoprefixer": "^10.4.20",
     "expr-eval": "^2.0.2",
+    "firebase": "^11.1.0",
     "jquery": "^3.7.1",
     "next": "^15.0.2",
     "postcss": "^8.4.47",

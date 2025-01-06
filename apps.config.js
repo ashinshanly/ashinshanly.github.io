@@ -9,7 +9,7 @@ import { displayAboutAshin } from './components/apps/ashin';
 import { displayTerminalCalc } from './components/apps/calc';
 //import { DevAdventure } from './components/apps/dev_adventure';
 import { displayDevAdventure } from './components/apps/dev_adventure';
-
+import { displayChessGame } from './components/apps/chess_game';
 
 
 const apps = [
@@ -75,6 +75,15 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayDevAdventure,
+    },
+    {
+        id: "chess",
+        title: "Chess",
+        icon: "./themes/Yaru/apps/gnome-control-center.png",
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayChessGame,
     },
     {
         id: "settings",
