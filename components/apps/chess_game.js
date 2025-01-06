@@ -167,14 +167,17 @@ export function ChessGame() {
     };
 
     const handleSquareClick = (x, y) => {
+        const clickedPiece = gameState.board[y][x];
         if (!selectedSquare) {
-            // First click - select the piece
-            const piece = gameState.board[y][x];
-            if (piece) {
+            // Only allow selecting pieces of current turn's color
+            if (clickedPiece && 
+                ((gameState.currentTurn === 'white' && clickedPiece === clickedPiece.toUpperCase()) ||
+                 (gameState.currentTurn === 'black' && clickedPiece === clickedPiece.toLowerCase()))) {
                 setSelectedSquare({ x, y });
-                const moves = calculatePossibleMoves(piece, x, y);
+                const moves = calculatePossibleMoves(clickedPiece, x, y);
                 setPossibleMoves(moves);
             }
+            return;
         } else {
             // Second click - move the piece if it's a valid move
             const isValidMove = possibleMoves.some(([moveX, moveY]) => moveX === x && moveY === y);
@@ -200,13 +203,15 @@ export function ChessGame() {
     };
     
 
-    const resetGame = async () => {
-        await updateGameState(gameId, {
+    const resetGame = () => {
+        setGameState({
             board: initialBoard,
             currentTurn: 'white',
             gameStatus: 'active'
         });
-    };
+        setSelectedSquare(null);
+        setPossibleMoves([]);
+    };    
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
