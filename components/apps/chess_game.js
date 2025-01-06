@@ -166,37 +166,39 @@ export function ChessGame() {
         return moves;
     };
 
-    const handleSquareClick = async (x, y) => {
-        if (gameState.gameStatus !== 'active') return;
-        if (gameState.currentTurn !== playerColor) return;
-
-        const clickedPiece = gameState.board[y][x];
-
+    const handleSquareClick = (x, y) => {
         if (!selectedSquare) {
-            if (clickedPiece && getPieceColor(clickedPiece) === playerColor) {
+            // First click - select the piece
+            const piece = gameState.board[y][x];
+            if (piece) {
                 setSelectedSquare({ x, y });
-                setPossibleMoves(calculatePossibleMoves(clickedPiece, x, y));
+                const moves = calculatePossibleMoves(piece, x, y);
+                setPossibleMoves(moves);
             }
-            return;
+        } else {
+            // Second click - move the piece if it's a valid move
+            const isValidMove = possibleMoves.some(([moveX, moveY]) => moveX === x && moveY === y);
+            
+            if (isValidMove) {
+                const newBoard = JSON.parse(JSON.stringify(gameState.board));
+                // Move the piece
+                newBoard[y][x] = gameState.board[selectedSquare.y][selectedSquare.x];
+                newBoard[selectedSquare.y][selectedSquare.x] = null;
+                
+                // Update the game state
+                setGameState(prevState => ({
+                    ...prevState,
+                    board: newBoard,
+                    currentTurn: prevState.currentTurn === 'white' ? 'black' : 'white'
+                }));
+            }
+            
+            // Reset selection
+            setSelectedSquare(null);
+            setPossibleMoves([]);
         }
-
-        const isValidMove = possibleMoves.some(([moveX, moveY]) => moveX === x && moveY === y);
-        
-        if (isValidMove) {
-            const newBoard = JSON.parse(JSON.stringify(gameState.board));
-            newBoard[y][x] = gameState.board[selectedSquare.y][selectedSquare.x];
-            newBoard[selectedSquare.y][selectedSquare.x] = null;
-
-            await updateGameState(gameId, {
-                board: newBoard,
-                currentTurn: playerColor === 'white' ? 'black' : 'white',
-                gameStatus: 'active'
-            });
-        }
-
-        setSelectedSquare(null);
-        setPossibleMoves([]);
     };
+    
 
     const resetGame = async () => {
         await updateGameState(gameId, {
