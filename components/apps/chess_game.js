@@ -64,12 +64,11 @@ export function ChessGame() {
             return;
         }
 
-        // Moving piece
         if (selectedSquare.x !== x || selectedSquare.y !== y) {
             const piece = gameState.board[selectedSquare.y][selectedSquare.x];
             
             if (isValidMove(gameState.board, selectedSquare, { x, y }, piece)) {
-                const newBoard = [...gameState.board];
+                const newBoard = JSON.parse(JSON.stringify(gameState.board));
                 newBoard[y][x] = piece;
                 newBoard[selectedSquare.y][selectedSquare.x] = null;
 
@@ -82,13 +81,11 @@ export function ChessGame() {
                     }
                 }
 
-                const newGameState = {
+                await updateGameState(gameId, {
                     board: newBoard,
                     currentTurn: nextTurn,
                     gameStatus: status
-                };
-
-                await updateGameState(gameId, newGameState);
+                });
             }
         }
 
@@ -96,12 +93,11 @@ export function ChessGame() {
     };
 
     const resetGame = async () => {
-        const newGameState = {
+        await updateGameState(gameId, {
             board: initialBoard,
             currentTurn: 'white',
             gameStatus: 'active'
-        };
-        await updateGameState(gameId, newGameState);
+        });
     };
 
     return (
@@ -112,22 +108,27 @@ export function ChessGame() {
                     : `Game Over - ${gameState.currentTurn === 'white' ? 'Black' : 'White'} Wins!`}
             </div>
             
-            <div className="chess-board">
+            <div className="grid grid-cols-8 w-[560px] h-[560px] bg-gray-800">
                 {gameState.board.map((row, y) => 
                     row.map((piece, x) => (
                         <div 
                             key={`${x}-${y}`}
                             className={`
-                                chess-square
-                                ${(x + y) % 2 === 0 ? 'chess-square-white' : 'chess-square-black'}
-                                ${selectedSquare?.x === x && selectedSquare?.y === y ? 'selected-square' : ''}
+                                w-[70px] h-[70px] 
+                                flex items-center justify-center
+                                ${(x + y) % 2 === 0 ? 'bg-white' : 'bg-gray-400'}
+                                ${selectedSquare?.x === x && selectedSquare?.y === y ? 'bg-yellow-200' : ''}
+                                cursor-pointer
+                                border border-gray-600
+                                transition-colors duration-200
+                                hover:bg-yellow-100
                             `}
                             onClick={() => handleSquareClick(x, y)}
                         >
                             {piece && (
-                                <div className="chess-piece">
+                                <span className="text-4xl select-none">
                                     {getPieceSymbol(piece)}
-                                </div>
+                                </span>
                             )}
                         </div>
                     ))
@@ -137,7 +138,7 @@ export function ChessGame() {
             {gameState.gameStatus !== 'active' && (
                 <button 
                     onClick={resetGame}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
                     New Game
                 </button>
