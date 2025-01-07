@@ -33,12 +33,16 @@ export function ChessGame() {
             
             const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
                 if (gameData && Array.isArray(gameData.board)) {
-                    // Ensure we're working with a deep copy of the board
-                    const newGameState = {
+                    setGameState({
                         ...gameData,
                         board: JSON.parse(JSON.stringify(gameData.board))
-                    };
-                    setGameState(newGameState);
+                    });
+                } else {
+                    setGameState({
+                        board: JSON.parse(JSON.stringify(initialBoard)),
+                        currentTurn: 'white',
+                        gameStatus: 'active'
+                    });
                 }
             });
     
