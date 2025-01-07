@@ -27,21 +27,18 @@ export function ChessGame() {
 
     useEffect(() => {
         const initGame = async () => {
-            const urlGameId = window.location.hash.slice(1);
-            const newGameId = urlGameId || Date.now().toString();
-            setGameId(newGameId);
+            // Use a constant gameId for all sessions
+            const fixedGameId = 'shared-chess-game';
+            setGameId(fixedGameId);
             
-            if (!urlGameId) {
-                await createGame(newGameId);
-                setPlayerColor('white');
-                window.location.hash = newGameId;
-            } else {
-                setPlayerColor('black');
+            const gameData = await getGameState(fixedGameId);
+            if (!gameData) {
+                await createGame(fixedGameId);
             }
     
-            // This subscription will update the game state whenever Firebase data changes
-            const unsubscribe = subscribeToGame(newGameId, (gameData) => {
+            const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
                 if (gameData) {
+                    console.log('Received game update:', gameData);
                     setGameState(gameData);
                     setSelectedSquare(null);
                     setPossibleMoves([]);
