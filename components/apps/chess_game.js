@@ -38,14 +38,19 @@ export function ChessGame() {
             } else {
                 setPlayerColor('black');
             }
-
+    
+            // This subscription will update the game state whenever Firebase data changes
             const unsubscribe = subscribeToGame(newGameId, (gameData) => {
-                if (gameData) setGameState(gameData);
+                if (gameData) {
+                    setGameState(gameData);
+                    setSelectedSquare(null);
+                    setPossibleMoves([]);
+                }
             });
-
+    
             return () => unsubscribe();
         };
-
+    
         initGame();
     }, []);
 
