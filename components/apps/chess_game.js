@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { subscribeToGame } from '../../lib/firebase/realtime';
 import { createGame, updateGameState, getGameState } from '../../lib/firebase/database';
-import { initialBoard } from '../../lib/firebase/database';
+//import { initialBoard } from '../../lib/firebase/database';
 
 const initialBoard = [
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
