@@ -15,9 +15,18 @@ const initialBoard = [
 ];
 
 export function ChessGame() {
-    // Initialize state with default values
+    // Define default state outside component to ensure it's always available
     const defaultState = {
-        board: JSON.parse(JSON.stringify(initialBoard)),
+        board: [
+            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+            Array(8).fill(null),
+            Array(8).fill(null),
+            Array(8).fill(null),
+            Array(8).fill(null),
+            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+        ],
         currentTurn: 'white',
         gameStatus: 'active'
     };
@@ -292,7 +301,7 @@ export function ChessGame() {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
-                {`Current Turn: ${gameState?.currentTurn || 'white'}`}
+                {`Current Turn: ${gameState?.currentTurn || defaultState.currentTurn}`}
             </div>
             
             <div className="grid grid-cols-8 w-[560px] h-[560px] bg-gray-800">
