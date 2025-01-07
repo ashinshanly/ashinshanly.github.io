@@ -17,26 +17,19 @@ export function ChessGame() {
 
     useEffect(() => {
         const initGame = async () => {
-            const urlGameId = window.location.hash.slice(1);
-            const newGameId = urlGameId || Date.now().toString();
-            setGameId(newGameId);
+            const fixedGameId = 'shared-chess-game';
+            setGameId(fixedGameId);
             
-            if (!urlGameId) {
-                await createGame(newGameId);
-                setPlayerColor('white');
-                window.location.hash = newGameId;
-            } else {
-                setPlayerColor('black');
-            }
-    
-            const unsubscribe = subscribeToGame(newGameId, (gameData) => {
+            const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
                 if (gameData && Array.isArray(gameData.board)) {
+                    console.log('Valid game data received:', gameData);
                     setGameState(gameData);
-                } else if (gameData) {
-                    // Ensure board is properly structured
+                } else {
+                    console.log('Initializing with default board');
                     setGameState({
-                        ...gameData,
-                        board: initialBoard
+                        board: initialBoard,
+                        currentTurn: 'white',
+                        gameStatus: 'active'
                     });
                 }
             });
@@ -46,6 +39,7 @@ export function ChessGame() {
     
         initGame();
     }, []);
+    
     
 
     const getPieceColor = (piece) => {
@@ -283,7 +277,7 @@ export function ChessGame() {
     };
      
     const boardToRender = Array.isArray(gameState.board) ? gameState.board : initialBoard;
-    
+
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
