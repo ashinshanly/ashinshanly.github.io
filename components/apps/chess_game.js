@@ -16,11 +16,12 @@ const initialBoard = [
 
 export function ChessGame() {
     // Initialize state with default values
-    const [gameState, setGameState] = useState({
-        board: JSON.parse(JSON.stringify(initialBoard)), // Deep copy of initial board
+    const defaultState = {
+        board: JSON.parse(JSON.stringify(initialBoard)),
         currentTurn: 'white',
         gameStatus: 'active'
-    });
+    };
+    const [gameState, setGameState] = useState(defaultState);
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [possibleMoves, setPossibleMoves] = useState([]);
     const [gameId, setGameId] = useState(null);
@@ -286,12 +287,12 @@ export function ChessGame() {
         return true;
     };
      
-    const boardToRender = Array.isArray(gameState?.board) ? gameState.board : initialBoard;
+    const boardToRender = gameState?.board || defaultState.board;
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
-                {`Current Turn: ${gameState.currentTurn}`}
+                {`Current Turn: ${gameState?.currentTurn || 'white'}`}
             </div>
             
             <div className="grid grid-cols-8 w-[560px] h-[560px] bg-gray-800">
