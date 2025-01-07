@@ -70,7 +70,7 @@ const apps = [
     {
         id: "dev-adventure",
         title: "Dev Adventure",
-        icon: './themes/Yaru/apps/gnome-control-center.png',
+        icon: './themes/Yaru/apps/dev_adventure.png',
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
@@ -79,7 +79,7 @@ const apps = [
     {
         id: "chess",
         title: "Chess",
-        icon: "./themes/Yaru/apps/gnome-control-center.png",
+        icon: "./themes/Yaru/apps/chess.png",
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
