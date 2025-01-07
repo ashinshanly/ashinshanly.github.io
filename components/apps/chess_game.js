@@ -284,15 +284,16 @@ export function ChessGame() {
         return true;
     };
      
+    const boardToRender = Array.isArray(gameState?.board) ? gameState.board : initialBoard;
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
-                {`Current Turn: ${gameState.currentTurn}`}
+                {`Current Turn: ${gameState?.currentTurn || 'white'}`}
             </div>
             
             <div className="grid grid-cols-8 w-[560px] h-[560px] bg-gray-800">
-                {gameState.board.map((row, y) => 
+                {boardToRender.map((row, y) => 
                     row.map((piece, x) => (
                         <div 
                             key={`${x}-${y}`}
