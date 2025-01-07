@@ -166,7 +166,7 @@ export function ChessGame() {
         return moves;
     };
 
-    const handleSquareClick = (x, y) => {
+    const handleSquareClick = async (x, y) => {
         const clickedPiece = gameState.board[y][x];
         if (!selectedSquare) {
             // Only allow selecting pieces of current turn's color
@@ -190,18 +190,22 @@ export function ChessGame() {
                 const nextTurn = gameState.currentTurn === 'white' ? 'black' : 'white';
                 
                 if (isCheckmate(newBoard, nextTurn)) {
-                    setGameState({
+                    const newGameState = {
                         board: newBoard,
                         currentTurn: nextTurn,
                         gameStatus: 'checkmate',
                         winner: gameState.currentTurn
-                    });
+                    };
+                    setGameState(newGameState);
+                    await updateGameState(gameId, newGameState);
                 } else {
-                    setGameState({
+                    const newGameState = {
                         board: newBoard,
                         currentTurn: nextTurn,
                         gameStatus: isInCheck(newBoard, nextTurn) ? 'check' : 'active'
-                    });
+                    };
+                    setGameState(newGameState);
+                    await updateGameState(gameId, newGameState);
                 }
             }
             
@@ -212,12 +216,14 @@ export function ChessGame() {
     };
     
 
-    const resetGame = () => {
-        setGameState({
+    const resetGame = async () => {
+        const newGameState = {
             board: initialBoard,
             currentTurn: 'white',
             gameStatus: 'active'
-        });
+        };
+        setGameState(newGameState);
+        await updateGameState(gameId, newGameState);
         setSelectedSquare(null);
         setPossibleMoves([]);
     };   
