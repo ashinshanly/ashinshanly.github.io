@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { subscribeToGame } from '../../lib/firebase/realtime';
-import { createGame, updateGameState, getGameState } from '../../lib/firebase/database';
+import { createGame, updateGameState } from '../../lib/firebase/database';
 
 const initialBoard = [
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
@@ -206,7 +206,6 @@ export function ChessGame() {
                         currentTurn: nextTurn,
                         gameStatus: isInCheck(newBoard, nextTurn) ? 'check' : 'active'
                     };
-                    console.log('Sending game update:', newGameState);
                     setGameState(newGameState);
                     await updateGameState(gameId, newGameState);
                 }
