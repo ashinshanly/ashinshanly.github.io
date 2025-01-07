@@ -27,21 +27,27 @@ export function ChessGame() {
 
     useEffect(() => {
         const initGame = async () => {
-            // Use a constant gameId for all sessions
-            const fixedGameId = 'shared-chess-game';
-            setGameId(fixedGameId);
+            const urlGameId = window.location.hash.slice(1);
+            const newGameId = urlGameId || Date.now().toString();
+            setGameId(newGameId);
             
-            const gameData = await getGameState(fixedGameId);
-            if (!gameData) {
-                await createGame(fixedGameId);
+            if (!urlGameId) {
+                await createGame(newGameId);
+                setPlayerColor('white');
+                window.location.hash = newGameId;
+            } else {
+                setPlayerColor('black');
             }
     
-            const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
-                if (gameData) {
-                    console.log('Received game update:', gameData);
+            const unsubscribe = subscribeToGame(newGameId, (gameData) => {
+                if (gameData && Array.isArray(gameData.board)) {
                     setGameState(gameData);
-                    setSelectedSquare(null);
-                    setPossibleMoves([]);
+                } else if (gameData) {
+                    // Ensure board is properly structured
+                    setGameState({
+                        ...gameData,
+                        board: initialBoard
+                    });
                 }
             });
     
@@ -50,6 +56,7 @@ export function ChessGame() {
     
         initGame();
     }, []);
+    
 
     const getPieceColor = (piece) => {
         if (!piece) return null;
