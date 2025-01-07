@@ -4,6 +4,17 @@ import { subscribeToGame } from '../../lib/firebase/realtime';
 import { createGame, updateGameState, getGameState } from '../../lib/firebase/database';
 import { initialBoard } from '../../lib/firebase/database';
 
+const initialBoard = [
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+];
+
 export function ChessGame() {
     const [gameState, setGameState] = useState({
         board: initialBoard,
