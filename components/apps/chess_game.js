@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { subscribeToGame } from '../../lib/firebase/realtime';
-import { createGame, updateGameState, getGameState } from '../../lib/firebase/database';
+import { createGame, updateGameState } from '../../lib/firebase/database';
 
 const initialBoard = [
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
@@ -15,22 +15,11 @@ const initialBoard = [
 ];
 
 export function ChessGame() {
-    // Define default state outside component to ensure it's always available
-    const defaultState = {
-        board: [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-            Array(8).fill(null),
-            Array(8).fill(null),
-            Array(8).fill(null),
-            Array(8).fill(null),
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-        ],
+    const [gameState, setGameState] = useState({
+        board: initialBoard,
         currentTurn: 'white',
         gameStatus: 'active'
-    };
-    const [gameState, setGameState] = useState(defaultState);
+    });
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [possibleMoves, setPossibleMoves] = useState([]);
     const [gameId, setGameId] = useState(null);
@@ -55,13 +44,13 @@ export function ChessGame() {
                     });
                 }
             });
-    
+
             return () => unsubscribe();
         };
-    
+
         initGame();
     }, []);
-    
+
     const getPieceColor = (piece) => {
         if (!piece) return null;
         return piece === piece.toLowerCase() ? 'black' : 'white';
@@ -77,16 +66,13 @@ export function ChessGame() {
                 const direction = pieceColor === 'black' ? 1 : -1;
                 const startRow = pieceColor === 'black' ? 1 : 6;
                 
-                // Forward move
                 if (!gameState.board[startY + direction]?.[startX]) {
                     moves.push([startX, startY + direction]);
-                    // Initial two-square move
                     if (startY === startRow && !gameState.board[startY + 2 * direction]?.[startX]) {
                         moves.push([startX, startY + 2 * direction]);
                     }
                 }
                 
-                // Captures
                 [[startX - 1, startY + direction], [startX + 1, startY + direction]].forEach(([x, y]) => {
                     if (gameState.board[y]?.[x] && getPieceColor(gameState.board[y][x]) !== pieceColor) {
                         moves.push([x, y]);
@@ -144,7 +130,7 @@ export function ChessGame() {
                 });
                 break;
 
-            case 'q': // Queen (combination of Rook and Bishop moves)
+            case 'q': // Queen
                 [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].forEach(([dx, dy]) => {
                     let x = startX + dx;
                     let y = startY + dy;
@@ -181,8 +167,8 @@ export function ChessGame() {
 
     const handleSquareClick = async (x, y) => {
         const clickedPiece = gameState.board[y][x];
+        
         if (!selectedSquare) {
-            // Only allow selecting pieces of current turn's color
             if (clickedPiece && 
                 ((gameState.currentTurn === 'white' && clickedPiece === clickedPiece.toUpperCase()) ||
                  (gameState.currentTurn === 'black' && clickedPiece === clickedPiece.toLowerCase()))) {
@@ -191,48 +177,32 @@ export function ChessGame() {
                 setPossibleMoves(moves);
             }
             return;
-        } else {
-            // Second click - move the piece if it's a valid move
-            const isValidMove = possibleMoves.some(([moveX, moveY]) => moveX === x && moveY === y);
-            
-            if (isValidMove) {
-                const newBoard = JSON.parse(JSON.stringify(gameState.board));
-                newBoard[y][x] = gameState.board[selectedSquare.y][selectedSquare.x];
-                newBoard[selectedSquare.y][selectedSquare.x] = null;
-                
-                const nextTurn = gameState.currentTurn === 'white' ? 'black' : 'white';
-                
-                if (isCheckmate(newBoard, nextTurn)) {
-                    const newGameState = {
-                        board: newBoard,
-                        currentTurn: nextTurn,
-                        gameStatus: 'checkmate',
-                        winner: gameState.currentTurn
-                    };
-                    setGameState(newGameState);
-                    await updateGameState(gameId, newGameState);
-                } else {
-                    const newGameState = {
-                        board: newBoard,
-                        currentTurn: nextTurn,
-                        gameStatus: isInCheck(newBoard, nextTurn) ? 'check' : 'active'
-                    };
-                    console.log('Sending game update:', newGameState);
-                    setGameState(newGameState);
-                    await updateGameState(gameId, newGameState);
-                }
-            }
-            
-            // Reset selection
-            setSelectedSquare(null);
-            setPossibleMoves([]);
         }
+    
+        const isValidMove = possibleMoves.some(([moveX, moveY]) => moveX === x && moveY === y);
+        
+        if (isValidMove) {
+            const newBoard = JSON.parse(JSON.stringify(gameState.board));
+            newBoard[y][x] = gameState.board[selectedSquare.y][selectedSquare.x];
+            newBoard[selectedSquare.y][selectedSquare.x] = null;
+            
+            const newGameState = {
+                board: newBoard,
+                currentTurn: gameState.currentTurn === 'white' ? 'black' : 'white',
+                gameStatus: 'active'
+            };
+            
+            setGameState(newGameState);
+            await updateGameState(gameId, newGameState);
+        }
+        
+        setSelectedSquare(null);
+        setPossibleMoves([]);
     };
     
-
     const resetGame = async () => {
         const newGameState = {
-            board: initialBoard,
+            board: JSON.parse(JSON.stringify(initialBoard)),
             currentTurn: 'white',
             gameStatus: 'active'
         };
@@ -240,68 +210,15 @@ export function ChessGame() {
         await updateGameState(gameId, newGameState);
         setSelectedSquare(null);
         setPossibleMoves([]);
-    };   
-    const isInCheck = (board, color) => {
-        // Find king's position
-        let kingPos;
-        const kingPiece = color === 'white' ? 'K' : 'k';
-        
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                if (board[y][x] === kingPiece) {
-                    kingPos = { x, y };
-                    break;
-                }
-            }
-        }
-    
-        // Check if any opponent piece can capture the king
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                const piece = board[y][x];
-                if (piece && getPieceColor(piece) !== color) {
-                    const moves = calculatePossibleMoves(piece, x, y);
-                    if (moves.some(([moveX, moveY]) => moveX === kingPos.x && moveY === kingPos.y)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    };
-    
-    const isCheckmate = (board, color) => {
-        if (!isInCheck(board, color)) return false;
-    
-        // Try all possible moves for all pieces
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                const piece = board[y][x];
-                if (piece && getPieceColor(piece) === color) {
-                    const moves = calculatePossibleMoves(piece, x, y);
-                    
-                    // Try each move to see if it gets out of check
-                    for (const [moveX, moveY] of moves) {
-                        const testBoard = JSON.parse(JSON.stringify(board));
-                        testBoard[moveY][moveX] = piece;
-                        testBoard[y][x] = null;
-                        
-                        if (!isInCheck(testBoard, color)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    };
-     
-    const boardToRender = gameState?.board || defaultState.board;
+    };    
+
+
+    const boardToRender = gameState.board || initialBoard;
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
-                {`Current Turn: ${gameState?.currentTurn || defaultState.currentTurn}`}
+                {`Current Turn: ${gameState.currentTurn}`}
             </div>
             
             <div className="grid grid-cols-8 w-[560px] h-[560px] bg-gray-800">
