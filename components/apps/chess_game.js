@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { subscribeToGame } from '../../lib/firebase/realtime';
 import { createGame, updateGameState, getGameState } from '../../lib/firebase/database';
-//import { initialBoard } from '../../lib/firebase/database';
 
 const initialBoard = [
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
@@ -16,8 +15,9 @@ const initialBoard = [
 ];
 
 export function ChessGame() {
+    // Initialize state with default values
     const [gameState, setGameState] = useState({
-        board: initialBoard,
+        board: JSON.parse(JSON.stringify(initialBoard)), // Deep copy of initial board
         currentTurn: 'white',
         gameStatus: 'active'
     });
@@ -33,15 +33,12 @@ export function ChessGame() {
             
             const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
                 if (gameData && Array.isArray(gameData.board)) {
-                    console.log('Valid game data received:', gameData);
-                    setGameState(gameData);
-                } else {
-                    console.log('Initializing with default board');
-                    setGameState({
-                        board: initialBoard,
-                        currentTurn: 'white',
-                        gameStatus: 'active'
-                    });
+                    // Ensure we're working with a deep copy of the board
+                    const newGameState = {
+                        ...gameData,
+                        board: JSON.parse(JSON.stringify(gameData.board))
+                    };
+                    setGameState(newGameState);
                 }
             });
     
@@ -51,8 +48,6 @@ export function ChessGame() {
         initGame();
     }, []);
     
-    
-
     const getPieceColor = (piece) => {
         if (!piece) return null;
         return piece === piece.toLowerCase() ? 'black' : 'white';
