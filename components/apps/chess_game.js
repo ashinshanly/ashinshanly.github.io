@@ -198,16 +198,18 @@ export function ChessGame() {
                         gameStatus: 'checkmate',
                         winner: gameState.currentTurn
                     };
-                    setGameState(newGameState);
+                    console.log('Sending checkmate game update:', newGameState);
                     await updateGameState(gameId, newGameState);
+                    setGameState(newGameState);
                 } else {
                     const newGameState = {
                         board: newBoard,
                         currentTurn: nextTurn,
                         gameStatus: isInCheck(newBoard, nextTurn) ? 'check' : 'active'
                     };
-                    setGameState(newGameState);
+                    console.log('Sending game update:', newGameState);
                     await updateGameState(gameId, newGameState);
+                    setGameState(newGameState);
                 }
             }
             
@@ -216,6 +218,7 @@ export function ChessGame() {
             setPossibleMoves([]);
         }
     };
+    
     
 
     const resetGame = async () => {
