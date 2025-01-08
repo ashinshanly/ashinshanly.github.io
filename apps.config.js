@@ -69,7 +69,7 @@ const apps = [
     },
     {
         id: "dev-adventure",
-        title: "Dev Adventure",
+        title: "Dev Adventure (Work In progress)",
         icon: './themes/Yaru/apps/dev_adventure.png',
         disabled: false,
         favourite: true,
