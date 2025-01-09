@@ -41,29 +41,68 @@ export function CodingChallenges() {
         try {
             // Evaluate code safely and check test cases
             const problem = problems[currentProblem];
-            const allTestsPassed = problem.testCases.every(testCase => {
+            let results = [];
+            
+            // Run each test case and collect results
+            for (let testCase of problem.testCases) {
                 const result = eval(`(${code})(${JSON.stringify(testCase.input)})`);
-                return JSON.stringify(result) === JSON.stringify(testCase.expected);
-            });
-
+                results.push({
+                    passed: JSON.stringify(result) === JSON.stringify(testCase.expected),
+                    input: testCase.input,
+                    expected: testCase.expected,
+                    output: result
+                });
+            }
+    
+            const allTestsPassed = results.every(r => r.passed);
+    
+            // Show beautiful results UI
+            const resultsDiv = document.createElement('div');
+            resultsDiv.className = `p-4 rounded-lg mb-4 ${allTestsPassed ? 'bg-green-100' : 'bg-red-100'}`;
+            
+            resultsDiv.innerHTML = `
+                <h3 class="text-lg font-bold mb-2">${allTestsPassed ? '✅ All Tests Passed!' : '❌ Some Tests Failed'}</h3>
+                ${results.map((r, i) => `
+                    <div class="mb-2 p-2 rounded ${r.passed ? 'bg-green-200' : 'bg-red-200'}">
+                        <div>Test Case ${i + 1}:</div>
+                        <div>Input: ${JSON.stringify(r.input)}</div>
+                        <div>Expected: ${JSON.stringify(r.expected)}</div>
+                        <div>Output: ${JSON.stringify(r.output)}</div>
+                    </div>
+                `).join('')}
+            `;
+    
+            // Update UI with results
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('results').appendChild(resultsDiv);
+    
+            // If all tests pass, proceed to next problem or finish
             if (allTestsPassed) {
-                if (currentProblem < problems.length - 1) {
-                    setCurrentProblem(prev => prev + 1);
-                    setCode(problems[currentProblem + 1].template);
-                } else {
-                    // Update leaderboard
-                    const leaderboardRef = ref(db, `coding-challenges/leaderboard/${currentUser}`);
-                    await set(leaderboardRef, {
-                        name: currentUser,
-                        score: (currentProblem + 1) * 100
-                    });
-                    setGameMode('home');
-                }
+                setTimeout(() => {
+                    if (currentProblem < problems.length - 1) {
+                        setCurrentProblem(prev => prev + 1);
+                        setCode(problems[currentProblem + 1].template);
+                    } else {
+                        // Update leaderboard
+                        const leaderboardRef = ref(db, `coding-challenges/leaderboard/${currentUser}`);
+                        set(leaderboardRef, {
+                            name: currentUser,
+                            score: (currentProblem + 1) * 100
+                        });
+                        setGameMode('home');
+                    }
+                }, 2000);
             }
         } catch (error) {
-            console.error('Code execution error:', error);
+            // Show error message beautifully
+            document.getElementById('results').innerHTML = `
+                <div class="p-4 bg-red-100 rounded-lg">
+                    <h3 class="text-lg font-bold text-red-800">⚠️ Error</h3>
+                    <p class="text-red-600">${error.message}</p>
+                </div>
+            `;
         }
-    };
+    };    
 
     if (gameMode === 'home') {
         return (
