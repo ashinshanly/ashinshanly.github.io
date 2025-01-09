@@ -6,28 +6,40 @@ import { ref, onValue, set } from 'firebase/database';
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
+    const [gameMode, setGameMode] = useState('home'); // 'home', 'computer', 'online'
     const [gameId] = useState('shared-chess-game');
 
     useEffect(() => {
-        // Set up real-time listener
-        const gameRef = ref(db, `games/${gameId}`);
-        const unsubscribe = onValue(gameRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.fen) {
-                const newGame = new Chess();
-                newGame.load(data.fen);
-                setGame(newGame);
-            }
-        });
+        if (gameMode === 'online') {
+            const gameRef = ref(db, `games/${gameId}`);
+            const unsubscribe = onValue(gameRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.fen) {
+                    const newGame = new Chess();
+                    newGame.load(data.fen);
+                    setGame(newGame);
+                }
+            });
 
-        // Initialize game if it doesn't exist
-        set(gameRef, {
-            fen: game.fen(),
-            lastMove: Date.now()
-        });
+            set(gameRef, {
+                fen: game.fen(),
+                lastMove: Date.now()
+            });
 
-        return () => unsubscribe();
-    }, []);
+            return () => unsubscribe();
+        }
+    }, [gameMode]);
+
+    function makeComputerMove() {
+        const gameCopy = new Chess(game.fen());
+        const moves = gameCopy.moves();
+        
+        if (moves.length > 0) {
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            gameCopy.move(move);
+            setGame(gameCopy);
+        }
+    }
 
     function onDrop(sourceSquare, targetSquare) {
         const gameCopy = new Chess(game.fen());
@@ -40,14 +52,17 @@ export function ChessGame() {
             });
 
             if (move) {
-                // Update Firebase immediately after valid move
-                const gameRef = ref(db, `games/${gameId}`);
-                set(gameRef, {
-                    fen: gameCopy.fen(),
-                    lastMove: Date.now()
-                });
-                
                 setGame(gameCopy);
+                
+                if (gameMode === 'online') {
+                    const gameRef = ref(db, `games/${gameId}`);
+                    set(gameRef, {
+                        fen: gameCopy.fen(),
+                        lastMove: Date.now()
+                    });
+                } else if (gameMode === 'computer') {
+                    setTimeout(makeComputerMove, 250);
+                }
                 return true;
             }
         } catch (error) {
@@ -58,13 +73,35 @@ export function ChessGame() {
 
     const resetGame = () => {
         const newGame = new Chess();
-        const gameRef = ref(db, `games/${gameId}`);
-        set(gameRef, {
-            fen: newGame.fen(),
-            lastMove: Date.now()
-        });
         setGame(newGame);
+        if (gameMode === 'online') {
+            const gameRef = ref(db, `games/${gameId}`);
+            set(gameRef, {
+                fen: newGame.fen(),
+                lastMove: Date.now()
+            });
+        }
     };
+
+    if (gameMode === 'home') {
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4 space-y-6">
+                <h1 className="text-3xl font-bold text-white mb-4">Chess Game</h1>
+                <button 
+                    onClick={() => setGameMode('computer')}
+                    className="w-64 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                    Play vs Computer
+                </button>
+                <button 
+                    onClick={() => setGameMode('online')}
+                    className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                    Play Online
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
@@ -84,12 +121,20 @@ export function ChessGame() {
                 />
             </div>
 
-            <button 
-                onClick={resetGame}
-                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-                New Game
-            </button>
+            <div className="mt-4 space-x-4">
+                <button 
+                    onClick={resetGame}
+                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                    New Game
+                </button>
+                <button 
+                    onClick={() => setGameMode('home')}
+                    className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                    Back to Menu
+                </button>
+            </div>
         </div>
     );
 }
