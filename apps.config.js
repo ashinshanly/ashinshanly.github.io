@@ -8,8 +8,8 @@ import { displayGedit } from './components/apps/gedit';
 import { displayAboutAshin } from './components/apps/ashin';
 import { displayTerminalCalc } from './components/apps/calc';
 import { displayDevAdventure } from './components/apps/dev_adventure';
-//import { displayChessGame } from './components/apps/chess_game';
 import { displayChessGame } from './components/apps/chess_game_v2';
+import { displayCodingChallenges } from './components/apps/coding_game';
 
 
 const apps = [
@@ -84,6 +84,15 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayChessGame,
+    },
+    {
+        id: "codezilla",
+        title: "Codezilla",
+        icon: "./themes/Yaru/apps/gnome-control-center.png",
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayCodingChallenges,
     },
     {
         id: "settings",
