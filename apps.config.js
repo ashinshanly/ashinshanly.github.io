@@ -7,9 +7,9 @@ import { displayTrash } from './components/apps/trash';
 import { displayGedit } from './components/apps/gedit';
 import { displayAboutAshin } from './components/apps/ashin';
 import { displayTerminalCalc } from './components/apps/calc';
-//import { DevAdventure } from './components/apps/dev_adventure';
 import { displayDevAdventure } from './components/apps/dev_adventure';
-import { displayChessGame } from './components/apps/chess_game';
+//import { displayChessGame } from './components/apps/chess_game';
+import { displayChessGame } from './components/apps/chess_game_v2';
 
 
 const apps = [
