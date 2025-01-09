@@ -6,7 +6,7 @@ import { ref, onValue, set } from 'firebase/database';
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
-    const [gameMode, setGameMode] = useState('home'); // 'home', 'computer', 'online'
+    const [gameMode, setGameMode] = useState('home');
     const [gameId] = useState('shared-chess-game');
 
     useEffect(() => {
@@ -21,12 +21,16 @@ export function ChessGame() {
                 }
             });
 
+            // Initialize online game state
             set(gameRef, {
-                fen: game.fen(),
+                fen: new Chess().fen(),
                 lastMove: Date.now()
             });
 
             return () => unsubscribe();
+        } else if (gameMode === 'computer') {
+            // Initialize local game state for computer mode
+            setGame(new Chess());
         }
     }, [gameMode]);
 
@@ -52,16 +56,17 @@ export function ChessGame() {
             });
 
             if (move) {
-                setGame(gameCopy);
-                
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
                     set(gameRef, {
                         fen: gameCopy.fen(),
                         lastMove: Date.now()
                     });
-                } else if (gameMode === 'computer') {
-                    setTimeout(makeComputerMove, 250);
+                } else {
+                    setGame(gameCopy);
+                    if (gameMode === 'computer') {
+                        setTimeout(makeComputerMove, 250);
+                    }
                 }
                 return true;
             }
@@ -73,13 +78,14 @@ export function ChessGame() {
 
     const resetGame = () => {
         const newGame = new Chess();
-        setGame(newGame);
         if (gameMode === 'online') {
             const gameRef = ref(db, `games/${gameId}`);
             set(gameRef, {
                 fen: newGame.fen(),
                 lastMove: Date.now()
             });
+        } else {
+            setGame(newGame);
         }
     };
 
