@@ -2,49 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
-import { subscribeToGame } from '../../lib/firebase/realtime';
-import { createGame, updateGameState } from '../../lib/firebase/database';
+import { ref, onValue, set } from 'firebase/database';
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
-    const [gameId, setGameId] = useState(null);
+    const [gameId] = useState('shared-chess-game');
 
     useEffect(() => {
-        const initGame = async () => {
-            const fixedGameId = 'shared-chess-game';
-            setGameId(fixedGameId);
-            
-            const gameData = await getGameState(fixedGameId);
-            if (!gameData) {
-                await createGame(fixedGameId);
+        // Set up real-time listener
+        const gameRef = ref(db, `games/${gameId}`);
+        const unsubscribe = onValue(gameRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.fen) {
+                const newGame = new Chess();
+                newGame.load(data.fen);
+                setGame(newGame);
             }
-    
-            const unsubscribe = subscribeToGame(fixedGameId, (gameData) => {
-                if (gameData && gameData.fen) {
-                    const newGame = new Chess();
-                    newGame.load(gameData.fen);
-                    setGame(newGame);
-                }
-            });
-    
-            return () => unsubscribe();
-        };
-    
-        initGame();
+        });
+
+        // Initialize game if it doesn't exist
+        set(gameRef, {
+            fen: game.fen(),
+            lastMove: Date.now()
+        });
+
+        return () => unsubscribe();
     }, []);
 
-    function makeMove(move) {
+    function onDrop(sourceSquare, targetSquare) {
         const gameCopy = new Chess(game.fen());
         
         try {
-            const result = gameCopy.move(move);
-            if (result) {
-                setGame(gameCopy);
-                updateGameState(gameId, { 
+            const move = gameCopy.move({
+                from: sourceSquare,
+                to: targetSquare,
+                promotion: 'q'
+            });
+
+            if (move) {
+                // Update Firebase immediately after valid move
+                const gameRef = ref(db, `games/${gameId}`);
+                set(gameRef, {
                     fen: gameCopy.fen(),
-                    isGameOver: gameCopy.isGameOver(),
-                    turn: gameCopy.turn()
+                    lastMove: Date.now()
                 });
+                
+                setGame(gameCopy);
                 return true;
             }
         } catch (error) {
@@ -53,24 +56,14 @@ export function ChessGame() {
         return false;
     }
 
-    function onDrop(sourceSquare, targetSquare) {
-        const move = makeMove({
-            from: sourceSquare,
-            to: targetSquare,
-            promotion: 'q'
-        });
-
-        return move;
-    }
-
-    const resetGame = async () => {
+    const resetGame = () => {
         const newGame = new Chess();
-        setGame(newGame);
-        await updateGameState(gameId, {
+        const gameRef = ref(db, `games/${gameId}`);
+        set(gameRef, {
             fen: newGame.fen(),
-            isGameOver: false,
-            turn: 'w'
+            lastMove: Date.now()
         });
+        setGame(newGame);
     };
 
     return (
@@ -97,10 +90,6 @@ export function ChessGame() {
             >
                 New Game
             </button>
-            
-            <div className="mt-4 text-white">
-                Game ID: {gameId}
-            </div>
         </div>
     );
 }
