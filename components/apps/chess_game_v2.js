@@ -8,6 +8,7 @@ export function ChessGame() {
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState('home');
     const [gameId] = useState('shared-chess-game');
+    const [playerColor, setPlayerColor] = useState('w');
 
     useEffect(() => {
         if (gameMode === 'online') {
@@ -28,23 +29,34 @@ export function ChessGame() {
 
             return () => unsubscribe();
         } else if (gameMode === 'computer') {
-            setGame(new Chess());
+            const newGame = new Chess();
+            setGame(newGame);
+            setPlayerColor('w'); // Player always plays as white vs computer
         }
     }, [gameMode]);
 
-    function makeComputerMove() {
-        const gameCopy = new Chess(game.fen());
-        if (gameCopy.isGameOver()) return;
+    useEffect(() => {
+        if (gameMode === 'computer' && game.turn() === 'b') {
+            // Computer's turn
+            setTimeout(makeComputerMove, 500);
+        }
+    }, [game, gameMode]);
 
-        const legalMoves = gameCopy.moves({ verbose: true });
-        if (legalMoves.length > 0) {
-            const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+    function makeComputerMove() {
+        if (game.isGameOver() || game.turn() !== 'b') return;
+
+        const possibleMoves = game.moves({ verbose: true });
+        if (possibleMoves.length > 0) {
+            const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+            const gameCopy = new Chess(game.fen());
             gameCopy.move(randomMove);
             setGame(gameCopy);
         }
     }
 
     function onDrop(sourceSquare, targetSquare) {
+        if (gameMode === 'computer' && game.turn() !== playerColor) return false;
+
         const gameCopy = new Chess(game.fen());
         
         try {
@@ -61,12 +73,8 @@ export function ChessGame() {
                         fen: gameCopy.fen(),
                         lastMove: Date.now()
                     });
-                    setGame(gameCopy);
-                } else if (gameMode === 'computer') {
-                    setGame(gameCopy);
-                    // Make computer's move after a short delay
-                    setTimeout(makeComputerMove, 300);
                 }
+                setGame(gameCopy);
                 return true;
             }
         } catch (error) {
@@ -111,6 +119,11 @@ export function ChessGame() {
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
                 {`Current Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`}
+                {gameMode === 'computer' && (
+                    <span className="ml-4">
+                        {game.turn() === playerColor ? "Your turn" : "Computer thinking..."}
+                    </span>
+                )}
             </div>
             
             <div className="w-[560px]">
