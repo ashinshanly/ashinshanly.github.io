@@ -21,7 +21,6 @@ export function ChessGame() {
                 }
             });
 
-            // Initialize online game state
             set(gameRef, {
                 fen: new Chess().fen(),
                 lastMove: Date.now()
@@ -29,18 +28,18 @@ export function ChessGame() {
 
             return () => unsubscribe();
         } else if (gameMode === 'computer') {
-            // Initialize local game state for computer mode
             setGame(new Chess());
         }
     }, [gameMode]);
 
     function makeComputerMove() {
         const gameCopy = new Chess(game.fen());
-        const moves = gameCopy.moves();
-        
-        if (moves.length > 0) {
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            gameCopy.move(move);
+        if (gameCopy.isGameOver()) return;
+
+        const legalMoves = gameCopy.moves({ verbose: true });
+        if (legalMoves.length > 0) {
+            const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+            gameCopy.move(randomMove);
             setGame(gameCopy);
         }
     }
@@ -62,11 +61,11 @@ export function ChessGame() {
                         fen: gameCopy.fen(),
                         lastMove: Date.now()
                     });
-                } else {
                     setGame(gameCopy);
-                    if (gameMode === 'computer') {
-                        setTimeout(makeComputerMove, 250);
-                    }
+                } else if (gameMode === 'computer') {
+                    setGame(gameCopy);
+                    // Make computer's move after a short delay
+                    setTimeout(makeComputerMove, 300);
                 }
                 return true;
             }
@@ -84,9 +83,8 @@ export function ChessGame() {
                 fen: newGame.fen(),
                 lastMove: Date.now()
             });
-        } else {
-            setGame(newGame);
         }
+        setGame(newGame);
     };
 
     if (gameMode === 'home') {
