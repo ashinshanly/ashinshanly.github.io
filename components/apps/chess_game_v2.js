@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
-import { ref, onValue, set } from 'firebase/database';
+import { ref, onValue, set, get } from 'firebase/database';
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
@@ -13,6 +13,19 @@ export function ChessGame() {
     useEffect(() => {
         if (gameMode === 'online') {
             const gameRef = ref(db, `games/${gameId}`);
+            
+            const fetchGameState = async () => {
+                const snapshot = await get(gameRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const newGame = new Chess();
+                    newGame.load(data.fen);
+                    setGame(newGame);
+                }
+            };
+            
+            fetchGameState();
+
             const unsubscribe = onValue(gameRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.fen) {
@@ -22,22 +35,16 @@ export function ChessGame() {
                 }
             });
 
-            set(gameRef, {
-                fen: new Chess().fen(),
-                lastMove: Date.now()
-            });
-
             return () => unsubscribe();
         } else if (gameMode === 'computer') {
             const newGame = new Chess();
             setGame(newGame);
-            setPlayerColor('w'); // Player always plays as white vs computer
+            setPlayerColor('w');
         }
     }, [gameMode]);
 
     useEffect(() => {
         if (gameMode === 'computer' && game.turn() === 'b') {
-            // Computer's turn
             setTimeout(makeComputerMove, 500);
         }
     }, [game, gameMode]);
@@ -152,6 +159,12 @@ export function ChessGame() {
                     Back to Menu
                 </button>
             </div>
+            
+            {gameMode === 'online' && (
+                <div className="mt-4 text-white">
+                    Game ID: {gameId}
+                </div>
+            )}
         </div>
     );
 }
