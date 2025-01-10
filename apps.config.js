@@ -88,7 +88,7 @@ const apps = [
     {
         id: "codezilla",
         title: "Codezilla",
-        icon: "./themes/Yaru/apps/gnome-control-center.png",
+        icon: "./themes/Yaru/apps/coding.png",
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
