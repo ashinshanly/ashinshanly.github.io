@@ -88,23 +88,22 @@ export function ChessGame() {
     }
 
     function onDrop(sourceSquare, targetSquare) {
-        if (gameMode === 'computer' && game.turn() !== playerColor) return false;
-    
         const gameCopy = new Chess(game.fen());
         
         try {
             const move = gameCopy.move({
                 from: sourceSquare,
                 to: targetSquare,
-                promotion: 'q' // Always promote to queen for simplicity
+                promotion: 'q'
             });
     
             if (move) {
                 setGame(gameCopy);
+                
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
                     const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
-                    // Preserve viewers while updating game state
+                    
                     get(gameRef).then((snapshot) => {
                         const currentData = snapshot.val() || {};
                         set(gameRef, {
@@ -116,7 +115,6 @@ export function ChessGame() {
                     });
                 }
                 
-                // Update game status if checkmate
                 if (gameCopy.isCheckmate()) {
                     const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
                     setGameStatus(`Checkmate! ${winner} wins!`);
@@ -129,6 +127,7 @@ export function ChessGame() {
         }
         return false;
     }
+    
 
     const resetGame = () => {
         const newGame = new Chess();
