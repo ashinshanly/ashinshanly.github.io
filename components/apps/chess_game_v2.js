@@ -23,6 +23,7 @@ export function ChessGame() {
                     const newGame = new Chess();
                     newGame.load(data.board);
                     setGame(newGame);
+                    setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
                 }
             };
             
@@ -34,6 +35,7 @@ export function ChessGame() {
                     const newGame = new Chess();
                     newGame.load(data.board);
                     setGame(newGame);
+                    setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
                 }
             });
     
