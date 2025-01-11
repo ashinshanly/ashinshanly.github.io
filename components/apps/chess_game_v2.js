@@ -100,6 +100,7 @@ export function ChessGame() {
             });
     
             if (move) {
+                setGame(gameCopy);
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
                     const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
@@ -114,7 +115,6 @@ export function ChessGame() {
                         });
                     });
                 }
-                setGame(gameCopy);
                 
                 // Update game status if checkmate
                 if (gameCopy.isCheckmate()) {
