@@ -152,12 +152,26 @@ export function ChessGame() {
     const startOnlineGame = () => {
         setGameMode('online');
         const gameRef = ref(db, `games/${gameId}`);
-        set(gameRef, {
-            board: new Chess().fen(),
-            currentTurn: 'white',
-            gameStatus: 'active'
+        
+        get(gameRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const newGame = new Chess();
+                newGame.load(data.board);
+                setGame(newGame);
+            } else {
+                // Only initialize a new game if no existing game is found
+                const newGame = new Chess();
+                set(gameRef, {
+                    board: newGame.fen(),
+                    currentTurn: 'white',
+                    gameStatus: 'active'
+                });
+                setGame(newGame);
+            }
         });
     };
+    
      
 
     if (gameMode === 'home') {
