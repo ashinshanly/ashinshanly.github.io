@@ -3,14 +3,14 @@ import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
-const [gameStatus, setGameStatus] = useState('');
-const [viewerCount, setViewerCount] = useState(0);
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState('home');
     const [gameId] = useState('shared-chess-game');
     const [playerColor, setPlayerColor] = useState('w');
+    const [gameStatus, setGameStatus] = useState('');
+    const [viewerCount, setViewerCount] = useState(0);
 
     useEffect(() => {
         if (gameMode === 'online') {
