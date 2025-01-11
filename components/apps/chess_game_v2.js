@@ -100,18 +100,21 @@ export function ChessGame() {
             });
     
             if (move) {
-                setGame(gameCopy);
-                
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
                     const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
-                    set(gameRef, {
-                        fen: gameCopy.fen(),
-                        lastMove: Date.now(),
-                        gameStatus: gameCopy.isCheckmate() ? `Checkmate! ${winner} wins!` : '',
-                        viewers: game.viewers
+                    // Preserve viewers while updating game state
+                    get(gameRef).then((snapshot) => {
+                        const currentData = snapshot.val() || {};
+                        set(gameRef, {
+                            ...currentData,
+                            fen: gameCopy.fen(),
+                            lastMove: Date.now(),
+                            gameStatus: gameCopy.isCheckmate() ? `Checkmate! ${winner} wins!` : ''
+                        });
                     });
                 }
+                setGame(gameCopy);
                 
                 // Update game status if checkmate
                 if (gameCopy.isCheckmate()) {
