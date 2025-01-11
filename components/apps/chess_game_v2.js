@@ -71,27 +71,6 @@ export function ChessGame() {
     }, [gameMode, gameId]);
     
     useEffect(() => {
-        if (gameMode === 'online') {
-            const gameRef = ref(db, `games/${gameId}`);
-            
-            // Handle page refresh/reconnection
-            window.addEventListener('beforeunload', () => {
-                const currentGame = game.fen();
-                localStorage.setItem('chessgame_position', currentGame);
-            });
-    
-            // Restore game on reload
-            const savedPosition = localStorage.getItem('chessgame_position');
-            if (savedPosition) {
-                const restoredGame = new Chess();
-                restoredGame.load(savedPosition);
-                setGame(restoredGame);
-                localStorage.removeItem('chessgame_position');
-            }
-        }
-    }, [gameMode]);
-    
-    useEffect(() => {
         if (game.isCheckmate()) {
             const winner = game.turn() === 'w' ? 'Black' : 'White';
             setGameStatus(`Checkmate! ${winner} wins!`);
