@@ -3,6 +3,8 @@ import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
+const [gameStatus, setGameStatus] = useState('');
+const [viewerCount, setViewerCount] = useState(0);
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
@@ -49,6 +51,27 @@ export function ChessGame() {
         }
     }, [game, gameMode]);
 
+    useEffect(() => {
+        if (gameMode === 'online') {
+            const viewersRef = ref(db, `games/${gameId}/viewers`);
+            const sessionId = Math.random().toString(36).substr(2, 9);
+            
+            // Add viewer
+            set(ref(db, `games/${gameId}/viewers/${sessionId}`), true);
+            
+            // Remove viewer on disconnect
+            onValue(viewersRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    setViewerCount(Object.keys(snapshot.val()).length);
+                }
+            });
+    
+            return () => {
+                set(ref(db, `games/${gameId}/viewers/${sessionId}`), null);
+            };
+        }
+    }, [gameMode, gameId]);
+
     function makeComputerMove() {
         if (game.isGameOver() || game.turn() !== 'b') return;
 
@@ -78,7 +101,8 @@ export function ChessGame() {
                     const gameRef = ref(db, `games/${gameId}`);
                     set(gameRef, {
                         fen: gameCopy.fen(),
-                        lastMove: Date.now()
+                        lastMove: Date.now(),
+                        gameStatus: gameCopy.isCheckmate() ? `Checkmate! ${winner} wins!` : ''
                     });
                 }
                 setGame(gameCopy);
@@ -131,6 +155,16 @@ export function ChessGame() {
                         {game.turn() === playerColor ? "Your turn" : "Computer thinking..."}
                     </span>
                 )}
+                {gameStatus && (
+                    <div className="text-yellow-400 font-bold mt-2">
+                        {gameStatus}
+                    </div>
+                )}
+                {gameMode === 'online' && (
+                    <div className="text-sm text-gray-300 mt-2">
+                        👥 {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'} online
+                    </div>
+                )}               
             </div>
             
             <div className="w-[560px]">
