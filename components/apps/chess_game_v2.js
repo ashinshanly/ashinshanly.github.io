@@ -21,33 +21,26 @@ export function ChessGame() {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     const newGame = new Chess();
-                    newGame.load(data.fen);
+                    newGame.load(data.board);
                     setGame(newGame);
-                    if (data.gameStatus) setGameStatus(data.gameStatus);
                 }
             };
             
             fetchGameState();
-
+    
             const unsubscribe = onValue(gameRef, (snapshot) => {
                 const data = snapshot.val();
-                if (data && data.fen) {
+                if (data && data.board) {
                     const newGame = new Chess();
-                    newGame.load(data.fen);
+                    newGame.load(data.board);
                     setGame(newGame);
-                    if (data.gameStatus) setGameStatus(data.gameStatus);
                 }
             });
-
+    
             return () => unsubscribe();
-
-        } else if (gameMode === 'computer') {
-            const newGame = new Chess();
-            setGame(newGame);
-            setPlayerColor('w');
         }
     }, [gameMode, gameId]);
-
+    
     useEffect(() => {
         if (gameMode === 'computer' && game.turn() === 'b') {
             setTimeout(makeComputerMove, 500);
@@ -66,6 +59,8 @@ export function ChessGame() {
             onValue(viewersRef, (snapshot) => {
                 if (snapshot.exists()) {
                     setViewerCount(Object.keys(snapshot.val()).length);
+                } else {
+                    setViewerCount(0);
                 }
             });
     
@@ -74,6 +69,41 @@ export function ChessGame() {
             };
         }
     }, [gameMode, gameId]);
+    
+    useEffect(() => {
+        if (gameMode === 'online') {
+            const gameRef = ref(db, `games/${gameId}`);
+            
+            // Handle page refresh/reconnection
+            window.addEventListener('beforeunload', () => {
+                const currentGame = game.fen();
+                localStorage.setItem('chessgame_position', currentGame);
+            });
+    
+            // Restore game on reload
+            const savedPosition = localStorage.getItem('chessgame_position');
+            if (savedPosition) {
+                const restoredGame = new Chess();
+                restoredGame.load(savedPosition);
+                setGame(restoredGame);
+                localStorage.removeItem('chessgame_position');
+            }
+        }
+    }, [gameMode]);
+    
+    useEffect(() => {
+        if (game.isCheckmate()) {
+            const winner = game.turn() === 'w' ? 'Black' : 'White';
+            setGameStatus(`Checkmate! ${winner} wins!`);
+        } else if (game.isStalemate()) {
+            setGameStatus('Game drawn by stalemate');
+        } else if (game.isInsufficientMaterial()) {
+            setGameStatus('Game drawn by insufficient material');
+        } else if (game.isThreefoldRepetition()) {
+            setGameStatus('Game drawn by threefold repetition');
+        }
+    }, [game]);
+    
 
     function makeComputerMove() {
         if (game.isGameOver() || game.turn() !== 'b') return;
@@ -88,6 +118,9 @@ export function ChessGame() {
     }
 
     function onDrop(sourceSquare, targetSquare) {
+        // Prevent moves during computer's turn in computer mode
+        if (gameMode === 'computer' && game.turn() !== playerColor) return false;
+        
         const gameCopy = new Chess(game.fen());
         
         try {
@@ -102,16 +135,10 @@ export function ChessGame() {
                 
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
-                    const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
-                    
-                    get(gameRef).then((snapshot) => {
-                        const currentData = snapshot.val() || {};
-                        set(gameRef, {
-                            ...currentData,
-                            fen: gameCopy.fen(),
-                            lastMove: Date.now(),
-                            gameStatus: gameCopy.isCheckmate() ? `Checkmate! ${winner} wins!` : ''
-                        });
+                    set(gameRef, {
+                        board: gameCopy.fen(),
+                        currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
+                        gameStatus: gameCopy.isCheckmate() ? 'checkmate' : gameCopy.isCheck() ? 'check' : 'active'
                     });
                 }
                 
@@ -134,12 +161,25 @@ export function ChessGame() {
         if (gameMode === 'online') {
             const gameRef = ref(db, `games/${gameId}`);
             set(gameRef, {
-                fen: newGame.fen(),
-                lastMove: Date.now()
+                board: newGame.fen(),
+                currentTurn: 'white',
+                gameStatus: 'active'
             });
         }
         setGame(newGame);
+        setGameStatus('');
     };
+
+    const startOnlineGame = () => {
+        setGameMode('online');
+        const gameRef = ref(db, `games/${gameId}`);
+        set(gameRef, {
+            board: new Chess().fen(),
+            currentTurn: 'white',
+            gameStatus: 'active'
+        });
+    };
+     
 
     if (gameMode === 'home') {
         return (
@@ -152,7 +192,7 @@ export function ChessGame() {
                     Play vs Computer
                 </button>
                 <button 
-                    onClick={() => setGameMode('online')}
+                    onClick={startOnlineGame}
                     className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                 >
                     Play Online
