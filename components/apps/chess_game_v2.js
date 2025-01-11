@@ -23,6 +23,7 @@ export function ChessGame() {
                     const newGame = new Chess();
                     newGame.load(data.fen);
                     setGame(newGame);
+                    if (data.gameStatus) setGameStatus(data.gameStatus);
                 }
             };
             
@@ -34,16 +35,18 @@ export function ChessGame() {
                     const newGame = new Chess();
                     newGame.load(data.fen);
                     setGame(newGame);
+                    if (data.gameStatus) setGameStatus(data.gameStatus);
                 }
             });
 
             return () => unsubscribe();
+
         } else if (gameMode === 'computer') {
             const newGame = new Chess();
             setGame(newGame);
             setPlayerColor('w');
         }
-    }, [gameMode]);
+    }, [gameMode, gameId]);
 
     useEffect(() => {
         if (gameMode === 'computer' && game.turn() === 'b') {
@@ -123,7 +126,7 @@ export function ChessGame() {
         }
         return false;
     }
-    
+
     const resetGame = () => {
         const newGame = new Chess();
         if (gameMode === 'online') {
