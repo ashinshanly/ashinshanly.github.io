@@ -161,7 +161,7 @@ export function ChessGame() {
                     </div>
                 )}
                 {gameMode === 'online' && (
-                    <div className="text-sm text-gray-300 mt-2">
+                    <div className="text-sm text-gray-300 mt-2 flex items-center justify-center">
                         👥 {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'} online
                     </div>
                 )}               
