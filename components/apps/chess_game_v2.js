@@ -3,7 +3,8 @@ import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
-
+//Do this next - Viewer count is not updating correctly. Everytime a piece movement is done, the viewer count is going to zero. Also play with computer and play online game states are not independent.
+//Also, two current turn is displayed in the top. Keep second one.
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState('home');
@@ -40,6 +41,10 @@ export function ChessGame() {
             });
     
             return () => unsubscribe();
+        } else if (gameMode === 'computer') {
+            const newGame = new Chess();
+            setGame(newGame);
+            setPlayerColor('w');
         }
     }, [gameMode, gameId]);
     
@@ -116,6 +121,7 @@ export function ChessGame() {
                 
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
+                    
                     set(gameRef, {
                         board: gameCopy.fen(),
                         currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
@@ -184,13 +190,13 @@ export function ChessGame() {
                     onClick={() => setGameMode('computer')}
                     className="w-64 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
-                    Play vs Computer
+                    Play Online vs Bot
                 </button>
                 <button 
                     onClick={startOnlineGame}
                     className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                 >
-                    Play Online
+                    Play Online vs Random Player
                 </button>
             </div>
         );
