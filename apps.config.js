@@ -69,7 +69,7 @@ const apps = [
     },
     {
         id: "dev-adventure",
-        title: "Work-In-Progress",
+        title: "Minirun - WIP",
         icon: './themes/Yaru/apps/dev_adventure.png',
         disabled: false,
         favourite: true,
@@ -87,7 +87,7 @@ const apps = [
     },
     {
         id: "codezilla",
-        title: "Codezilla",
+        title: "Codezilla - WIP",
         icon: "./themes/Yaru/apps/coding.png",
         disabled: false,
         favourite: true,
