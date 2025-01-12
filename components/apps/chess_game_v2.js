@@ -4,7 +4,6 @@ import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
 //Do this next - Viewer count is not updating correctly. Everytime a piece movement is done, the viewer count is going to zero. Also play with computer and play online game states are not independent.
-//Also, two current turn is displayed in the top. Keep second one.
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState('home');
@@ -122,10 +121,17 @@ export function ChessGame() {
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
                     
-                    set(gameRef, {
-                        board: gameCopy.fen(),
-                        currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
-                        gameStatus: gameCopy.isCheckmate() ? 'checkmate' : gameCopy.isCheck() ? 'check' : 'active'
+                    const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
+                
+                    // Preserve existing data including viewers while updating game state
+                    get(gameRef).then((snapshot) => {
+                        const currentData = snapshot.val() || {};
+                        set(gameRef, {
+                            ...currentData,  // This keeps the viewers data intact
+                            board: gameCopy.fen(),
+                            currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
+                            gameStatus: gameCopy.isCheckmate() ? `Checkmate! ${winner} wins!` : ''
+                        });
                     });
                 }
                 
