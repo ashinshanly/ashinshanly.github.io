@@ -205,16 +205,15 @@ export function ChessGame() {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
             <div className="mb-4 text-white text-xl">
-                {`Current Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`}
+                {gameMode === 'online' ? (
+                    gameStatus
+                ) : (
+                    `Current Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`
+                )}
                 {gameMode === 'computer' && (
                     <span className="ml-4">
                         {game.turn() === playerColor ? "Your turn" : "Computer thinking..."}
                     </span>
-                )}
-                {gameStatus && (
-                    <div className="text-yellow-400 font-bold mt-2">
-                        {gameStatus}
-                    </div>
                 )}
                 {gameMode === 'online' && (
                     <div className="text-sm text-gray-300 mt-2 flex items-center justify-center">
@@ -222,6 +221,7 @@ export function ChessGame() {
                     </div>
                 )}               
             </div>
+
             
             <div className="w-[560px]">
                 <Chessboard 
