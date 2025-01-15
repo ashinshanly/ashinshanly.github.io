@@ -183,6 +183,8 @@ export function ChessGame() {
     
      
 
+    const [showDescription, setShowDescription] = useState(false);
+
     if (gameMode === 'home') {
         return (
             <div 
@@ -203,21 +205,39 @@ export function ChessGame() {
                     >
                         Play Online vs Bot
                     </button>
-                    <div className="flex flex-col items-center space-y-4">
-                        <button 
-                            onClick={startOnlineGame}
-                            className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
-                        >
-                            Play Online vs Random Player
-                        </button>
-                        <div className="text-white text-center max-w-md px-4 py-2 bg-gray-800 bg-opacity-75 rounded-lg">
-                            🌍 When you click this button, you'll enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
+                    <button 
+                        onClick={() => setShowDescription(true)}
+                        className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
+                    >
+                        Play Online vs Random Player
+                    </button>
+                </div>
+    
+                {showDescription && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20 bg-black bg-opacity-70">
+                        <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md">
+                            <h2 className="text-2xl text-white font-bold mb-4">Welcome to Online Chess!</h2>
+                            <p className="text-white mb-6">
+                                🌍 You're about to enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
+                            </p>
+                            <div className="flex justify-end">
+                                <button 
+                                    onClick={() => {
+                                        setShowDescription(false);
+                                        startOnlineGame();
+                                    }}
+                                    className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                                >
+                                    Proceed
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         );
     }
+
 
 
 
