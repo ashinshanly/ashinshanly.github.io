@@ -1,607 +1,94 @@
-$base-size: 12.5vmin;
-$base-border-width: 0.07rem;
-$base-border-color: #000000;
-$base-border: solid $base-border-width $base-border-color;
-$base-chars: ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ');
-
-$before-move-pause-time: 500ms;
-
-$screen-background-color: #a4fc20;
-$screen-width: 8rem;
-$screen-height: 8rem;
-
-$turret-background-color: #1bad00;
-$turret-width: 0.8rem;
-$turret-height: 0.8rem;
-$turret-border: $base-border;
-
-$gun-width: 0.3rem;
-$gun-height: 1rem;
-
-$fire-background-image: radial-gradient(
-	circle at 50% 50%,
-	#ef7d00 0%,
-	#f5b300 50%,
-	transparent 100%
-);
-$fire-width: 0.25rem;
-$fire-height: 0.25rem;
-
-$zombie-width: 0.65rem;
-$zombie-height: 1.2rem;
-$zombie-border: solid $base-border-width $base-border-color;
-
-$zombie-head-background-color: #0ddd63;
-
-$zombie-head-width: $zombie-width;
-$zombie-head-height: 0.55rem;
-
-$zombie-eyes-width: 0.2rem;
-$zombie-eyes-height: 0.2rem;
-
-$zombie-eye-background-color: #ffffff;
-$zombie-eye-width: $zombie-eyes-height;
-$zombie-eye-height: $zombie-eyes-height;
-$zombie-eye-border: solid 0.05rem $base-border-color;
-$zombie-eye-top: 0.07rem;
-$zombie-eye-left: 0.08rem;
-$zombie-eye-right: 0.35rem;
-
-$zombie-body-background-color: #b37500;
-$zombie-body-width: 0.35rem;
-$zombie-body-height: 0.35rem;
-$zombie-body-transform: translate(0.09rem, -0.07rem);
-
-$zombie-arm-width: 0.3rem;
-$zombie-arm-height: 0.1rem;
-$zombie-arm-top: 0.52rem;
-$zombie-arm-left: 0.05rem;
-$zombie-arm-right: 0.35rem;
-
-$zombie-leg-background-color: #a2a2a2;
-$zombie-leg-width: 0.23rem;
-$zombie-leg-height: 0.32rem;
-$zombie-leg-top: 0.75rem;
-$zombie-leg-left: 0.09rem;
-$zombie-leg-right: 0.21rem;
-
-$zombie-foot-width: 0.1rem;
-$zombie-foot-height: 0.2rem;
-$zombie-foot-top: 0.19rem;
-
-$zombie-hole-background-color: #000000;
-$zombie-hole-width: $zombie-width;
-$zombie-hole-height: $zombie-width;
-
-$life-top: 0.4rem;
-$life-left: 0.4rem;
-
-$heart-background-color: #e41435;
-$heart-width: 0.4rem;
-$heart-height: 0.4rem;
-$heart-border-color: #000000;
-$heart-transition: background-color 500ms ease-out;
-
-$score-top: 0.25rem;
-$score-right: 0.25rem;
-
-$title-background-color: #a4fc20;
-$title-endln-margin: 0.2rem;
-
-$zombie-dying-background-image: radial-gradient(
-	circle at 50% 80%,
-	rgba(#ef7d00, 0.8) 0%,
-	rgba(#f5b300, 0.8) 50%,
-	transparent 100%
-);
-
-@mixin render-character($i, $pixel-size) {
-	$pixel-color: #000000;
-	width: $pixel-size * 3;
-	height: $pixel-size * 5;
-	margin-left: $pixel-size / 2;
-	&:before {
-		content: '';
-		width: $pixel-size;
-		height: $pixel-size;
-		display: block;
-		transform: translate(-100%, -100%);
-		@if ($i == "0" or $i == "o") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "1") {
-			box-shadow: 
-				($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "2") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "3") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "4") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "5" or $i == "s") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "6" or $i == "g") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "7") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "8") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "9") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "a") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "b") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "c") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "d") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "e") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "f") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "h") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "i") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "j") {
-			box-shadow: ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "k") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "l") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "m") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "n") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "p") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color,
-		}
-		@elseif ($i == "q") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "r") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "t") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 4) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color,
-		}
-		@elseif ($i == "u") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "v") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color,
-		}
-		@elseif ($i == "w") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 1) ($pixel-size * 3) $pixel-color, ($pixel-size * 3) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 2) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "x") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 3) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@elseif ($i == "y") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 1) ($pixel-size * 2) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 2) ($pixel-size * 4) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color,
-		}
-		@elseif ($i == "z") {
-			box-shadow: ($pixel-size * 1) ($pixel-size * 1) $pixel-color, ($pixel-size * 2) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 1) $pixel-color, ($pixel-size * 3) ($pixel-size * 2) $pixel-color, ($pixel-size * 2) ($pixel-size * 3) $pixel-color, ($pixel-size * 1) ($pixel-size * 4) $pixel-color, ($pixel-size * 1) ($pixel-size * 5) $pixel-color, ($pixel-size * 2) ($pixel-size * 5) $pixel-color, ($pixel-size * 3) ($pixel-size * 5) $pixel-color;
-		}
-		@else {
-			// Nothing to do here... Maybe spaces?
-		}
-	}
+.gameContainer {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-html, body, #example_game {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-html {
-	// For responsive purposes
-	font-size: $base-size;
-}
-
-#example_game {
-	background-color: #000000;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	overflow: auto;
+.example_game {
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
 }
 
 .screen {
-	background-color: $screen-background-color;
-	width: $screen-width;
-	height: $screen-height;
-	position: relative;
-	overflow: hidden;
-	flex-shrink: 0;
-}
-
-.debug {
-	color: #00ff00;
-	font-family: courier;
-	font-size: 0.5rem;
-	text-align: center;
-	background-color: black;
-	width: 2rem;
-	height: 1rem;
-	line-height: 1rem;
-	display: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	&.shown {
-		display: block;
-	}
+  background-color: #a4fc20;
+  width: 8rem;
+  height: 8rem;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .turret {
-	width: $turret-width;
-	height: $turret-height;
-	position: absolute;
-	top: calc(50% - #{$turret-height / 2});
-	left: calc(50% - #{$turret-width / 2});
-	box-sizing: border-box;
-	.gun {
-		background-color: $turret-background-color;
-		width: $gun-width;
-		height: $gun-height;
-		border: $turret-border;
-		position: absolute;
-		bottom: calc(100% - #{$gun-height / 2});
-		left: calc(50% - #{$gun-width / 2});
-		box-sizing: border-box;
-	}
-	.body {
-		background-color: $turret-background-color;
-		width: $turret-width;
-		height: $turret-height;
-		border: $turret-border;
-		position: absolute;
-		top: 0;
-		left: 0;
-		box-sizing: border-box;
-		border-radius: 50%;
-	}
+  width: 0.8rem;
+  height: 0.8rem;
+  position: absolute;
+  top: calc(50% - 0.4rem);
+  left: calc(50% - 0.4rem);
+  box-sizing: border-box;
 }
 
-.fire {
-	background-image: $fire-background-image;
-	width: $fire-width;
-	height: $fire-height;
-	border-radius: 50%;
-	position: absolute;
-	animation: animate-fire 100ms infinite;
+.gun {
+  background-color: #1bad00;
+  width: 0.3rem;
+  height: 1rem;
+  border: solid 0.07rem #000;
+  position: absolute;
+  bottom: calc(100% - 0.5rem);
+  left: calc(50% - 0.15rem);
+  box-sizing: border-box;
 }
 
-.zombie {
-	width: $zombie-width;
-	height: $zombie-height;
-	overflow: hidden;
-	position: absolute;
-	&:not(.zombie-dying):not(.zombie-hiding).zombie-walking .zombie-wrapper {
-		transform: translateY(0%);
-		.leg.left {
-			animation: zombie-walk-left 1500ms linear infinite;
-		}
-		.leg.right {
-			animation: zombie-walk-right 1500ms linear infinite;
-		}
-	}
-	&:not(.zombie-walking):not(.zombie-dying):not(.zombie-hiding) .zombie-wrapper {
-		animation: summon-zombie 500ms ease-out 1000ms forwards;
-		.hole {
-			animation: animate-zombie-hole 500ms forwards,
-				animate-hole-at-bottom 500ms ease-out 1000ms forwards,
-				clear-hole 300ms ease-out 1500ms forwards;
-		}
-	}
-	&:not(.zombie-walking):not(.zombie-dying).zombie-hiding {
-		.zombie-wrapper {
-			transform: translateY(0%);
-			animation: zombie-hiding 500ms ease-out forwards 500ms;
-			.hole {
-				display: none;
-			}
-		}
-	}
-	&.zombie-dying {
-		animation: zombie-fade-out 500ms ease-out forwards 500ms;
-	}
-	&.flip {
-		transform: scaleX(-1);
-	}
-	&.zombie-dying:after {
-		content: '';
-		background-image: $zombie-dying-background-image;
-		width: 100%;
-		height: 100%;
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		border-radius: 50% / 50% 50% 20% 20%;
-		animation: animate-fire 100ms infinite;
-	}
-	&.zombie-dying .zombie-wrapper {
-		transform: translateY(0%);
-	}
-	.zombie-wrapper {
-		width: 100%;
-		height: 100%;
-		position: relative;
-		transform: translateY(100%);
-	}
-	.head {
-		background-color: $zombie-head-background-color;
-		width: $zombie-head-width;
-		height: $zombie-head-height;
-		border: $zombie-border;
-		box-sizing: border-box;
-		border-radius: 50% / 50% 50% 50% 30%;
-		.eyes {
-			width: $zombie-head-width;
-			height: $zombie-eyes-height;
-			position: relative;
-			&:before, &:after {
-				content: '';
-				background-color: $zombie-eye-background-color;
-				width: $zombie-eye-width;
-				height: $zombie-eye-height;
-				border: $zombie-eye-border;
-				position: absolute;
-				top: $zombie-eye-top;
-				box-sizing: border-box;
-				border-radius: 50%;
-			}
-			&:before {
-				left: $zombie-eye-left;
-			}
-			&:after {
-				left: $zombie-eye-right;
-			}
-		}
-	}
-	.body {
-		background-color: $zombie-body-background-color;
-		width: $zombie-body-width;
-		height: $zombie-body-height;
-		border: $zombie-border;
-		box-sizing: border-box;
-		transform: $zombie-body-transform;
-	}
-	.arm {
-		width: $zombie-arm-width;
-		height: $zombie-arm-height;
-		border: $zombie-border;
-		border-bottom: none;
-		border-left: none;
-		box-sizing: border-box;
-		position: absolute;
-		top: $zombie-arm-top;
-		transform-origin: top left;
-		transform: rotate(15deg);
-		&.left {
-			left: $zombie-arm-left;
-		}
-		&.right {
-			left: $zombie-arm-right;
-		}
-	}
-	.leg {
-		background-color: $zombie-leg-background-color;
-		width: $zombie-leg-width;
-		height: $zombie-leg-height;
-		border: $zombie-border;
-		position: absolute;
-		top: $zombie-leg-top;
-		box-sizing: border-box;
-		transform-origin: top left;
-		&.left {
-			left: $zombie-leg-left;
-		}
-		&.right {
-			left: $zombie-leg-right;
-		}
-		&:after {
-			content: '';
-			width: $zombie-foot-width;
-			height: $zombie-foot-height;
-			border: $zombie-border;
-			border-top: none;
-			border-right: none;
-			display: block;
-			position: absolute;
-			top: $zombie-foot-top;
-			box-sizing: border-box;
-		}
-	}
-	.hole {
-		background-color: $zombie-hole-background-color;
-		width: $zombie-hole-width;
-		height: $zombie-hole-height;
-		position: absolute;
-		top: 0;
-		left: 0;
-		border-radius: 50%;
-		transform-origin: bottom center;
-		transform: translate(0%, -100%) rotateX(-55deg) scale(0);
-	}
-}
-
-.life {
-	position: absolute;
-	top: $life-top;
-	left: $life-left;
-	display: flex;
-	flex-direction: row-reverse;
+.body {
+  background-color: #1bad00;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: solid 0.07rem #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border-radius: 50%;
 }
 
 .heart {
-	width: $heart-width;
-	height: $heart-height;
-	margin-right: $heart-width;
-	transform: rotate(45deg);
-	border-radius: 0 0 30% 0;
-	position: relative;
-	transition: $heart-transition;
-	&:before, &:after {
-		content: '';
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		transition: $heart-transition;
-	}
-	&:before {
-		transform: translateY(-50%);
-	}
-	&:after {
-		transform: translateX(-50%);
-	}
-	&.empty {
-		background-color: $heart-border-color;
-		&:before, &:after {
-			background-color: $heart-border-color;
-		}
-	}
-	&.full {
-		background-color: $heart-background-color;
-		&:before, &:after {
-			background-color: $heart-background-color;
-		}
-	}
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-right: 0.4rem;
+  transform: rotate(45deg);
+  border-radius: 0 0 30% 0;
+  position: relative;
+  
+  &.full {
+    background-color: #e41435;
+    &:before, &:after {
+      background-color: #e41435;
+    }
+  }
+  
+  &.empty {
+    background-color: #000;
+    &:before, &:after {
+      background-color: #000;
+    }
+  }
 }
 
-@each $char in $base-chars {
-	.char-small-#{$char} {
-		@include render-character(#{$char}, 0.06rem);
-	}
-	.char-#{$char} {
-		@include render-character(#{$char}, 0.12rem);
-	}
-	.char-large-#{$char} {
-		@include render-character(#{$char}, 0.14rem);
-	}
+.life {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .score {
-	display: flex;
-	position: absolute;
-	top: $score-top;
-	right: $score-right;
-}
-
-.title {
-	background-color: $title-background-color;
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	&.hide {
-		transform: scale(0);
-	}
-}
-
-.game-title {
-	display: flex;
-	flex-direction: column;
-	&:not(:last-child) {
-		margin-bottom: ($title-endln-margin * 2.5);
-	}
-	.title-content {
-		display: flex;
-		justify-content: center;
-		&:not(:last-child) {
-			margin-bottom: $title-endln-margin;
-		}
-	}
-}
-
-@keyframes animate-fire {
-	0%   { transform: scale(1); }
-	50%  { transform: scale(1.5); }
-	100% { transform: scale(1); }
-}
-
-@keyframes animate-zombie-hole {
-	0%   { transform: translate(5%, -100%) rotateX(-55deg) scale(0); }
-	20%  { transform: translate(-5%, -100%) rotateX(-55deg) scale(0.2); }
-	40%  { transform: translate(5%, -100%) rotateX(-55deg) scale(0.4); }
-	60%  { transform: translate(-5%, -100%) rotateX(-55deg) scale(0.6); }
-	80%  { transform: translate(5%, -100%) rotateX(-55deg) scale(0.8); }
-	100% { transform: translate(0%, -100%) rotateX(-55deg) scale(1); }
-}
-
-@keyframes animate-hole-at-bottom {
-	from { transform: translate(0%, -100%) rotateX(-55deg); }
-	to   { transform: translate(0%, calc(#{$zombie-height} - 100%)) rotateX(-55deg); }
-}
-
-@keyframes clear-hole {
-	from { opacity: 1; }
-	to   { opacity: 0; }
-}
-
-@keyframes summon-zombie {
-	from { transform: translateY(100%); }
-	to   { transform: translateY(0%); }
-}
-
-@keyframes zombie-walk-left {
-	0%   { transform: skewX(0deg); }
-	25%  { transform: skewX(10deg); }
-	50%  { transform: skewX(0deg); }
-	75%  { transform: skewX(-10deg); }
-	100% { transform: skewX(0deg); }
-}
-
-@keyframes zombie-walk-right {
-	0%   { transform: skewX(0deg); }
-	25%  { transform: skewX(-10deg); }
-	50%  { transform: skewX(0deg); }
-	75%  { transform: skewX(10deg); }
-	100% { transform: skewX(0deg); }
-}
-
-@keyframes zombie-fade-out {
-	from { opacity: 1; }
-	to   { opacity: 0; }
-}
-
-@keyframes zombie-hiding {
-	from { transform: scale(1); }
-	to   { transform: scale(0); }
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
 }
