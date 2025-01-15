@@ -7,12 +7,12 @@ export class ShootingGame extends Component {
 
         // Constants
         this.fps          = 1000 / 30;
-        this.rotateSpd    = 4;
-        this.fireInterval = 300;
+        this.rotateSpd    = 10;
+        this.fireInterval = 100;
         this.fireSpd      = 0.15;
         this.spdPerSummon = 250;
         this.minSummonSpd = 500;
-        this.zombieSpd    = 0.025;
+        this.zombieSpd    = 0.1;
         this.zombieDelay  = 2000;
         this.lifeCount    = 3;
         this.center       = {x: 4, y: 4};
