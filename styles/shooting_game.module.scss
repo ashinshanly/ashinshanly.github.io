@@ -1,67 +1,110 @@
+// Base variables
+$base-size: 12.5vmin;
+$base-border-width: 0.07rem;
+$base-border-color: #000;
+$base-border: solid $base-border-width $base-border-color;
+
+// Screen settings
+.screen {
+  background-color: #a4fc20;
+  width: 800px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+// Game container
 .gameContainer {
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.example_game {
-  background-color: #000;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: auto;
-  width: 100%;
-  height: 100%;
+  flex-direction: column;
+  background: #000;
 }
 
-.screen {
-  background-color: #a4fc20;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
+// Turret styles
 .turret {
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 30px;
+  height: 30px;
   position: absolute;
-  top: calc(50% - 0.4rem);
-  left: calc(50% - 0.4rem);
-  box-sizing: border-box;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .gun {
+    background-color: #1bad00;
+    width: 10px;
+    height: 30px;
+    border: $base-border;
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .body {
+    background-color: #1bad00;
+    width: 100%;
+    height: 100%;
+    border: $base-border;
+    border-radius: 50%;
+    position: absolute;
+  }
 }
 
-.gun {
-  background-color: #1bad00;
-  width: 0.3rem;
-  height: 1rem;
-  border: solid 0.07rem #000;
+// Zombie styles
+.zombie {
+  width: 26px;
+  height: 48px;
   position: absolute;
-  bottom: calc(100% - 0.5rem);
-  left: calc(50% - 0.15rem);
-  box-sizing: border-box;
+  
+  &.flip {
+    transform: scaleX(-1);
+  }
+
+  .head {
+    background-color: #0ddd63;
+    width: 100%;
+    height: 22px;
+    border: $base-border;
+    border-radius: 50% 50% 50% 30%;
+    position: relative;
+  }
+
+  .body {
+    background-color: #b37500;
+    width: 14px;
+    height: 14px;
+    border: $base-border;
+    position: relative;
+    transform: translate(4px, -3px);
+  }
 }
 
-.body {
-  background-color: #1bad00;
-  width: 0.8rem;
-  height: 0.8rem;
-  border: solid 0.07rem #000;
+// Score display
+.score {
   position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  border-radius: 50%;
+  top: 10px;
+  right: 10px;
+  color: #000;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+// Life/Hearts display
+.life {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 10px;
 }
 
 .heart {
-  width: 0.4rem;
-  height: 0.4rem;
-  margin-right: 0.4rem;
+  width: 16px;
+  height: 16px;
+  background: #e41435;
   transform: rotate(45deg);
-  border-radius: 0 0 30% 0;
   position: relative;
   
   &.full {
@@ -70,25 +113,41 @@
       background-color: #e41435;
     }
   }
-  
-  &.empty {
-    background-color: #000;
-    &:before, &:after {
-      background-color: #000;
-    }
+
+  &:before, &:after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: inherit;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  &:before {
+    left: -8px;
+  }
+
+  &:after {
+    top: -8px;
   }
 }
 
-.life {
-  position: absolute;
-  top: 0.4rem;
-  left: 0.4rem;
-  display: flex;
-  flex-direction: row-reverse;
+// Animations
+@keyframes zombieWalk {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
 }
 
-.score {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
+@keyframes zombieDeath {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+.zombie-walking {
+  animation: zombieWalk 1s infinite;
+}
+
+.zombie-dying {
+  animation: zombieDeath 0.5s forwards;
 }
