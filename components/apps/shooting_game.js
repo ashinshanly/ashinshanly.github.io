@@ -27,21 +27,13 @@ export class ShootingGame extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('keyup', this.handleKeyUp);
-        window.addEventListener('resize', this.handleResize);
         this.startGameLoop();
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.handleKeyDown);
         window.removeEventListener('keyup', this.handleKeyUp);
-        window.removeEventListener('resize', this.handleResize);
         cancelAnimationFrame(this.gameLoop);
-    }
-
-    handleResize = () => {
-        const canvas = this.canvasRef.current;
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
     }
 
     handleKeyDown = (evt) => {
@@ -83,65 +75,18 @@ export class ShootingGame extends Component {
     startGameLoop = () => {
         const canvas = this.canvasRef.current;
         const ctx = canvas.getContext('2d');
-        
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
 
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            const turretX = canvas.width / 2 - 15;
-            const turretY = canvas.height - 60;
-            
-            // Draw turret base
-            ctx.fillStyle = '#1bad00';
-            ctx.beginPath();
-            ctx.arc(turretX + 15, turretY + 15, 20, 0, Math.PI * 2);
-            ctx.fill();
+            // Draw turret
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(385, 285, 30, 30);
 
-            // Draw turret cannon
-            ctx.save();
-            ctx.translate(turretX + 15, turretY + 15);
-            ctx.rotate(this.state.rotation * Math.PI / 180);
-            ctx.fillRect(-5, -25, 10, 25);
-            ctx.restore();
-
-            // Draw projectiles
-            this.state.fires.forEach(fire => {
-                ctx.fillStyle = '#e41435';
-                ctx.beginPath();
-                ctx.arc(fire.x, fire.y, 5, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Draw enemies
-            this.state.zombies.forEach(zombie => {
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(zombie.x, zombie.y, 15, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            this.gameLoop = requestAnimationFrame(render);
+            requestAnimationFrame(render);
         };
 
         render();
-    }
-
-    throwFire = () => {
-        const canvas = this.canvasRef.current;
-        const turretX = canvas.width / 2;
-        const turretY = canvas.height - 60;
-        
-        const newFire = {
-            x: turretX,
-            y: turretY,
-            angle: this.state.rotation
-        };
-
-        this.setState(prevState => ({
-            fires: [...prevState.fires, newFire]
-        }));
     }
 
     renderScore() {
@@ -166,8 +111,14 @@ export class ShootingGame extends Component {
                     <div className={styles.screen}>
                         <canvas 
                             ref={this.canvasRef}
-                            className="absolute top-0 left-0 w-full h-full"
+                            width={800}
+                            height={600}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                         />
+                        <div className={styles.turret}>
+                            <div className={styles.gun}></div>
+                            <div className={styles.body}></div>
+                        </div>
                         <div className={styles.life}>
                             {this.renderLives()}
                         </div>
