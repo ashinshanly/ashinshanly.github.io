@@ -68,6 +68,15 @@ const apps = [
         screen: displaySpotify, // India Top 50 Playlist
     },
     {
+        id: "chess",
+        title: "Chess",
+        icon: "./themes/Yaru/apps/chess.png",
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayChessGame,
+    },/*
+    {
         id: "dev-adventure",
         title: "Minirun - WIP",
         icon: './themes/Yaru/apps/dev_adventure.png',
@@ -77,15 +86,6 @@ const apps = [
         screen: displayDevAdventure,
     },
     {
-        id: "chess",
-        title: "Chess",
-        icon: "./themes/Yaru/apps/chess.png",
-        disabled: false,
-        favourite: true,
-        desktop_shortcut: true,
-        screen: displayChessGame,
-    },
-    {
         id: "codezilla",
         title: "Codezilla - WIP",
         icon: "./themes/Yaru/apps/coding.png",
@@ -93,7 +93,7 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayCodingChallenges,
-    },
+    },*/
     {
         id: "settings",
         title: "Settings",
