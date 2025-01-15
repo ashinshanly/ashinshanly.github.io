@@ -302,6 +302,66 @@ export class ShootingGame extends Component {
 
         return tmpZombie;
     }
+    
+    moveZombies = () => {
+      const updatedZombies = this.state.zombies.map(zombie => {
+        // Calculate direction towards gun/turret center
+        const dx = this.center.x - zombie.x;
+        const dy = this.center.y - zombie.y;
+        const angle = Math.atan2(dy, dx);
+        
+        // Move zombie towards gun
+        return {
+          ...zombie,
+          x: zombie.x + Math.cos(angle) * this.zombieSpd,
+          y: zombie.y + Math.sin(angle) * this.zombieSpd
+        };
+      });
+    
+      this.setState({ zombies: updatedZombies });
+      this.checkCollisions();
+    };
+    
+    checkCollisions = () => {
+      // Check zombie-turret collisions
+      this.state.zombies.forEach(zombie => {
+        const turretHit = this.state.turret.some(t => {
+          return (
+            zombie.x < t.x + this.turret.width &&
+            zombie.x + this.zombie.width > t.x &&
+            zombie.y < t.y + this.turret.height &&
+            zombie.y + this.zombie.height > t.y
+          );
+        });
+    
+        if (turretHit) {
+          this.setState(prev => ({ 
+            life: prev.life - 1,
+            zombies: prev.zombies.filter(z => z !== zombie)
+          }));
+        }
+      });
+    
+      // Check bullet-zombie collisions 
+      this.state.fires.forEach(fire => {
+        this.state.zombies.forEach(zombie => {
+          const zombieHit = (
+            fire.x < zombie.x + this.zombie.width &&
+            fire.x + this.fire.width > zombie.x &&
+            fire.y < zombie.y + this.zombie.height &&
+            fire.y + this.fire.height > zombie.y
+          );
+    
+          if (zombieHit) {
+            this.setState(prev => ({
+              score: prev.score + 1,
+              zombies: prev.zombies.filter(z => z !== zombie),
+              fires: prev.fires.filter(f => f !== fire)
+            }));
+          }
+        });
+      });
+    };
 
     animate = () => {
         let gameLoop = requestAnimationFrame(this.animate);
@@ -316,6 +376,7 @@ export class ShootingGame extends Component {
 
             this.animateRotation();
             this.animateFire();
+            this.moveZombies();
             this.animateZombie();
             this.summonZombieTrigger();
         }
