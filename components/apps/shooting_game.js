@@ -144,4 +144,6 @@ export class ShootingGame extends Component {
     }
 }
 
-export default ShootingGame;
+export const displayShootingGame = () => {
+    return <ShootingGame> </ShootingGame>;
+}
