@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
-import styles from '../../styles/shooting_game.module.scss'
+import styles from '../../styles/shooting_game.module.scss';
 
 export class ShootingGame extends Component {
-    constructor(props) {
-        super(props);
-
-        // Game constants
-        this.fps = 1000 / 30;
-        this.rotateSpd = 4;
-        this.fireInterval = 300;
-        this.fireSpd = 0.15;
-        this.zombieSpd = 0.025;
-        this.zombieDelay = 2000;
-        this.lifeCount = 3;
-        this.screen = { width: 8, height: 8 };
-        this.center = { x: 4, y: 4 };
-
+    constructor() {
+        super();
         this.state = {
             time: performance.now(),
             holdLeft: false,
@@ -27,24 +15,19 @@ export class ShootingGame extends Component {
             turret: [],
             fires: [],
             zombies: [],
-            life: this.lifeCount,
+            life: 3,
             score: 0,
             pause: true,
             showTitle: true,
             showTryAgain: false
         };
+        this.canvasRef = React.createRef();
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('keyup', this.handleKeyUp);
-        
-        this.setState({
-            turret: [{
-                x: this.center.x - 0.4,
-                y: this.center.y - 0.4
-            }]
-        });
+        this.startGameLoop();
     }
 
     componentWillUnmount() {
@@ -58,7 +41,7 @@ export class ShootingGame extends Component {
 
         if (evt.keyCode === 32) {
             if (this.state.lastFire === 0 || 
-                (performance.now() - this.state.lastFire > this.fireInterval && 
+                (performance.now() - this.state.lastFire > 300 && 
                  this.state.fires.length < 2)) {
                 this.setState({ lastFire: performance.now() });
                 this.throwFire();
@@ -89,21 +72,33 @@ export class ShootingGame extends Component {
         }
     }
 
-    animate = () => {
-        this.gameLoop = requestAnimationFrame(this.animate);
-        
-        if (this.state.pause) {
-            cancelAnimationFrame(this.gameLoop);
-            return;
-        }
+    startGameLoop = () => {
+        const canvas = this.canvasRef.current;
+        const ctx = canvas.getContext('2d');
 
-        if (performance.now() - this.state.time > this.fps) {
-            this.setState({ time: performance.now() });
-            this.animateRotation();
-            this.animateFire();
-            this.animateZombie();
-            this.summonZombieTrigger();
-        }
+        const render = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw turret
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(385, 285, 30, 30);
+
+            requestAnimationFrame(render);
+        };
+
+        render();
+    }
+
+    renderScore() {
+        return this.state.score.toString().split('').map((digit, i) => (
+            <div key={i} className={styles[`char-${digit}`]}></div>
+        ));
+    }
+
+    renderLives() {
+        return Array(this.state.life).fill(0).map((_, i) => (
+            <div key={i} className={`${styles.heart} ${styles.full}`}></div>
+        ));
     }
 
     render() {
@@ -111,50 +106,34 @@ export class ShootingGame extends Component {
             <div className="w-full h-full flex flex-col bg-ub-cool-grey text-white select-none">
                 <div className="flex items-center justify-between p-2 bg-ub-warm-grey">
                     <span>Shooting Game</span>
-                    <span>Game ID: {this.state.gameId}</span>
                 </div>
-                <div id="example_game">
-                    <div className="screen">
+                <div className={styles.example_game}>
+                    <div className={styles.screen}>
                         <canvas 
                             ref={this.canvasRef}
                             width={800}
                             height={600}
                             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                         />
-                        <div className="turret">
-                            <div className="gun"></div>
-                            <div className="body"></div>
+                        <div className={styles.turret}>
+                            <div className={styles.gun}></div>
+                            <div className={styles.body}></div>
                         </div>
-                        <div className="life">
-                            {/* Add hearts here */}
+                        <div className={styles.life}>
+                            {this.renderLives()}
                         </div>
-                        <div className="score">
-                            {/* Add score display here */}
+                        <div className={styles.score}>
+                            {this.renderScore()}
                         </div>
                     </div>
                 </div>
             </div>
         );
     }
-
-    renderScore() {
-        const score = this.state.scores[this.state.currentPlayer] || 0;
-        return score.toString().split('').map((digit, i) => (
-            <div key={i} className={`char-${digit}`}></div>
-        ));
-    }
-
-    renderLives() {
-        const health = this.state.players[this.state.currentPlayer]?.health || 100;
-        const hearts = Math.ceil(health / 20); // 5 hearts total
-        return Array(5).fill(0).map((_, i) => (
-            <div key={i} className={`heart ${i < hearts ? 'full' : 'empty'}`}></div>
-        ));
-    }
-    
-    
 }
 
 export const displayShootingGame = () => {
     return <ShootingGame />;
 }
+
+export default ShootingGame;
