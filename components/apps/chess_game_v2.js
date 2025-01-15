@@ -188,7 +188,7 @@ export function ChessGame() {
             <div 
                 className="w-full h-full flex flex-col items-center justify-center p-4 space-y-6"
                 style={{
-                    backgroundImage: "url('./themes/Yaru/chess-bg.png')",
+                    backgroundImage: "url('./themes/Yaru/apps/chess-bg.png')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat'
