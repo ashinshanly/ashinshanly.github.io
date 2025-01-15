@@ -203,16 +203,22 @@ export function ChessGame() {
                     >
                         Play Online vs Bot
                     </button>
-                    <button 
-                        onClick={startOnlineGame}
-                        className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
-                    >
-                        Play Online vs Random Player
-                    </button>
+                    <div className="flex flex-col items-center space-y-4">
+                        <button 
+                            onClick={startOnlineGame}
+                            className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
+                        >
+                            Play Online vs Random Player
+                        </button>
+                        <div className="text-white text-center max-w-md px-4 py-2 bg-gray-800 bg-opacity-75 rounded-lg">
+                            🌍 When you click this button, you'll enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
+
 
 
 
