@@ -3,7 +3,9 @@ import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
+
 //Do this next - Viewer count is not updating correctly. Everytime a piece movement is done, the viewer count is going to zero. Also play with computer and play online game states are not independent.
+
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState('home');
@@ -183,23 +185,32 @@ export function ChessGame() {
 
     if (gameMode === 'home') {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4 space-y-6">
-                <h1 className="text-3xl font-bold text-white mb-4">Chess Game</h1>
+            <div 
+                className="w-full h-full flex flex-col items-center justify-center p-4 space-y-6"
+                style={{
+                    backgroundImage: "url('./themes/Yaru/chess-bg.png')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                }}
+            >
+                <h1 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">Chess Game</h1>
                 <button 
                     onClick={() => setGameMode('computer')}
-                    className="w-64 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    className="w-64 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-lg"
                 >
                     Play Online vs Bot
                 </button>
                 <button 
                     onClick={startOnlineGame}
-                    className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                    className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
                 >
                     Play Online vs Random Player
                 </button>
             </div>
         );
     }
+
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
