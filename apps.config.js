@@ -10,7 +10,7 @@ import { displayTerminalCalc } from './components/apps/calc';
 import { displayDevAdventure } from './components/apps/dev_adventure';
 import { displayChessGame } from './components/apps/chess_game_v2';
 import { displayCodingChallenges } from './components/apps/coding_game';
-import { ShootingGame } from './components/apps/shooting_game';
+import { displayShootingGame } from './components/apps/shooting_game';
 
 const apps = [
     {
@@ -83,7 +83,7 @@ const apps = [
         disabled: false,
         favourite: true,
         desktop_shortcut: true,
-        screen: ShootingGame,
+        screen: displayShootingGame,
     },/*
     {
         id: "dev-adventure",
