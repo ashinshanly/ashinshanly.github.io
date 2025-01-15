@@ -215,12 +215,12 @@ export function ChessGame() {
     
                 {showDescription && (
                     <div className="absolute inset-0 flex items-center justify-center z-20 bg-black bg-opacity-70">
-                        <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md">
-                            <h2 className="text-2xl text-white font-bold mb-4">Welcome to Online Chess!</h2>
+                        <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md text-center">
+                            <h2 className="text-2xl text-white font-bold mb-4">Welcome to Chaos Chess!</h2>
                             <p className="text-white mb-6">
-                                🌍 You're about to enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
+                                You're about to enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
                             </p>
-                            <div className="flex justify-end">
+                            <div className="flex justify-center">
                                 <button 
                                     onClick={() => {
                                         setShowDescription(false);
