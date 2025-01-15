@@ -1,140 +1,157 @@
 import React, { Component } from 'react';
 
 export class ShootingGame extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        // Game constants
+        this.fps = 1000 / 30;
+        this.rotateSpd = 4;
+        this.fireInterval = 300;
+        this.fireSpd = 0.15;
+        this.zombieSpd = 0.025;
+        this.zombieDelay = 2000;
+        this.lifeCount = 3;
+        this.screen = { width: 8, height: 8 };
+        this.center = { x: 4, y: 4 };
+
         this.state = {
-            score: 0
-        };
-        this.canvasRef = React.createRef();
-        this.bullets = [];
-        this.enemies = [];
-        this.player = {
-            x: 0,
-            y: 0,
-            size: 20
+            time: performance.now(),
+            holdLeft: false,
+            holdRight: false,
+            rotation: 0,
+            lastFire: 0,
+            summonSpd: 5000,
+            summonTime: 0,
+            turret: [],
+            fires: [],
+            zombies: [],
+            life: this.lifeCount,
+            score: 0,
+            pause: true,
+            showTitle: true,
+            showTryAgain: false
         };
     }
 
     componentDidMount() {
-        const canvas = this.canvasRef.current;
-        this.ctx = canvas.getContext('2d');
-        this.initGame();
-        this.gameLoop();
-        document.addEventListener('mousemove', this.handleMouseMove);
-        canvas.addEventListener('click', this.handleShoot);
+        window.addEventListener('keydown', this.handleKeyDown);
+        window.addEventListener('keyup', this.handleKeyUp);
+        
+        this.setState({
+            turret: [{
+                x: this.center.x - 0.4,
+                y: this.center.y - 0.4
+            }]
+        });
     }
 
     componentWillUnmount() {
-        document.removeEventListener('mousemove', this.handleMouseMove);
-        this.canvasRef.current.removeEventListener('click', this.handleShoot);
-        cancelAnimationFrame(this.animationFrame);
+        window.removeEventListener('keydown', this.handleKeyDown);
+        window.removeEventListener('keyup', this.handleKeyUp);
+        cancelAnimationFrame(this.gameLoop);
     }
 
-    initGame = () => {
-        this.player.x = this.canvasRef.current.width / 2;
-        this.player.y = this.canvasRef.current.height - 30;
-        
-        // Create initial enemies
-        for (let i = 0; i < 5; i++) {
-            this.enemies.push({
-                x: Math.random() * (this.canvasRef.current.width - 20),
-                y: Math.random() * 200,
-                speed: 2 + Math.random() * 2
-            });
+    handleKeyDown = (evt) => {
+        if (this.state.pause) return;
+
+        if (evt.keyCode === 32) {
+            if (this.state.lastFire === 0 || 
+                (performance.now() - this.state.lastFire > this.fireInterval && 
+                 this.state.fires.length < 2)) {
+                this.setState({ lastFire: performance.now() });
+                this.throwFire();
+            }
+        } else if (evt.keyCode === 37) {
+            this.setState({ holdLeft: true });
+        } else if (evt.keyCode === 39) {
+            this.setState({ holdRight: true });
         }
     }
 
-    handleMouseMove = (e) => {
-        const rect = this.canvasRef.current.getBoundingClientRect();
-        this.player.x = e.clientX - rect.left;
-    }
-
-    handleShoot = () => {
-        this.bullets.push({
-            x: this.player.x,
-            y: this.player.y,
-            speed: 7
-        });
-    }
-
-    updateGame = () => {
-        // Update bullets
-        this.bullets = this.bullets.filter(bullet => {
-            bullet.y -= bullet.speed;
-            return bullet.y > 0;
-        });
-
-        // Update enemies
-        this.enemies = this.enemies.filter(enemy => {
-            enemy.y += enemy.speed;
-            
-            // Check collision with bullets
-            this.bullets.forEach((bullet, bulletIndex) => {
-                if (this.checkCollision(bullet, enemy)) {
-                    this.bullets.splice(bulletIndex, 1);
-                    this.setState(prev => ({ score: prev.score + 10 }));
-                    return false;
+    handleKeyUp = (evt) => {
+        if (evt.keyCode === 32 || evt.keyCode === 13) {
+            if (this.state.showTitle) {
+                if (!this.state.showTryAgain) {
+                    this.setState({ 
+                        showTitle: false,
+                        pause: false 
+                    }, this.animate);
+                } else {
+                    this.restartGame();
                 }
-            });
-
-            if (enemy.y > this.canvasRef.current.height) {
-                enemy.y = 0;
-                enemy.x = Math.random() * (this.canvasRef.current.width - 20);
             }
-            return true;
-        });
+        } else if (evt.keyCode === 37) {
+            this.setState({ holdLeft: false });
+        } else if (evt.keyCode === 39) {
+            this.setState({ holdRight: false });
+        }
     }
 
-    checkCollision = (bullet, enemy) => {
-        return Math.abs(bullet.x - enemy.x) < 20 && Math.abs(bullet.y - enemy.y) < 20;
-    }
+    animate = () => {
+        this.gameLoop = requestAnimationFrame(this.animate);
+        
+        if (this.state.pause) {
+            cancelAnimationFrame(this.gameLoop);
+            return;
+        }
 
-    drawGame = () => {
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
-
-        // Draw player
-        ctx.fillStyle = '#00ff00';
-        ctx.fillRect(this.player.x - 10, this.player.y, 20, 20);
-
-        // Draw bullets
-        ctx.fillStyle = '#ffff00';
-        this.bullets.forEach(bullet => {
-            ctx.fillRect(bullet.x - 2, bullet.y, 4, 10);
-        });
-
-        // Draw enemies
-        ctx.fillStyle = '#ff0000';
-        this.enemies.forEach(enemy => {
-            ctx.fillRect(enemy.x, enemy.y, 20, 20);
-        });
-    }
-
-    gameLoop = () => {
-        this.updateGame();
-        this.drawGame();
-        this.animationFrame = requestAnimationFrame(this.gameLoop);
+        if (performance.now() - this.state.time > this.fps) {
+            this.setState({ time: performance.now() });
+            this.animateRotation();
+            this.animateFire();
+            this.animateZombie();
+            this.summonZombieTrigger();
+        }
     }
 
     render() {
         return (
             <div className="w-full h-full flex flex-col bg-ub-cool-grey text-white select-none">
                 <div className="flex items-center justify-between p-2 bg-ub-warm-grey">
-                    <span>Space Shooter</span>
-                    <span>Score: {this.state.score}</span>
+                    <span>Shooting Game</span>
+                    <span>Game ID: {this.state.gameId}</span>
                 </div>
-                <div className="flex-grow relative">
-                    <canvas 
-                        ref={this.canvasRef}
-                        width={800}
-                        height={600}
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black"
-                    />
+                <div id="example_game">
+                    <div className="screen">
+                        <canvas 
+                            ref={this.canvasRef}
+                            width={800}
+                            height={600}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                        />
+                        <div className="turret">
+                            <div className="gun"></div>
+                            <div className="body"></div>
+                        </div>
+                        <div className="life">
+                            {/* Add hearts here */}
+                        </div>
+                        <div className="score">
+                            {/* Add score display here */}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
+
+    renderScore() {
+        const score = this.state.scores[this.state.currentPlayer] || 0;
+        return score.toString().split('').map((digit, i) => (
+            <div key={i} className={`char-${digit}`}></div>
+        ));
+    }
+
+    renderLives() {
+        const health = this.state.players[this.state.currentPlayer]?.health || 100;
+        const hearts = Math.ceil(health / 20); // 5 hearts total
+        return Array(5).fill(0).map((_, i) => (
+            <div key={i} className={`heart ${i < hearts ? 'full' : 'empty'}`}></div>
+        ));
+    }
+    
+    
 }
 
 export const displayShootingGame = () => {
