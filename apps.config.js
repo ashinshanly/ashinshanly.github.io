@@ -75,7 +75,7 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayChessGame,
-    },/*
+    },
     {
         id: "shooter",
         title: "Shooter",
@@ -84,7 +84,7 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayShootingGame,
-    },
+    },/*
     {
         id: "dev-adventure",
         title: "Minirun - WIP",
