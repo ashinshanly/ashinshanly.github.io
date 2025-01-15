@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../styles/shooting_game.scss'
+import styles from '../../styles/shooting_game.module.scss'
 
 export class ShootingGame extends Component {
     constructor(props) {
