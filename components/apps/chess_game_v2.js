@@ -4,7 +4,7 @@ import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
 import { ref, onValue, set, get } from 'firebase/database';
 
-//Do this next - Viewer count is not updating correctly. Everytime a piece movement is done, the viewer count is going to zero. Also play with computer and play online game states are not independent.
+//To do - Fix live viewer count update. Everytime a piece moves, the viewer count is going to zero.
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
