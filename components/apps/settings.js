@@ -16,12 +16,29 @@ export function Settings(props) {
     let changeBackgroundImage = (e) => {
         props.changeBackgroundImage($(e.target).data("path"));
     }
+    
+    // Render the appropriate preview based on the current bg image
+    const renderPreview = () => {
+        if (props.currBgImgName === "animated") {
+            return (
+                <div className="md:w-2/5 w-2/3 h-1/3 m-auto my-4 bg-gradient-to-r from-indigo-800 via-purple-700 to-blue-800 animate-gradient-x">
+                    <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-white font-bold">Animated Wallpaper</span>
+                    </div>
+                </div>
+            );
+        }
+        return (
+            <div className="md:w-2/5 w-2/3 h-1/3 m-auto my-4" style={{ backgroundImage: `url(${wallpapers[props.currBgImgName]})`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center center" }}>
+            </div>
+        );
+    };
 
     return (
         <div className={"w-full flex-col flex-grow z-20 max-h-full overflow-y-auto windowMainScreen select-none bg-ub-cool-grey"}>
-            <div className=" md:w-2/5 w-2/3 h-1/3 m-auto my-4" style={{ backgroundImage: `url(${wallpapers[props.currBgImgName]})`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center center" }}>
-            </div>
+            {renderPreview()}
             <div className="flex flex-wrap justify-center items-center border-t border-gray-900">
+                {/* Static wallpaper options */}
                 {
                     Object.keys(wallpapers).map((name, index) => {
                         return (
@@ -29,6 +46,36 @@ export function Settings(props) {
                         );
                     })
                 }
+                
+                {/* Animated wallpaper option */}
+                <div 
+                    tabIndex="1" 
+                    onFocus={changeBackgroundImage} 
+                    data-path="animated" 
+                    className={(("animated" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
+                >
+                    {/* Space background */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#141428] to-[#0a0a1e]"></div>
+                    
+                    {/* Static star field effect */}
+                    <div className="star-sm absolute top-1/4 left-1/4 w-1 h-1 rounded-full bg-white opacity-80"></div>
+                    <div className="star-md absolute top-3/4 left-1/3 w-1.5 h-1.5 rounded-full bg-white opacity-90"></div>
+                    <div className="star-md absolute top-1/2 left-2/3 w-1.5 h-1.5 rounded-full bg-white opacity-80"></div>
+                    <div className="star-sm absolute top-1/3 left-3/4 w-1 h-1 rounded-full bg-white opacity-70"></div>
+                    <div className="star-sm absolute top-2/3 left-1/2 w-1 h-1 rounded-full bg-white opacity-90"></div>
+                    <div className="star-lg absolute top-1/5 left-1/2 w-2 h-2 rounded-full bg-white opacity-95 animate-pulse"></div>
+                    <div className="star-sm absolute top-3/5 left-1/5 w-1 h-1 rounded-full bg-white opacity-80"></div>
+                    
+                    {/* Shooting star effect */}
+                    <div className="absolute top-1/4 left-0 w-8 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent transform rotate-45 translate-x-full animate-shooting-star"></div>
+                    
+                    {/* Label */}
+                    <div className="relative flex items-center justify-center h-full w-full">
+                        <span className="text-white text-sm font-semibold px-2 py-1 rounded bg-black bg-opacity-50">
+                            Space Live
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     )

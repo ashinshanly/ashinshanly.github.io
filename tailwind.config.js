@@ -49,7 +49,60 @@ module.exports = {
     extend: {
       zIndex: {
         '-10': '-10',
-      }
+      },
+      animation: {
+        'gradient-x': 'gradient-x 15s ease infinite',
+        'gradient-y': 'gradient-y 15s ease infinite',
+        'gradient-xy': 'gradient-xy 15s ease infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shooting-star': 'shooting-star 2s ease-in-out infinite',
+      },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        },
+        'gradient-y': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'top center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'bottom center'
+          }
+        },
+        'gradient-xy': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left top'
+          },
+          '25%': {
+            'background-position': 'right bottom'
+          },
+          '50%': {
+            'background-position': 'right top'
+          },
+          '75%': {
+            'background-position': 'left bottom'
+          }
+        },
+        'pulse': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' }
+        },
+        'shooting-star': {
+          '0%': { transform: 'translateX(-100%) translateY(-100%) rotate(45deg)', opacity: '0' },
+          '20%': { opacity: '1' },
+          '100%': { transform: 'translateX(200%) translateY(200%) rotate(45deg)', opacity: '0' }
+        }
+      },
     },
   },
   variants: {
