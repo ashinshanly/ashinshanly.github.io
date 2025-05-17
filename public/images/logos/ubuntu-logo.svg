@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <circle cx="256" cy="256" r="256" fill="#E95420"/>
+  <g fill="#FFFFFF">
+    <!-- Friend on left -->
+    <circle cx="160" cy="256" r="40"/>
+    
+    <!-- Friend on right -->
+    <circle cx="352" cy="256" r="40"/>
+    
+    <!-- Friend on top -->
+    <circle cx="256" cy="160" r="40"/>
+    
+    <!-- Main circle -->
+    <circle cx="256" cy="256" r="64" fill="none" stroke="#FFFFFF" stroke-width="16"/>
+    
+    <!-- Lines connecting -->
+    <line x1="256" y1="192" x2="256" y2="224" stroke="#FFFFFF" stroke-width="16"/>
+    <line x1="192" y1="256" x2="224" y2="256" stroke="#FFFFFF" stroke-width="16"/>
+    <line x1="288" y1="256" x2="320" y2="256" stroke="#FFFFFF" stroke-width="16"/>
+  </g>
+</svg>
