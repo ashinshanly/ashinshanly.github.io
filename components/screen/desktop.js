@@ -355,6 +355,16 @@ export class Desktop extends Component {
 
         // if the app is disabled
         if (this.state.disabled_apps[objId]) return;
+        
+        // Find the app in the apps array
+        const appConfig = apps.find(app => app.id === objId);
+        
+        // Check if this is an external URL app
+        if (appConfig && appConfig.type === "external" && appConfig.url) {
+            // Open the external URL in a new tab and return without opening a window
+            window.open(appConfig.url, "_blank");
+            return;
+        }
 
         if (this.state.minimized_windows[objId]) {
             // focus this app's window

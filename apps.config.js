@@ -11,6 +11,7 @@ import { displayDevAdventure } from './components/apps/dev_adventure';
 import { displayChessGame } from './components/apps/chess_game_v2';
 import { displayCodingChallenges } from './components/apps/coding_game';
 import { displayShootingGame } from './components/apps/shooting_game';
+import { displayMusicSync } from './components/apps/musicsync';
 
 const apps = [
     {
@@ -75,6 +76,16 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayChessGame,
+    },
+    {
+        id: "musicsync",
+        title: "MusicSync",
+        icon: './images/logos/apple-touch-icon.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        type: "external",  // Mark as external link
+        url: "https://ashinshanly.github.io/musicsync/",  // Direct URL to open
     },/*
     {
         id: "shooter",
