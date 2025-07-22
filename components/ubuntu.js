@@ -10,7 +10,7 @@ export default class Ubuntu extends Component {
 		super();
 		this.state = {
 			screen_locked: false,
-			bg_image_name: 'animated', // Always use animated wallpaper as default
+			bg_image_name: 'video', // Use video wallpaper as default
 			booting_screen: true,
 			shutDownScreen: false
 		};
@@ -27,12 +27,12 @@ export default class Ubuntu extends Component {
 	};
 
 	getLocalData = () => {
-		// Get Previously selected Background Image or set animated as default
+		// Get Previously selected Background Image or set video as default
 		let bg_image_name = localStorage.getItem('bg-image');
 		
-		// Always set 'animated' as default for new visits or if no wallpaper is stored
+		// Always set 'video' as default for new visits or if no wallpaper is stored
 		if (bg_image_name === null || bg_image_name === undefined) {
-			bg_image_name = 'animated';
+			bg_image_name = 'video';
 			localStorage.setItem('bg-image', bg_image_name);
 		}
 		

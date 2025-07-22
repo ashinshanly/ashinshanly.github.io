@@ -19,11 +19,29 @@ export function Settings(props) {
     
     // Render the appropriate preview based on the current bg image
     const renderPreview = () => {
+        if (props.currBgImgName === "video") {
+            return (
+                <div className="md:w-2/5 w-2/3 h-1/3 m-auto my-4 relative overflow-hidden rounded-lg">
+                    <video 
+                        className="w-full h-full object-cover" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                    >
+                        <source src="/images/wallpapers/black-hole-live-video.mp4" type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white font-bold bg-black bg-opacity-50 px-3 py-1 rounded">Black Hole Live</span>
+                    </div>
+                </div>
+            );
+        }
         if (props.currBgImgName === "animated") {
             return (
                 <div className="md:w-2/5 w-2/3 h-1/3 m-auto my-4 bg-gradient-to-r from-indigo-800 via-purple-700 to-blue-800 animate-gradient-x">
                     <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-white font-bold">Animated Wallpaper</span>
+                        <span className="text-white font-bold">Cosmic Space</span>
                     </div>
                 </div>
             );
@@ -47,6 +65,29 @@ export function Settings(props) {
                     })
                 }
                 
+                {/* Video wallpaper option */}
+                <div 
+                    tabIndex="1" 
+                    onFocus={changeBackgroundImage} 
+                    data-path="video" 
+                    className={(("video" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
+                >
+                    <video 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                    >
+                        <source src="/images/wallpapers/black-hole-live-video.mp4" type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-sm font-semibold px-2 py-1 rounded bg-black bg-opacity-50">
+                            Black Hole Live
+                        </span>
+                    </div>
+                </div>
+
                 {/* Animated wallpaper option */}
                 <div 
                     tabIndex="1" 

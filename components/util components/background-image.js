@@ -1,5 +1,6 @@
 import React from 'react'
 import AnimatedWallpaper from './animated-wallpaper'
+import VideoWallpaper from './video-wallpaper'
 
 export default function BackgroundImage(props) {
     const bg_images = {
@@ -12,7 +13,13 @@ export default function BackgroundImage(props) {
         "wall-7": "./images/wallpapers/wall-7.webp",
         "wall-8": "./images/wallpapers/wall-8.webp",
         "animated": "animated",
+        "video": "video",
     };
+    
+    // Check if the wallpaper is the video one
+    if (props.img === "video") {
+        return <VideoWallpaper />
+    }
     
     // Check if the wallpaper is the animated one
     if (props.img === "animated") {
