@@ -35,54 +35,67 @@ const AnimatedWallpaper = () => {
     window.addEventListener('mousemove', handleMouseMove);
     handleResize();
     
-    // Background colors
+    // Enhanced cosmic background with gradient
     const bgColors = {
-      start: { r: 8, g: 10, b: 30 }, // Deep space blue
-      end: { r: 15, g: 15, b: 40 }    // Slightly lighter blue
+      start: { r: 2, g: 0, b: 25 },   // Deep cosmic purple
+      mid: { r: 8, g: 4, b: 40 },     // Nebula purple
+      end: { r: 15, g: 8, b: 60 }     // Cosmic indigo
     };
     
-    // Nebula effects
+    // Enhanced nebula effects
     const nebulae = [];
-    const nebulaCount = 3; // Number of nebulae
+    const nebulaCount = 5; // More nebulae for richer cosmic atmosphere
     
-    // Define nebula types with different colors
+    // Enhanced cosmic nebula types with more vibrant colors
     const nebulaTypes = [
-      { // Purple-blue nebula
+      { // Cosmic purple nebula
         colors: [
-          { r: 80, g: 50, b: 130, a: 0.03 },  // Purple
-          { r: 50, g: 60, b: 150, a: 0.03 }   // Blue
+          { r: 120, g: 60, b: 180, a: 0.04 },  // Deep purple
+          { r: 80, g: 40, b: 200, a: 0.04 },   // Violet
+          { r: 160, g: 80, b: 220, a: 0.03 }   // Light purple
         ]
       },
-      { // Red-orange nebula
+      { // Galaxy gold nebula
         colors: [
-          { r: 130, g: 50, b: 50, a: 0.025 },  // Red
-          { r: 150, g: 80, b: 50, a: 0.025 }   // Orange
+          { r: 180, g: 140, b: 60, a: 0.035 }, // Gold
+          { r: 200, g: 120, b: 40, a: 0.035 }, // Orange-gold
+          { r: 220, g: 180, b: 100, a: 0.03 }  // Light gold
         ]
       },
-      { // Turquoise nebula
+      { // Cosmic teal nebula
         colors: [
-          { r: 40, g: 140, b: 120, a: 0.02 },  // Turquoise
-          { r: 50, g: 120, b: 160, a: 0.02 }   // Light blue
+          { r: 40, g: 160, b: 140, a: 0.025 }, // Teal
+          { r: 60, g: 180, b: 200, a: 0.025 }, // Cyan
+          { r: 80, g: 200, b: 160, a: 0.02 }   // Light teal
+        ]
+      },
+      { // Magenta cosmic clouds
+        colors: [
+          { r: 180, g: 40, b: 140, a: 0.03 },  // Magenta
+          { r: 200, g: 60, b: 180, a: 0.03 },  // Pink-purple
+          { r: 160, g: 20, b: 120, a: 0.025 }  // Deep magenta
         ]
       }
     ];
     
-    // Create stars
+    // Enhanced star system
     const stars = [];
-    const starCount = 800;
-    const starLayers = 3; // Different layers for parallax effect
+    const starCount = 1200; // More stars for denser cosmic feel
+    const starLayers = 4; // More layers for better depth
     
-    // Define different star types
+    // Enhanced star types with cosmic colors
     const starTypes = [
-      { size: 1.4, speed: 0.4, color: [220, 220, 255], glowSize: 4, glowOpacity: 0.3 }, // Bright blue-white
-      { size: 1.2, speed: 0.3, color: [255, 255, 220], glowSize: 3, glowOpacity: 0.25 }, // Yellow-white
-      { size: 1.0, speed: 0.2, color: [255, 220, 220], glowSize: 2, glowOpacity: 0.2 },  // Red-tinted
-      { size: 0.8, speed: 0.15, color: [200, 200, 255], glowSize: 0, glowOpacity: 0 }    // Small blue (no glow)
+      { size: 1.8, speed: 0.5, color: [180, 220, 255], glowSize: 6, glowOpacity: 0.4 }, // Bright cosmic blue
+      { size: 1.5, speed: 0.4, color: [255, 240, 180], glowSize: 4, glowOpacity: 0.35 }, // Warm stellar yellow
+      { size: 1.2, speed: 0.3, color: [255, 180, 200], glowSize: 3, glowOpacity: 0.3 },  // Pink giant star
+      { size: 1.0, speed: 0.25, color: [200, 255, 220], glowSize: 2, glowOpacity: 0.25 }, // Green star
+      { size: 0.9, speed: 0.2, color: [220, 180, 255], glowSize: 2, glowOpacity: 0.2 },  // Purple star
+      { size: 0.6, speed: 0.15, color: [255, 255, 255], glowSize: 1, glowOpacity: 0.15 } // White dwarf
     ];
     
-    // Create occasional space dust particles
+    // Enhanced cosmic dust particles
     const spaceDust = [];
-    const dustCount = 300;
+    const dustCount = 500; // More cosmic dust for atmosphere
     
     // Create stars
     for (let i = 0; i < starCount; i++) {
@@ -110,14 +123,24 @@ const AnimatedWallpaper = () => {
       });
     }
     
-    // Create space dust
+    // Create enhanced cosmic dust with colors
+    const dustColors = [
+      [200, 200, 255], // Blue-white
+      [255, 200, 220], // Pink
+      [200, 255, 200], // Green
+      [255, 220, 180], // Gold
+      [220, 180, 255]  // Purple
+    ];
+    
     for (let i = 0; i < dustCount; i++) {
+      const colorIndex = Math.floor(Math.random() * dustColors.length);
       spaceDust.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 0.5 + 0.2,
-        opacity: Math.random() * 0.2 + 0.1,
-        speed: Math.random() * 0.05 + 0.05
+        size: Math.random() * 0.6 + 0.2,
+        opacity: Math.random() * 0.3 + 0.1,
+        speed: Math.random() * 0.08 + 0.05,
+        color: dustColors[colorIndex]
       });
     }
     
@@ -172,10 +195,11 @@ const AnimatedWallpaper = () => {
       });
     }
     
-    // Create a gradient for the background
+    // Create an enhanced cosmic gradient background
     const createBackground = () => {
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, `rgba(${bgColors.end.r}, ${bgColors.end.g}, ${bgColors.end.b}, 1)`);
+      gradient.addColorStop(0.5, `rgba(${bgColors.mid.r}, ${bgColors.mid.g}, ${bgColors.mid.b}, 1)`);
       gradient.addColorStop(1, `rgba(${bgColors.start.r}, ${bgColors.start.g}, ${bgColors.start.b}, 1)`);
       return gradient;
     };
@@ -222,7 +246,7 @@ const AnimatedWallpaper = () => {
       });
     };
     
-    // Draw space dust
+    // Draw enhanced cosmic dust
     const drawSpaceDust = () => {
       spaceDust.forEach(dust => {
         // Move dust particles slightly faster than the slowest stars
@@ -234,10 +258,11 @@ const AnimatedWallpaper = () => {
           dust.x = Math.random() * canvas.width;
         }
         
-        // Draw dust particle
+        // Draw cosmic dust particle with its color
+        const [r, g, b] = dust.color;
         ctx.beginPath();
         ctx.arc(dust.x, dust.y, dust.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 200, 255, ${dust.opacity})`;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dust.opacity})`;
         ctx.fill();
       });
     };
