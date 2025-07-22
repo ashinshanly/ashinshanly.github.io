@@ -29,7 +29,7 @@ export default function LockScreen(props) {
                     muted 
                     playsInline
                 >
-                    <source src="/images/wallpapers/black-hole-live-video.mp4" type="video/mp4" />
+                    <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                 </video>
             );
         } else if (props.bgImgName === "animated") {

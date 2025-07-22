@@ -29,7 +29,7 @@ export function Settings(props) {
                         muted 
                         playsInline
                     >
-                        <source src="/images/wallpapers/black-hole-live-video.mp4" type="video/mp4" />
+                        <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                     </video>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-white font-bold bg-black bg-opacity-50 px-3 py-1 rounded">Black Hole Live</span>
@@ -79,7 +79,7 @@ export function Settings(props) {
                         muted 
                         playsInline
                     >
-                        <source src="/images/wallpapers/black-hole-live-video.mp4" type="video/mp4" />
+                        <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                     </video>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-white text-sm font-semibold px-2 py-1 rounded bg-black bg-opacity-50">
