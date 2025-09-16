@@ -156,23 +156,46 @@ function Experience() {
             <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
                 <li className="list-disc">
                     <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+                        Software Engineer III
+                    </div>
+                    <div className=" text-sm text-gray-400 mt-0.5">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
+                    <ul>
+                        <li> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
+                        </li>   
+                    </ul>            
+                </li>
+                <br></br>
+    
+                <li className="list-disc">
+                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
                         Member of Technical Staff (IC2)
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">Oracle India Pvt Ltd &nbsp;&nbsp;(2022-Current)</div>
+                    <div className=" text-sm text-gray-400 mt-0.5">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
                     <ul>
-                        <li>Developed and optimized petabyte-scale ETL pipelines using Apache Spark and OCI services, reducing data processing time by 20% and improving cost efficiency by 15%. Led the development of Spark pipelines in OCI for ingesting and aggregating real-time global customer usage data. Designed a scalable, fault-tolerant architecture processing billions of records daily, providing actionable insights through real-time reporting.
+                        <li> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
                         </li>   
                         <br></br>
-                        <li>Engineered an enterprise-wide Generative AI RAG chatbot utilizing a vector database for high-speed document retrieval and fine-tuned LLMs for precise, context-aware query responses. Streamlined internal operations by automating 60% of manual query handling, improving query resolution accuracy by 30%, and boosting cross-departmental efficiency.
+                        <li> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
                         </li>  
                         <br></br>
-                        <li>Automated Cloud-Native Data Pipelines: Led initiatives to automate cloud-native ETL and data processing pipelines, reducing manual intervention by integrating CI/CD practices, automated testing, and monitoring. This automation led to a 30% reduction in operational overhead and increased system reliability by streamlining end-to-end data processing workflow.
+                        <li> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data
+warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution,
+and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction
+and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly
+integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
                         </li> 
                         <br></br> 
-                        <li> Developed an Instance and Rack Decommissioning Dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
+                        <li> Created an instance and rack decommissioning dashboard that accelerated throughput for decom-
+missioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host,
+and instance levels), optimising data center resource allocation and saving thousands of dollars annually by
+improving operational efficiency and reducing idle resource costs.
                         </li>
                         <br></br> 
-                        <li> Implemented Data Archival and Purging Frameworks: Led the design and implementation of robust data archival and purging systems, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimizing active data sets.
+                        <li> Led the design and implementation of robust data archival and purging frameworks, automating the
+identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while
+purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term
+storage costs and enhanced overall database performance by optimising active data sets. Collaborated with
+cross-functional teams to streamline data governance and ensure audit readiness.
                         </li>
                     </ul>            
                 </li>
