@@ -12,6 +12,8 @@ import { displayChessGame } from './components/apps/chess_game_v2';
 import { displayCodingChallenges } from './components/apps/coding_game';
 import { displayShootingGame } from './components/apps/shooting_game';
 import { displayMusicSync } from './components/apps/musicsync';
+import { VisitorStats } from './components/apps/visitor_stats';
+import { VisitorIcon } from './components/util components/visitor_icon';
 
 const apps = [
     {
@@ -131,6 +133,16 @@ const apps = [
         favourite: false,
         desktop_shortcut: true,
         screen: displayTrash,
+    },
+    {
+        id: "visitor-stats",
+        title: "Visitor Stats",
+        icon: './themes/Yaru/apps/illuminati.png',
+        custom_icon: VisitorIcon,
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: () => <VisitorStats />,
     },
     {
         id: "gedit",

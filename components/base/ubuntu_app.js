@@ -14,9 +14,14 @@ export class UbuntuApp extends Component {
                 onDoubleClick={this.openApp}
                 tabIndex={0}
             >
-                <img width="40px" height="40px" className="mb-1 w-10" src={this.props.icon} alt={"Ubuntu " + this.props.name} />
-                {this.props.name}
-
+                {this.props.custom_icon ? (
+                    <this.props.custom_icon />
+                ) : (
+                    <>
+                        <img width="40px" height="40px" className="mb-1 w-10" src={this.props.icon} alt={"Ubuntu " + this.props.name} />
+                        {this.props.name}
+                    </>
+                )}
             </div>
         )
     }

@@ -240,6 +240,7 @@ export class Desktop extends Component {
                     name: app.title,
                     id: app.id,
                     icon: app.icon,
+                    custom_icon: app.custom_icon,
                     openApp: this.openApp
                 }
 
@@ -355,10 +356,10 @@ export class Desktop extends Component {
 
         // if the app is disabled
         if (this.state.disabled_apps[objId]) return;
-        
+
         // Find the app in the apps array
         const appConfig = apps.find(app => app.id === objId);
-        
+
         // Check if this is an external URL app
         if (appConfig && appConfig.type === "external" && appConfig.url) {
             // Open the external URL in a new tab and return without opening a window
@@ -542,7 +543,7 @@ export class Desktop extends Component {
                     )
                 }
 
-                { this.state.allAppsView ?
+                {this.state.allAppsView ?
                     <AllApplications apps={apps}
                         recentApps={this.app_stack}
                         openApp={this.openApp} /> : null}

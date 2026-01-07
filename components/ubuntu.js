@@ -4,6 +4,9 @@ import Desktop from './screen/desktop';
 import LockScreen from './screen/lock_screen';
 import Navbar from './screen/navbar';
 import ReactGA from 'react-ga4';
+import { db } from '../config/firebase';
+import { ref, onValue, set, onDisconnect, increment } from 'firebase/database';
+import { runTransaction } from 'firebase/database';
 
 export default class Ubuntu extends Component {
 	constructor() {
@@ -18,7 +21,59 @@ export default class Ubuntu extends Component {
 
 	componentDidMount() {
 		this.getLocalData();
+		this.trackVisitors();
 	}
+
+	componentWillUnmount() {
+		if (this.presenceRef) {
+			set(this.presenceRef, null).catch(err => console.error("Cleanup set failed:", err));
+		}
+		if (this.heartbeatInterval) {
+			clearInterval(this.heartbeatInterval);
+		}
+	}
+
+	trackVisitors = () => {
+		// 1. Session tracking for Total Visitors
+		const visitorCounted = sessionStorage.getItem('visitor_counted');
+		if (!visitorCounted) {
+			const totalVisitorsRef = ref(db, 'site_stats/total_visitors');
+			runTransaction(totalVisitorsRef, (currentValue) => {
+				return (currentValue || 0) + 1;
+			}).catch(err => console.error("Total Visitors transaction failed:", err));
+			sessionStorage.setItem('visitor_counted', 'true');
+		}
+
+		// 2. Presence tracking for Live Viewers
+		// Use sessionStorage to keep the same sessionId across reloads but unique to the tab
+		let sessionId = sessionStorage.getItem('session_id');
+		if (!sessionId) {
+			sessionId = Math.random().toString(36).substring(2, 11);
+			sessionStorage.setItem('session_id', sessionId);
+		}
+
+		this.presenceRef = ref(db, `site_stats/live_viewers/${sessionId}`);
+
+		const updatePresence = () => {
+			const sessionData = {
+				timestamp: Date.now(),
+				browser: navigator.userAgent.split(' ')[0],
+				platform: navigator.platform,
+				joinedAt: this.joinedAt || new Date().toLocaleTimeString(),
+				isLive: true
+			};
+			if (!this.joinedAt) this.joinedAt = sessionData.joinedAt;
+
+			set(this.presenceRef, sessionData).catch(err => console.error("Presence update failed:", err));
+		};
+
+		// Initial set
+		updatePresence();
+		onDisconnect(this.presenceRef).remove().catch(err => console.error("onDisconnect failed:", err));
+
+		// Heartbeat every 60 seconds to keep session alive and update timestamp
+		this.heartbeatInterval = setInterval(updatePresence, 60000);
+	};
 
 	setTimeOutBootScreen = () => {
 		setTimeout(() => {
@@ -29,13 +84,13 @@ export default class Ubuntu extends Component {
 	getLocalData = () => {
 		// Get Previously selected Background Image or set video as default
 		let bg_image_name = localStorage.getItem('bg-image');
-		
+
 		// Always set 'video' as default for new visits or if no wallpaper is stored
 		if (bg_image_name === null || bg_image_name === undefined) {
 			bg_image_name = 'video';
 			localStorage.setItem('bg-image', bg_image_name);
 		}
-		
+
 		// Set the wallpaper from local storage
 		this.setState({ bg_image_name });
 

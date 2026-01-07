@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Clock from '../util components/clock';
 import Status from '../util components/status';
 import StatusCard from '../util components/status_card';
+import LiveCount from '../util components/live_count';
 
 export default class Navbar extends Component {
 	constructor() {
@@ -14,13 +15,18 @@ export default class Navbar extends Component {
 	render() {
 		return (
 			<div className="main-navbar-vp absolute top-0 right-0 w-screen shadow-md flex flex-nowrap justify-between items-center bg-ub-grey text-ubt-grey text-sm select-none z-50">
-				<div
-					tabIndex="0"
-					className={
-						'pl-3 pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
-					}
-				>
-					Activities
+				<div className="flex items-center">
+					<div
+						tabIndex="0"
+						className={
+							'pl-3 pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
+						}
+					>
+						Activities
+					</div>
+					<div className="ml-1">
+						<LiveCount />
+					</div>
 				</div>
 				<div
 					tabIndex="0"
