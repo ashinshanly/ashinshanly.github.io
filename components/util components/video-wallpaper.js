@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const VideoWallpaper = ({ videoSrc = "/images/wallpapers/earth.mp4" }) => {
+const VideoWallpaper = ({ videoSrc = "/images/wallpapers/live.mp4" }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
