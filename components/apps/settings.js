@@ -16,23 +16,23 @@ export function Settings(props) {
     let changeBackgroundImage = (e) => {
         props.changeBackgroundImage($(e.target).data("path"));
     }
-    
+
     // Render the appropriate preview based on the current bg image
     const renderPreview = () => {
         if (props.currBgImgName === "video") {
             return (
                 <div className="md:w-2/5 w-2/3 h-1/3 m-auto my-4 relative overflow-hidden rounded-lg">
-                    <video 
-                        className="w-full h-full object-cover" 
-                        autoPlay 
-                        loop 
-                        muted 
+                    <video
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
                         playsInline
                     >
                         <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                     </video>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white font-bold bg-black bg-opacity-50 px-3 py-1 rounded">Black Hole Live</span>
+                        <span className="text-white font-bold bg-black bg-opacity-50 px-3 py-1 rounded">Live Wallpaper</span>
                     </div>
                 </div>
             );
@@ -64,40 +64,40 @@ export function Settings(props) {
                         );
                     })
                 }
-                
+
                 {/* Video wallpaper option */}
-                <div 
-                    tabIndex="1" 
-                    onFocus={changeBackgroundImage} 
-                    data-path="video" 
+                <div
+                    tabIndex="1"
+                    onFocus={changeBackgroundImage}
+                    data-path="video"
                     className={(("video" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
                 >
-                    <video 
-                        className="absolute inset-0 w-full h-full object-cover" 
-                        autoPlay 
-                        loop 
-                        muted 
+                    <video
+                        className="absolute inset-0 w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
                         playsInline
                     >
                         <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                     </video>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-white text-sm font-semibold px-2 py-1 rounded bg-black bg-opacity-50">
-                            Black Hole Live
+                            Live Wallpaper
                         </span>
                     </div>
                 </div>
 
                 {/* Animated wallpaper option */}
-                <div 
-                    tabIndex="1" 
-                    onFocus={changeBackgroundImage} 
-                    data-path="animated" 
+                <div
+                    tabIndex="1"
+                    onFocus={changeBackgroundImage}
+                    data-path="animated"
                     className={(("animated" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
                 >
                     {/* Space background */}
                     <div className="absolute inset-0 bg-gradient-to-b from-[#141428] to-[#0a0a1e]"></div>
-                    
+
                     {/* Static star field effect */}
                     <div className="star-sm absolute top-1/4 left-1/4 w-1 h-1 rounded-full bg-white opacity-80"></div>
                     <div className="star-md absolute top-3/4 left-1/3 w-1.5 h-1.5 rounded-full bg-white opacity-90"></div>
@@ -106,10 +106,10 @@ export function Settings(props) {
                     <div className="star-sm absolute top-2/3 left-1/2 w-1 h-1 rounded-full bg-white opacity-90"></div>
                     <div className="star-lg absolute top-1/5 left-1/2 w-2 h-2 rounded-full bg-white opacity-95 animate-pulse"></div>
                     <div className="star-sm absolute top-3/5 left-1/5 w-1 h-1 rounded-full bg-white opacity-80"></div>
-                    
+
                     {/* Shooting star effect */}
                     <div className="absolute top-1/4 left-0 w-8 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent transform rotate-45 translate-x-full animate-shooting-star"></div>
-                    
+
                     {/* Label */}
                     <div className="relative flex items-center justify-center h-full w-full">
                         <span className="text-white text-sm font-semibold px-2 py-1 rounded bg-black bg-opacity-50">
