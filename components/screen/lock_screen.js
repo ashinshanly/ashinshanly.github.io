@@ -22,14 +22,14 @@ export default function LockScreen(props) {
     const renderBackground = () => {
         if (props.bgImgName === "video") {
             return (
-                <video
+                <video 
                     className="absolute top-0 left-0 w-full h-full object-cover z-20 blur-md"
-                    autoPlay
-                    loop
-                    muted
+                    autoPlay 
+                    loop 
+                    muted 
                     playsInline
                 >
-                    <source src="/images/wallpapers/earth.mp4" type="video/mp4" />
+                    <source src="/images/wallpapers/nebula-live-video.mp4" type="video/mp4" />
                 </video>
             );
         } else if (props.bgImgName === "animated") {
