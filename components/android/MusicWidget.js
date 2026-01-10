@@ -62,7 +62,7 @@ export default function MusicWidget() {
     };
 
     return (
-        <div className="mx-4 mb-4 p-4 bg-[#2D2D30]/80 backdrop-blur-xl rounded-3xl border border-white/5 flex gap-4 items-center">
+        <div className="mx-4 mb-4 p-4 glass-card rounded-3xl flex gap-4 items-center">
             <audio
                 ref={audioRef}
                 src={audioUrl}

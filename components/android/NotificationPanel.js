@@ -84,7 +84,7 @@ export default function NotificationPanel({ isOpen, onClose, notifications = [],
             {/* Panel */}
             <div
                 className={`
-                    absolute top-0 left-0 right-0 bg-[#1C1B1F]/95 backdrop-blur-xl
+                    absolute top-0 left-0 right-0 glass-panel
                     rounded-b-3xl shadow-2xl overflow-hidden
                     transition-transform duration-300 ease-out
                     ${isOpen ? 'translate-y-0' : '-translate-y-full'}
@@ -156,7 +156,7 @@ export default function NotificationPanel({ isOpen, onClose, notifications = [],
                     {allNotifications.map((notification) => (
                         <div
                             key={notification.id}
-                            className="mx-3 mb-2 p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors active:scale-[0.98] duration-200 cursor-pointer"
+                            className="mx-3 mb-2 p-3 glass-card rounded-2xl hover:bg-white/10 transition-colors active:scale-[0.98] duration-200 cursor-pointer"
                             onClick={() => {
                                 if (notification.action) {
                                     notification.action();
