@@ -26,17 +26,30 @@ export default function SideBar(props) {
 
     return (
         <>
-            <div className={(props.hide ? " -translate-x-full " : "") + " absolute transform duration-300 select-none z-40 left-0 top-0 h-full pt-7 w-auto flex flex-col justify-start items-center border-black border-opacity-60 bg-black bg-opacity-50"}>
-                {
-                    (
-                        Object.keys(props.closed_windows).length !== 0
-                            ? renderApps(props)
-                            : null
-                    )
-                }
+            {/* Desktop: Left sidebar | Mobile: Bottom dock */}
+            <div className={
+                (props.hide ? " md:-translate-x-full -translate-y-full md:translate-y-0 " : "") +
+                " absolute transform duration-300 select-none z-40 " +
+                // Mobile: bottom dock
+                " bottom-0 left-0 w-full h-auto flex-row pb-1 pt-1 " +
+                // Desktop: left sidebar  
+                " md:left-0 md:top-0 md:bottom-auto md:h-full md:w-auto md:flex-col md:pt-7 md:pb-0 " +
+                " flex justify-start items-center border-black border-opacity-60 bg-black bg-opacity-50"
+            }>
+                {/* Apps container - horizontal scroll on mobile */}
+                <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible overflow-y-visible md:overflow-y-auto flex-grow scrollbar-hide">
+                    {
+                        (
+                            Object.keys(props.closed_windows).length !== 0
+                                ? renderApps(props)
+                                : null
+                        )
+                    }
+                </div>
                 <AllApps showApps={props.showAllApps} />
             </div>
-            <div onMouseEnter={showSideBar} onMouseLeave={hideSideBar} className={"w-1 h-full absolute top-0 left-0 bg-transparent z-50"}></div>
+            {/* Hover area for showing sidebar - desktop only */}
+            <div onMouseEnter={showSideBar} onMouseLeave={hideSideBar} className={"hidden md:block w-1 h-full absolute top-0 left-0 bg-transparent z-50"}></div>
         </>
     )
 }
@@ -47,7 +60,7 @@ export function AllApps(props) {
 
     return (
         <div
-            className={`w-10 h-10 rounded m-1 hover:bg-white hover:bg-opacity-10 flex items-center justify-center`}
+            className={`w-10 h-10 md:w-10 md:h-10 rounded m-1 hover:bg-white hover:bg-opacity-10 flex items-center justify-center flex-shrink-0`}
             style={{ marginTop: 'auto' }}
             onMouseEnter={() => {
                 setTitle(true);
@@ -62,7 +75,7 @@ export function AllApps(props) {
                 <div
                     className={
                         (title ? " visible " : " invisible ") +
-                        " w-max py-0.5 px-1.5 absolute top-1 left-full ml-5 text-ubt-grey text-opacity-90 text-sm bg-ub-grey bg-opacity-70 border-gray-400 border border-opacity-40 rounded-md"
+                        " w-max py-0.5 px-1.5 absolute hidden md:block top-1 left-full ml-5 text-ubt-grey text-opacity-90 text-sm bg-ub-grey bg-opacity-70 border-gray-400 border border-opacity-40 rounded-md"
                     }
                 >
                     Show Applications

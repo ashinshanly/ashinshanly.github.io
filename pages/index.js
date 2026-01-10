@@ -1,4 +1,4 @@
-import Ubuntu from "../components/ubuntu";
+import AndroidWrapper from "../components/android/AndroidWrapper";
 import ReactGA from 'react-ga4';
 import Meta from "../components/SEO/Meta";
 
@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <Meta />
-      <Ubuntu />
+      <AndroidWrapper />
     </>
   )
 }

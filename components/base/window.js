@@ -10,6 +10,7 @@ export class Window extends Component {
         this.id = null;
         this.startX = 60;
         this.startY = 10;
+        this.isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
         this.state = {
             cursorType: "cursor-default",
             width: 60,
@@ -32,6 +33,11 @@ export class Window extends Component {
 
         // on window resize, resize boundary
         window.addEventListener('resize', this.resizeBoundries);
+
+        // Auto-maximize on mobile for better UX
+        if (this.isMobile) {
+            setTimeout(() => this.maximizeWindow(), 100);
+        }
     }
 
     componentWillUnmount() {
@@ -41,8 +47,10 @@ export class Window extends Component {
     }
 
     setDefaultWindowDimenstion = () => {
-        if (window.innerWidth < 640) {
-            this.setState({ height: 60, width: 85 }, this.resizeBoundries);
+        this.isMobile = window.innerWidth < 640;
+        if (this.isMobile) {
+            // On mobile, start maximized
+            this.setState({ height: 96.3, width: 100.2, maximized: true }, this.resizeBoundries);
         }
         else {
             this.setState({ height: 85, width: 60 }, this.resizeBoundries);
@@ -166,11 +174,12 @@ export class Window extends Component {
                 handle=".bg-ub-window-title"
                 grid={[1, 1]}
                 scale={1}
+                disabled={this.isMobile}
                 onStart={this.changeCursorToMove}
                 onStop={this.changeCursorToDefault}
                 onDrag={this.checkOverlap}
                 allowAnyClick={false}
-                defaultPosition={{ x: this.startX, y: this.startY }}
+                defaultPosition={{ x: this.isMobile ? 0 : this.startX, y: this.isMobile ? 0 : this.startY }}
                 bounds={{ left: 0, top: 0, right: this.state.parentSize.width, bottom: this.state.parentSize.height }}
             >
                 <div style={{ width: `${this.state.width}%`, height: `${this.state.height}%` }}
@@ -212,7 +221,7 @@ export class WindowYBorder extends Component {
     }
     render() {
         return (
-            <div className=" window-y-border border-transparent border-1 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onDragStart={(e) => { e.dataTransfer.setDragImage(this.trpImg, 0, 0) }} onDrag={this.props.resize}>
+            <div className="hidden md:block window-y-border border-transparent border-1 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onDragStart={(e) => { e.dataTransfer.setDragImage(this.trpImg, 0, 0) }} onDrag={this.props.resize}>
             </div>
         )
     }
@@ -226,7 +235,7 @@ export class WindowXBorder extends Component {
     }
     render() {
         return (
-            <div className=" window-x-border border-transparent border-1 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onDragStart={(e) => { e.dataTransfer.setDragImage(this.trpImg, 0, 0) }} onDrag={this.props.resize}>
+            <div className="hidden md:block window-x-border border-transparent border-1 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onDragStart={(e) => { e.dataTransfer.setDragImage(this.trpImg, 0, 0) }} onDrag={this.props.resize}>
             </div>
         )
     }

@@ -228,3 +228,42 @@ input[type=range].ubuntu-slider::-webkit-slider-thumb {
 .animate-bounce-short {
     animation: bounce-short 2s ease-in-out infinite;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 639px) {
+    /* Hide scrollbars on mobile for cleaner look */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    /* Improve touch targets */
+    button, [role="button"], a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Adjust window main screen for bottom dock */
+    .windowMainScreen {
+        padding-bottom: 60px;
+    }
+    
+    /* Ensure proper viewport height accounting for mobile browser chrome */
+    .window-parent {
+        height: 100vh;
+        height: 100dvh;
+    }
+}
+
+/* Scrollbar hide utility class for all screens */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+

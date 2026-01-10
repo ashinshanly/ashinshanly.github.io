@@ -19,10 +19,11 @@ export default class Navbar extends Component {
 					<div
 						tabIndex="0"
 						className={
-							'pl-3 pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
+							'pl-2 pr-2 md:pl-3 md:pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
 						}
 					>
-						Activities
+						<span className="hidden sm:inline">Activities</span>
+						<span className="sm:hidden">☰</span>
 					</div>
 					<div className="ml-1">
 						<LiveCount />
@@ -44,7 +45,7 @@ export default class Navbar extends Component {
 					}}
 					// removed onBlur from here
 					className={
-						'relative pr-3 pl-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
+						'relative pr-2 pl-2 md:pr-3 md:pl-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
 					}
 				>
 					<Status />
