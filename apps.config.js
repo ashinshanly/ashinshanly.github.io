@@ -34,15 +34,7 @@ const apps = [
         desktop_shortcut: false,
         screen: displayTerminalCalc,
     },
-    {
-        id: "about-ashin",
-        title: "About Ashin",
-        icon: './themes/Yaru/system/user-home.png',
-        disabled: false,
-        favourite: true,
-        desktop_shortcut: true,
-        screen: displayAboutAshin,
-    },
+
     {
         id: "vscode",
         title: "Visual Studio Code",
@@ -60,6 +52,25 @@ const apps = [
         favourite: true,
         desktop_shortcut: false,
         screen: displayTerminal,
+    },
+    {
+        id: "visitor-stats",
+        title: "Visitor Stats",
+        icon: './themes/Yaru/apps/illuminati.png',
+        custom_icon: VisitorIcon,
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: () => <VisitorStats />,
+    },
+    {
+        id: "about-ashin",
+        title: "About Ashin",
+        icon: './themes/Yaru/system/user-home.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayAboutAshin,
     },
     {
         id: "spotify",
@@ -134,16 +145,7 @@ const apps = [
         desktop_shortcut: true,
         screen: displayTrash,
     },
-    {
-        id: "visitor-stats",
-        title: "Visitor Stats",
-        icon: './themes/Yaru/apps/illuminati.png',
-        custom_icon: VisitorIcon,
-        disabled: false,
-        favourite: true,
-        desktop_shortcut: true,
-        screen: () => <VisitorStats />,
-    },
+
     {
         id: "gedit",
         title: "Contact Me",

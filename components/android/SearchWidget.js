@@ -45,23 +45,7 @@ export default function SearchWidget({ onSearch }) {
                 className="flex-grow bg-transparent text-white placeholder-white/50 outline-none text-base"
             />
 
-            {/* Mic icon */}
-            <button type="button" className="w-6 h-6 flex items-center justify-center">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" fill="#EA4335" />
-                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" fill="#4285F4" />
-                </svg>
-            </button>
 
-            {/* Lens icon */}
-            <button type="button" className="w-6 h-6 flex items-center justify-center">
-                <svg className="w-5 h-5" viewBox="0 0 192 192" fill="none">
-                    <rect x="42" y="42" width="40" height="40" rx="10" fill="#4285F4" />
-                    <rect x="110" y="42" width="40" height="40" rx="20" fill="#EA4335" />
-                    <rect x="42" y="110" width="40" height="40" rx="10" fill="#34A853" />
-                    <rect x="110" y="110" width="40" height="40" rx="10" fill="#FBBC05" />
-                </svg>
-            </button>
         </form>
     );
 }

@@ -50,7 +50,7 @@ export default function AndroidHome() {
 
     // Filter apps based on hidden state (simulated uninstall)
     const activeApps = apps.filter(app => !hiddenApps.includes(app.id));
-    const homeApps = activeApps.filter(app => app.favourite).slice(0, 8);
+    const homeApps = activeApps.filter(app => app.favourite).slice(4, 12);
     const dockApps = activeApps.filter(app => app.favourite).slice(0, 4);
 
     const handleUninstall = (appId) => {
