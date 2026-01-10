@@ -58,7 +58,7 @@ export default function NotificationPanel({ isOpen, onClose, notifications = [],
             message: 'Let\'s connect!',
             time: '5m ago',
             color: '#0A66C2',
-            action: () => window.open('https://www.linkedin.com/in/ashin-shanly/', '_blank')
+            action: () => window.open('https://www.linkedin.com/in/ashinshanly/', '_blank')
         }
     ];
 
