@@ -99,6 +99,16 @@ const apps = [
         desktop_shortcut: true,
         type: "external",  // Mark as external link
         url: "https://ashinshanly.github.io/musicsync/",  // Direct URL to open
+    },
+    {
+        id: "chainreaction",
+        title: "Chain Reaction",
+        icon: './themes/Yaru/apps/chain-reaction.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        type: "external",
+        url: "https://ashinshanly.github.io/chainreaction/",
     },/*
     {
         id: "shooter",
