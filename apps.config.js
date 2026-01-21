@@ -109,6 +109,16 @@ const apps = [
         desktop_shortcut: true,
         type: "external",
         url: "https://ashinshanly.github.io/chainreaction/",
+    },
+    {
+        id: "secretmaze",
+        title: "Secret Maze",
+        icon: './themes/Yaru/apps/secret-maze.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        type: "external",
+        url: "https://ashinshanly.github.io/darkmaze/",
     },/*
     {
         id: "shooter",
