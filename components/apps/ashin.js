@@ -132,9 +132,9 @@ function About() {
                 <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-0"></div>
             </div>
             <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
-                <li className=" list-pc">I'm a <span className=" font-medium">Software Engineer</span> proficient in cloud computing (OCI, GCP), machine learning, and data engineering, with a focus on creating scalable, high-performance
-solutions. I'm seeking opportunities to apply my skills and contribute to transformative projects in cutting-edge technology environments! <br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
-                <li className=" mt-3 list-building"> I enjoy building awesome software that solves practical problems.</li>
+                <li className=" list-pc">I'm a <span className=" font-medium">Software Engineer</span> proficient in distributed computing, deep neural networks, and data engineering, with a focus on creating scalable, high-performance
+solutions.<br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
+                <li className=" mt-3 list-building"> I enjoy building cool things.</li>
                 <li className=" mt-3 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
                 <li className=" mt-3 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
                 <li className=" mt-3 list-star"> Here are my <u><a href="https://www.github.com/ashinshanly" target="_blank" rel="noreferrer">GitHub</a></u> and <u><a href="https://www.linkedin.com/in/ashinshanly/" target="_blank" rel="noreferrer">LinkedIn</a></u> profiles</li>
