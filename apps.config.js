@@ -12,6 +12,7 @@ import { displayChessGame } from './components/apps/chess_game_v2';
 import { displayCodingChallenges } from './components/apps/coding_game';
 import { displayShootingGame } from './components/apps/shooting_game';
 import { displayMusicSync } from './components/apps/musicsync';
+import { displayPrismFlow } from './components/apps/prism_flow';
 import { VisitorStats } from './components/apps/visitor_stats';
 import { VisitorIcon } from './components/util components/visitor_icon';
 
@@ -119,6 +120,15 @@ const apps = [
         desktop_shortcut: true,
         type: "external",
         url: "https://ashinshanly.github.io/darkmaze/",
+    },
+    {
+        id: "prism-flow",
+        title: "Prism Flow",
+        icon: './themes/Yaru/apps/prism-flow.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayPrismFlow,
     },/*
     {
         id: "shooter",
