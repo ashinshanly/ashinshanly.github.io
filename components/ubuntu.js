@@ -13,7 +13,8 @@ export default class Ubuntu extends Component {
 			screen_locked: false,
 			bg_image_name: 'video', // Use video wallpaper as default
 			booting_screen: true,
-			shutDownScreen: false
+			shutDownScreen: false,
+			night_light: false,
 		};
 	}
 
@@ -64,6 +65,12 @@ export default class Ubuntu extends Component {
 			if (screen_locked !== null && screen_locked !== undefined) {
 				this.setState({ screen_locked: screen_locked === 'true' ? true : false });
 			}
+		}
+
+		// get night light state
+		let night_light = localStorage.getItem('night_light');
+		if (night_light !== null && night_light !== undefined) {
+			this.setState({ night_light: night_light === 'true' ? true : false });
 		}
 	};
 
@@ -118,6 +125,12 @@ export default class Ubuntu extends Component {
 		localStorage.setItem('shut-down', false);
 	};
 
+	toggleNightLight = () => {
+		this.setState({ night_light: !this.state.night_light }, () => {
+			localStorage.setItem('night_light', this.state.night_light);
+		});
+	};
+
 	render() {
 		return (
 			<div className="w-screen h-screen overflow-hidden" id="monitor-screen">
@@ -131,7 +144,7 @@ export default class Ubuntu extends Component {
 					isShutDown={this.state.shutDownScreen}
 					turnOn={this.turnOn}
 				/>
-				<Navbar lockScreen={this.lockScreen} shutDown={this.shutDown} />
+				<Navbar lockScreen={this.lockScreen} shutDown={this.shutDown} nightLight={this.state.night_light} toggleNightLight={this.toggleNightLight} />
 				<Desktop bg_image_name={this.state.bg_image_name} changeBackgroundImage={this.changeBackgroundImage} />
 			</div>
 		);

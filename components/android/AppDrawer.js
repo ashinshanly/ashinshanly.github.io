@@ -60,12 +60,16 @@ export default function AppDrawer({ isOpen, onClose, apps, onOpenApp }) {
                 ))}
             </div>
 
-            {/* Close handle */}
-            <div
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-                onClick={onClose}
-            >
-                <div className="w-10 h-1 bg-white/30 rounded-full"></div>
+            {/* Close Button */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                <button
+                    onClick={onClose}
+                    className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/20 active:scale-95 transition-all"
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
     );

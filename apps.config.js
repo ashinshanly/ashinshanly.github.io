@@ -16,6 +16,7 @@ import { displayPrismFlow } from './components/apps/prism_flow';
 import { VisitorStats } from './components/apps/visitor_stats';
 import { VisitorIcon } from './components/util components/visitor_icon';
 
+
 const apps = [
     {
         id: "chrome",
@@ -185,6 +186,7 @@ const apps = [
         desktop_shortcut: true,
         screen: displayGedit,
     },
+
 ]
 
 export default apps;

@@ -498,6 +498,11 @@
     transform: translateX(0);
 }
 
+.android-app-window.closing {
+    animation: app-close 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    transform: translateX(0);
+}
+
 /* Notification panel specific */
 .notification-card {
     animation: slide-in 0.2s ease-out;

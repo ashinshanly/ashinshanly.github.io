@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-export default function AndroidApp({ app, onClose, onOpenApp }) {
+export default function AndroidApp({ app, onClose, onOpenApp, closing }) {
     const touchStartX = useRef(0);
 
     // Handle back gesture (swipe from left edge)
@@ -40,7 +40,7 @@ export default function AndroidApp({ app, onClose, onOpenApp }) {
 
     return (
         <div
-            className="android-app-window open"
+            className={`android-app-window ${closing ? 'closing' : 'open'}`}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >

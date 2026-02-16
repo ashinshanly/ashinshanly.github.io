@@ -170,6 +170,70 @@ export class Terminal extends Component {
         return files;
     }
 
+    startMatrix = () => {
+        const terminal = document.getElementById('terminal-body');
+        const canvas = document.createElement('canvas');
+        canvas.id = 'matrix-canvas';
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '10';
+        terminal.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        canvas.width = terminal.clientWidth;
+        canvas.height = terminal.clientHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        const interval = setInterval(draw, 30);
+
+        const stopMatrix = () => {
+            clearInterval(interval);
+            canvas.remove();
+            this.reStartTerminal();
+            window.removeEventListener('keydown', stopMatrix);
+            window.removeEventListener('click', stopMatrix);
+        };
+
+        // Timeout to avoid immediate closing if key was 'Enter' from command
+        setTimeout(() => {
+            window.addEventListener('keydown', stopMatrix);
+            window.addEventListener('click', stopMatrix);
+        }, 500);
+    }
+
     closeTerminal = () => {
         $("#close-terminal").trigger('click');
     }
@@ -312,6 +376,9 @@ export class Terminal extends Component {
                 return;
             case "exit":
                 this.closeTerminal();
+                return;
+            case "matrix":
+                this.startMatrix();
                 return;
             case "sudo":
 

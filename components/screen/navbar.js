@@ -57,6 +57,8 @@ export default class Navbar extends Component {
 							// this prop is used in statusCard component in handleClickOutside callback using react-onclickoutside
 							this.setState({ status_card: false });
 						}}
+						nightLight={this.props.nightLight}
+						toggleNightLight={this.props.toggleNightLight}
 					/>
 				</div>
 			</div>

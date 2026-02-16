@@ -36,16 +36,25 @@ export class StatusCard extends Component {
 			sound_level: localStorage.getItem('sound-level') || 75,
 			brightness_level: localStorage.getItem('brightness-level') || 100
 		}, () => {
-			document.getElementById('monitor-screen').style.filter = `brightness(${3 / 400 * this.state.brightness_level +
-				0.25})`;
+			this.applyFilter();
 		})
 	}
 
+	componentDidUpdate(prevProps) {
+		if (prevProps.nightLight !== this.props.nightLight) {
+			this.applyFilter();
+		}
+	}
+
+	applyFilter = () => {
+		const brightness = 3 / 400 * this.state.brightness_level + 0.25;
+		const nightLight = this.props.nightLight ? ' sepia(40%) hue-rotate(-50deg)' : '';
+		document.getElementById('monitor-screen').style.filter = `brightness(${brightness})${nightLight}`;
+	}
+
 	handleBrightness = (e) => {
-		this.setState({ brightness_level: e.target.value });
+		this.setState({ brightness_level: e.target.value }, this.applyFilter);
 		localStorage.setItem('brightness-level', e.target.value);
-		// the function below inside brightness() is derived from a linear equation such that at 0 value of slider brightness still remains 0.25 so that it doesn't turn black.
-		document.getElementById('monitor-screen').style.filter = `brightness(${3 / 400 * e.target.value + 0.25})`; // Using css filter to adjust the brightness in the root div.
 	};
 
 	handleSound = (e) => {
@@ -117,6 +126,20 @@ export class StatusCard extends Component {
 						<SmallArrow angle="right" />
 					</div>
 				</div>
+				<div className="w-64 flex content-center justify-center">
+					<div className="w-2/4 border-black border-opacity-50 border-b my-2 border-solid" />
+				</div>
+
+				<div onClick={this.props.toggleNightLight} className="w-64 py-1.5 flex items-center justify-center bg-ub-cool-grey hover:bg-ub-warm-grey hover:bg-opacity-20">
+					<div className="w-8">
+						<img width="16px" height="16px" src="./themes/Yaru/status/display-brightness-symbolic.svg" alt="ubuntu night light" />
+					</div>
+					<div className="w-2/3 flex items-center justify-between">
+						<span>Night Light</span>
+						<span className={this.props.nightLight ? "font-bold" : "text-gray-400"}>{this.props.nightLight ? "On" : "Off"}</span>
+					</div>
+				</div>
+
 				<div className="w-64 flex content-center justify-center">
 					<div className="w-2/4 border-black border-opacity-50 border-b my-2 border-solid" />
 				</div>

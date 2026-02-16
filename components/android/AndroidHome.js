@@ -16,6 +16,7 @@ export default function AndroidHome() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [openApp, setOpenApp] = useState(null);
+    const [closingApp, setClosingApp] = useState(false);
     const [bgImage, setBgImage] = useState('wall-2');
     const [contextMenu, setContextMenu] = useState({ app: null, position: null });
     const [page, setPage] = useState(0);
@@ -86,10 +87,8 @@ export default function AndroidHome() {
             longPressTimer.current = null;
         }
 
-        if (deltaY > 80 && Math.abs(deltaX) < 50 && !drawerOpen && !notificationOpen) {
-            vibrate();
-            setDrawerOpen(true);
-        }
+        // Removed drawer open on swipe up logic here
+
 
         if (deltaY < -80 && touchStartY.current < 100 && !drawerOpen) {
             vibrate();
@@ -145,8 +144,12 @@ export default function AndroidHome() {
     };
 
     const handleCloseApp = () => {
-        setOpenApp(null);
+        setClosingApp(true);
         vibrate();
+        setTimeout(() => {
+            setOpenApp(null);
+            setClosingApp(false);
+        }, 300);
     };
 
     const closeDrawer = () => setDrawerOpen(false);
@@ -254,23 +257,21 @@ export default function AndroidHome() {
             </div>
 
             <div className="absolute bottom-[12px] left-0 right-0 z-20">
-                {!drawerOpen && !openApp && page === 0 && (
-                    <div className="swipe-indicator mb-2">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                            <path d="M18 15l-6-6-6 6" />
-                        </svg>
-                    </div>
-                )}
+                {/* Removed swipe indicator */}
                 <div className="android-dock mx-4">
-                    {dockApps.map((app, index) => renderAppIcon(app, index, true))}
+                    {dockApps.slice(0, 2).map((app, index) => renderAppIcon(app, index, true))}
+                    <div className="android-app-icon ripple" onClick={() => {
+                        vibrate();
+                        setDrawerOpen(true);
+                    }}>
+                        <img width="32" height="32" src="./themes/Yaru/system/view-app-grid-symbolic.svg" alt="All Apps" />
+                    </div>
+                    {dockApps.slice(2, 4).map((app, index) => renderAppIcon(app, index + 2, true))}
                 </div>
             </div>
 
             <GestureNavBar
-                onSwipeUp={() => {
-                    vibrate();
-                    setDrawerOpen(true);
-                }}
+                // Removed onSwipeUp
                 onHome={() => {
                     handleCloseApp();
                     setPage(0);
@@ -312,6 +313,7 @@ export default function AndroidHome() {
                     app={openApp}
                     onClose={handleCloseApp}
                     onOpenApp={handleOpenApp}
+                    closing={closingApp}
                 />
             )}
         </div>
