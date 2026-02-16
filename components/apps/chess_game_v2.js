@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
@@ -13,11 +13,29 @@ export function ChessGame() {
     const [playerColor, setPlayerColor] = useState('w');
     const [gameStatus, setGameStatus] = useState('');
     const [viewerCount, setViewerCount] = useState(0);
+    const containerRef = useRef(null);
+    const [boardSize, setBoardSize] = useState(360);
+
+    // Measure container and compute board size
+    useEffect(() => {
+        const measure = () => {
+            if (!containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            // Reserve space for status bar (~50px), buttons (~60px), padding (32px)
+            const availH = rect.height - 150;
+            const availW = rect.width - 24;
+            const size = Math.max(200, Math.min(availW, availH, 560));
+            setBoardSize(size);
+        };
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
+    }, [gameMode]);
 
     useEffect(() => {
         if (gameMode === 'online') {
             const gameRef = ref(db, `games/${gameId}`);
-            
+
             const fetchGameState = async () => {
                 const snapshot = await get(gameRef);
                 if (snapshot.exists()) {
@@ -28,9 +46,9 @@ export function ChessGame() {
                     setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
                 }
             };
-            
+
             fetchGameState();
-    
+
             const unsubscribe = onValue(gameRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.board) {
@@ -40,7 +58,7 @@ export function ChessGame() {
                     setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
                 }
             });
-    
+
             return () => unsubscribe();
         } else if (gameMode === 'computer') {
             const newGame = new Chess();
@@ -48,10 +66,11 @@ export function ChessGame() {
             setPlayerColor('w');
         }
     }, [gameMode, gameId]);
-    
+
     useEffect(() => {
-        if (gameMode === 'computer' && game.turn() === 'b') {
-            setTimeout(makeComputerMove, 500);
+        if (gameMode === 'computer' && game.turn() === 'b' && !game.isGameOver()) {
+            const timer = setTimeout(makeComputerMove, 500);
+            return () => clearTimeout(timer);
         }
     }, [game, gameMode]);
 
@@ -59,10 +78,10 @@ export function ChessGame() {
         if (gameMode === 'online') {
             const viewersRef = ref(db, `games/${gameId}/viewers`);
             const sessionId = Math.random().toString(36).substr(2, 9);
-            
+
             // Add viewer
             set(ref(db, `games/${gameId}/viewers/${sessionId}`), true);
-            
+
             // Remove viewer on disconnect
             onValue(viewersRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -71,13 +90,13 @@ export function ChessGame() {
                     setViewerCount(0);
                 }
             });
-    
+
             return () => {
                 set(ref(db, `games/${gameId}/viewers/${sessionId}`), null);
             };
         }
     }, [gameMode, gameId]);
-    
+
     useEffect(() => {
         if (game.isCheckmate()) {
             const winner = game.turn() === 'w' ? 'Black' : 'White';
@@ -90,7 +109,7 @@ export function ChessGame() {
             setGameStatus('Game drawn by threefold repetition');
         }
     }, [game]);
-    
+
 
     function makeComputerMove() {
         if (game.isGameOver() || game.turn() !== 'b') return;
@@ -105,36 +124,42 @@ export function ChessGame() {
     }
 
     function onDrop(sourceSquare, targetSquare) {
+        // Block all moves if game is over
+        if (game.isGameOver()) return false;
         // Prevent moves during computer's turn in computer mode
         if (gameMode === 'computer' && game.turn() !== playerColor) return false;
-        
+
         const gameCopy = new Chess(game.fen());
-        
+
         try {
             const move = gameCopy.move({
                 from: sourceSquare,
                 to: targetSquare,
                 promotion: 'q'
             });
-    
+
             if (move) {
                 setGame(gameCopy);
-                
+
                 if (gameMode === 'online') {
                     const gameRef = ref(db, `games/${gameId}`);
-                    
+
                     set(gameRef, {
                         board: gameCopy.fen(),
                         currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
                         gameStatus: gameCopy.isCheckmate() ? 'checkmate' : gameCopy.isCheck() ? 'check' : 'active'
                     });
                 }
-                
+
                 if (gameCopy.isCheckmate()) {
                     const winner = gameCopy.turn() === 'w' ? 'Black' : 'White';
                     setGameStatus(`Checkmate! ${winner} wins!`);
+                } else if (gameCopy.isStalemate()) {
+                    setGameStatus('Game drawn by stalemate');
+                } else if (gameCopy.isDraw()) {
+                    setGameStatus('Game drawn');
                 }
-                
+
                 return true;
             }
         } catch (error) {
@@ -142,7 +167,7 @@ export function ChessGame() {
         }
         return false;
     }
-    
+
 
     const resetGame = () => {
         const newGame = new Chess();
@@ -161,7 +186,7 @@ export function ChessGame() {
     const startOnlineGame = () => {
         setGameMode('online');
         const gameRef = ref(db, `games/${gameId}`);
-        
+
         get(gameRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
@@ -180,14 +205,14 @@ export function ChessGame() {
             }
         });
     };
-    
-     
+
+
 
     const [showDescription, setShowDescription] = useState(false);
 
     if (gameMode === 'home') {
         return (
-            <div 
+            <div
                 className="w-full h-full flex flex-col items-center justify-center p-4 space-y-6 relative"
                 style={{
                     backgroundImage: "url('./themes/Yaru/apps/chess-bg.jpg')",
@@ -199,20 +224,20 @@ export function ChessGame() {
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                 <div className="relative z-10 flex flex-col items-center space-y-6">
                     <h1 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">Chess Game</h1>
-                    <button 
+                    <button
                         onClick={() => setGameMode('computer')}
                         className="w-64 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-lg"
                     >
                         Play Online vs Bot
                     </button>
-                    <button 
+                    <button
                         onClick={() => setShowDescription(true)}
                         className="w-64 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-lg"
                     >
                         Play Online vs Random Player
                     </button>
                 </div>
-    
+
                 {showDescription && (
                     <div className="absolute inset-0 flex items-center justify-center z-20 bg-black bg-opacity-70">
                         <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md text-center">
@@ -221,7 +246,7 @@ export function ChessGame() {
                                 You're about to enter a shared virtual chess room where anyone can join and make moves. Think of it as a digital town square where chess enthusiasts gather. Your moves are instantly visible to all viewers worldwide. No sign-ups, no waiting - just pure chess excitement!
                             </p>
                             <div className="flex justify-center">
-                                <button 
+                                <button
                                     onClick={() => {
                                         setShowDescription(false);
                                         startOnlineGame();
@@ -243,31 +268,35 @@ export function ChessGame() {
 
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4">
-            <div className="mb-4 text-white text-xl">
-                {gameMode === 'online' ? (
+        <div ref={containerRef} className="w-full h-full flex flex-col items-center justify-center bg-gray-800 overflow-hidden" style={{ padding: '12px' }}>
+            <div className="text-white text-center" style={{ fontSize: boardSize < 400 ? '14px' : '18px', marginBottom: '8px', flexShrink: 0 }}>
+                {game.isGameOver() ? (
+                    <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{gameStatus || 'Game Over'}</span>
+                ) : gameMode === 'online' ? (
                     gameStatus
                 ) : (
-                    `Current Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`
-                )}
-                {gameMode === 'computer' && (
-                    <span className="ml-4">
-                        {game.turn() === playerColor ? "Your turn" : "Computer thinking..."}
-                    </span>
+                    <>
+                        {`Current Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`}
+                        {gameMode === 'computer' && (
+                            <span className="ml-4">
+                                {game.turn() === playerColor ? "Your turn" : "Computer thinking..."}
+                            </span>
+                        )}
+                    </>
                 )}
                 {gameMode === 'online' && (
                     <div className="text-sm text-gray-300 mt-2 flex items-center justify-center">
                         👥 {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'} online
                     </div>
-                )}               
+                )}
             </div>
 
-            
-            <div className="w-[560px]">
-                <Chessboard 
+
+            <div style={{ width: boardSize, flexShrink: 0 }}>
+                <Chessboard
                     position={game.fen()}
                     onPieceDrop={onDrop}
-                    boardWidth={560}
+                    boardWidth={boardSize}
                     customBoardStyle={{
                         borderRadius: '4px',
                         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
@@ -275,21 +304,21 @@ export function ChessGame() {
                 />
             </div>
 
-            <div className="mt-4 space-x-4">
-                <button 
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button
                     onClick={resetGame}
                     className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
                     New Game
                 </button>
-                <button 
+                <button
                     onClick={() => setGameMode('home')}
                     className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >
                     Back to Menu
                 </button>
             </div>
-            
+
             {gameMode === 'online' && (
                 <div className="mt-4 text-white">
                     Game ID: {gameId}
