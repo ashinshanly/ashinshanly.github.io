@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 export function Camera() {
     const videoRef = useRef(null);
+    const streamRef = useRef(null); // Use ref to track stream for cleanup
     const [stream, setStream] = useState(null);
     const [error, setError] = useState(null);
     const [capturedImage, setCapturedImage] = useState(null);
@@ -31,6 +32,7 @@ export function Camera() {
             };
             const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
             setStream(mediaStream);
+            streamRef.current = mediaStream; // Update ref
             if (videoRef.current) {
                 videoRef.current.srcObject = mediaStream;
             }
@@ -42,8 +44,9 @@ export function Camera() {
     };
 
     const stopCamera = () => {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
             setStream(null);
         }
     };
