@@ -9,6 +9,7 @@ import SearchWidget from './SearchWidget';
 import AppContextMenu from './AppContextMenu';
 import BackgroundImage from '../util components/background-image';
 import MusicWidget from './MusicWidget';
+import WeatherWidget from './WeatherWidget';
 import AndroidToast, { showToast } from './AndroidToast';
 
 export default function AndroidHome() {
@@ -227,6 +228,7 @@ export default function AndroidHome() {
                 className={`absolute inset-0 z-10 pt-24 px-4 transition-all duration-300 ${page === 0 ? 'translate-x-[120%] opacity-0' : 'translate-x-0 opacity-100'}`}
             >
                 <div className="text-white/60 text-sm font-medium mb-4 pl-2">Widgets</div>
+                <WeatherWidget />
                 <MusicWidget />
 
                 <div className="mx-4 mb-4 p-4 bg-[#2D2D30]/80 backdrop-blur-xl rounded-2xl border border-white/5 flex items-center justify-between">

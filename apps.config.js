@@ -13,6 +13,7 @@ import { displayCodingChallenges } from './components/apps/coding_game';
 import { displayShootingGame } from './components/apps/shooting_game';
 import { displayMusicSync } from './components/apps/musicsync';
 import { displayPrismFlow } from './components/apps/prism_flow';
+import { displayCamera } from './components/apps/camera';
 import { VisitorStats } from './components/apps/visitor_stats';
 import { VisitorIcon } from './components/util components/visitor_icon';
 
@@ -166,6 +167,15 @@ const apps = [
         favourite: true,
         desktop_shortcut: false,
         screen: displaySettings,
+    },
+    {
+        id: "camera",
+        title: "Camera",
+        icon: './themes/Yaru/apps/camera.png', // We'll need to check if this icon exists or use a fallback
+        disabled: false,
+        favourite: false,
+        desktop_shortcut: true,
+        screen: displayCamera,
     },
     {
         id: "trash",
