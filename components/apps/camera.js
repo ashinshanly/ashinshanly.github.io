@@ -9,47 +9,56 @@ export function Camera() {
     const [cameraFacingMode, setCameraFacingMode] = useState('user'); // 'user' or 'environment'
 
     useEffect(() => {
-        startCamera();
+        let isMounted = true;
+
+        const initCamera = async () => {
+            // Stop any existing stream first
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+                streamRef.current = null;
+            }
+
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: cameraFacingMode
+                    }
+                };
+                const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+                if (!isMounted) {
+                    // If component unmounted while waiting, clean up immediately
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    return;
+                }
+
+                setStream(mediaStream);
+                streamRef.current = mediaStream;
+                if (videoRef.current) {
+                    videoRef.current.srcObject = mediaStream;
+                }
+                setError(null);
+            } catch (err) {
+                if (isMounted) {
+                    console.error("Error accessing camera:", err);
+                    setError("Camera access denied or not available.");
+                }
+            }
+        };
+
+        initCamera();
+
         return () => {
-            stopCamera();
+            isMounted = false;
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+                streamRef.current = null;
+            }
+            setStream(null);
         };
     }, [cameraFacingMode]);
 
-    // Re-attach stream to video element when it mounts (e.g. after retake)
-    useEffect(() => {
-        if (!capturedImage && videoRef.current && stream) {
-            videoRef.current.srcObject = stream;
-        }
-    }, [capturedImage, stream]);
 
-    const startCamera = async () => {
-        stopCamera();
-        try {
-            const constraints = {
-                video: {
-                    facingMode: cameraFacingMode
-                }
-            };
-            const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-            setStream(mediaStream);
-            streamRef.current = mediaStream; // Update ref
-            if (videoRef.current) {
-                videoRef.current.srcObject = mediaStream;
-            }
-            setError(null);
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            setError("Camera access denied or not available.");
-        }
-    };
-
-    const stopCamera = () => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-            setStream(null);
-        }
-    };
 
     const capturePhoto = () => {
         if (videoRef.current) {
@@ -99,7 +108,7 @@ export function Camera() {
                 </div>
                 <p>{error}</p>
                 <button
-                    onClick={() => startCamera()}
+                    onClick={() => window.location.reload()} // Simple fallback for now
                     className="mt-4 px-4 py-2 bg-white/20 rounded-full text-sm font-medium"
                 >
                     Retry
