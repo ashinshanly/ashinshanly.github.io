@@ -1,6 +1,9 @@
 import React, { useRef } from 'react';
 
-export default function AndroidApp({ app, onClose, onOpenApp, closing }) {
+export default function AndroidApp({ app, onClose, onOpenApp, closing, ...props }) {
+    // ...
+    // ...
+
     const touchStartX = useRef(0);
 
     // Handle back gesture (swipe from left edge)
@@ -33,7 +36,7 @@ export default function AndroidApp({ app, onClose, onOpenApp, closing }) {
 
         return (
             <div className="h-full bg-ub-cool-grey">
-                <ScreenComponent openApp={onOpenApp} />
+                <ScreenComponent openApp={onOpenApp} {...props} />
             </div>
         );
     };

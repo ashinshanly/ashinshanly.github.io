@@ -316,6 +316,8 @@ export default function AndroidHome() {
                     onClose={handleCloseApp}
                     onOpenApp={handleOpenApp}
                     closing={closingApp}
+                    changeBackgroundImage={setBgImage}
+                    currBgImgName={bgImage}
                 />
             )}
         </div>

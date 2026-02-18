@@ -125,6 +125,6 @@ export function Settings(props) {
 export default Settings
 
 
-export const displaySettings = () => {
-    return <Settings> </Settings>;
+export const displaySettings = (props) => {
+    return <Settings {...props}> </Settings>;
 }
