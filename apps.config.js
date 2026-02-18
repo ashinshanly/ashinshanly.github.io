@@ -33,7 +33,7 @@ const apps = [
         title: "Calc",
         icon: './themes/Yaru/apps/calc.png',
         disabled: false,
-        favourite: true,
+        favourite: false,
         desktop_shortcut: false,
         screen: displayTerminalCalc,
     },
@@ -53,7 +53,7 @@ const apps = [
         icon: './themes/Yaru/apps/bash.png',
         disabled: false,
         favourite: true,
-        desktop_shortcut: false,
+        desktop_shortcut: true,
         screen: displayTerminal,
     },
     {
@@ -173,8 +173,8 @@ const apps = [
         title: "Camera",
         icon: './themes/Yaru/apps/camera.png', // We'll need to check if this icon exists or use a fallback
         disabled: false,
-        favourite: false,
-        desktop_shortcut: true,
+        favourite: true,
+        desktop_shortcut: false,
         screen: displayCamera,
     },
     {
