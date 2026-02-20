@@ -274,11 +274,39 @@
     transform: rotate(15deg);
 }
 
-.pf-home-content {
+.pf-home-content-wrapper {
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px 40px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.pf-home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 20px;
+    flex: 1;
+    min-width: 280px;
+    animation: pf-fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes pf-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .pf-title {
@@ -344,6 +372,201 @@
 
 .pf-btn-icon {
     font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.pf-btn-slide {
+    position: relative;
+    overflow: hidden;
+}
+
+.pf-btn-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: rgba(100, 140, 255, 0.08);
+    transition: width 0.3s ease;
+    z-index: 0;
+}
+
+.pf-btn-slide:hover::before {
+    width: 100%;
+}
+
+.pf-btn-slide>* {
+    position: relative;
+    z-index: 1;
+}
+
+.pf-btn-glowing {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(100, 140, 255, 0.4);
+}
+
+.pf-btn-glowing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: skewX(-20deg);
+    animation: pf-btn-shine 3s infinite;
+}
+
+@keyframes pf-btn-shine {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+/* ─── Start Screen Glass Panel (How to play Popup) ───────────────────────── */
+.pf-htp-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 8, 16, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 20px;
+    animation: pf-fade-in 0.3s ease-out;
+}
+
+@keyframes pf-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.pf-htp-panel {
+    width: 100%;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: rgba(15, 20, 35, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(100, 140, 255, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(100, 140, 255, 0.1) inset;
+    animation: pf-modal-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes pf-modal-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.pf-htp-header-glass {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(90deg, rgba(60, 100, 255, 0.15), rgba(60, 100, 255, 0.05));
+    border-bottom: 1px solid rgba(100, 140, 255, 0.15);
+}
+
+.pf-htp-close-btn {
+    background: none;
+    border: none;
+    color: #8090b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.pf-htp-close-btn:hover {
+    color: #ff5070;
+    background: rgba(255, 80, 112, 0.1);
+}
+
+.pf-htp-heading-glass {
+    margin: 0;
+    color: #e0e8ff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.pf-htp-body-glass {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pf-htp-section-glass {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pf-htp-subheading {
+    margin: 0;
+    color: #a0b4e0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pf-htp-text-glass {
+    margin: 0;
+    color: #8090b8;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.pf-htp-item-glass {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #c0d0e0;
+    font-size: 13px;
+}
+
+.pf-htp-icon-glass {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(100, 140, 255, 0.1);
+    border-radius: 6px;
+    color: #80a0ff;
+    font-size: 14px;
+    box-shadow: 0 0 10px rgba(100, 140, 255, 0.1);
 }
 
 /* ─── Level Select ─────────────────────────────────────── */

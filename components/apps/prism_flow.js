@@ -363,6 +363,7 @@ export function PrismFlow() {
     const [selectedObjIndex, setSelectedObjIndex] = useState(-1);
     const lastTouchRef = useRef(null);
     const [fixedObjects, setFixedObjects] = useState([]);
+    const [showHowToPlay, setShowHowToPlay] = useState(false);
 
     // ─── Load Level ─────────────────────────────────────────
     const loadLevel = useCallback((levelIndex) => {
@@ -1144,75 +1145,100 @@ export function PrismFlow() {
                         <div className="pf-beam-out pf-beam-blue" />
                     </div>
                 </div>
-                <div className="pf-home-content">
-                    <h1 className="pf-title">Prism Flow</h1>
-                    <p className="pf-subtitle">A Light Physics Odyssey</p>
-                    <div className="pf-menu-buttons">
-                        <button
-                            className="pf-btn pf-btn-primary"
-                            onClick={() => setGameMode('levelSelect')}
-                        >
-                            <span className="pf-btn-icon">◈</span>
-                            Puzzle Mode
-                        </button>
-                        <button
-                            className="pf-btn pf-btn-secondary"
-                            onClick={loadZenMode}
-                        >
-                            <span className="pf-btn-icon">∞</span>
-                            Zen Mode
-                        </button>
-                        <button
-                            className="pf-btn pf-btn-secondary"
-                            onClick={() => setGameMode('howToPlay')}
-                        >
-                            <span className="pf-btn-icon">?</span>
-                            How to Play
-                        </button>
+
+                <div className="pf-home-content-wrapper">
+                    <div className="pf-home-content">
+                        <h1 className="pf-title">Prism Flow</h1>
+                        <p className="pf-subtitle">A Light Physics Odyssey</p>
+                        <div className="pf-menu-buttons">
+                            <button
+                                className="pf-btn pf-btn-primary pf-btn-glowing"
+                                onClick={() => setGameMode('levelSelect')}
+                            >
+                                <span className="pf-btn-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                </span>
+                                Start Journey
+                            </button>
+                            <button
+                                className="pf-btn pf-btn-secondary pf-btn-slide"
+                                onClick={loadZenMode}
+                            >
+                                <span className="pf-btn-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 9l-6 6 6 6"></path><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
+                                </span>
+                                Zen Sandbox
+                            </button>
+                            <button
+                                className="pf-btn pf-btn-secondary pf-btn-slide popup-trigger-btn"
+                                onClick={() => setShowHowToPlay(true)}
+                            >
+                                <span className="pf-btn-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                </span>
+                                How to Play
+                            </button>
+                        </div>
                     </div>
+
+                    {showHowToPlay && (
+                        <div className="pf-htp-overlay" onClick={() => setShowHowToPlay(false)}>
+                            <div className="pf-htp-panel" onClick={(e) => e.stopPropagation()}>
+                                <div className="pf-htp-header-glass">
+                                    <h3 className="pf-htp-heading-glass">How to Play</h3>
+                                    <button className="pf-htp-close-btn" onClick={() => setShowHowToPlay(false)}>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+                                </div>
+                                <div className="pf-htp-body-glass">
+                                    <div className="pf-htp-section-glass">
+                                        <h4 className="pf-htp-subheading">🎯 Goal</h4>
+                                        <p className="pf-htp-text-glass">Direct light beams to hit all colored targets by placing and rotating optical tools.</p>
+                                    </div>
+                                    <div className="pf-htp-section-glass">
+                                        <h4 className="pf-htp-subheading">🔧 Tools</h4>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="21" y1="3" x2="3" y2="21"></line></svg></span>
+                                            <div><strong>Mirror</strong> — Reflects light at an angle</div>
+                                        </div>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 21l9.5-16.5 9.5 16.5z"></path></svg></span>
+                                            <div><strong>Prism</strong> — Splits white light into RGB</div>
+                                        </div>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg></span>
+                                            <div><strong>Splitter</strong> — Creates two beams</div>
+                                        </div>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg></span>
+                                            <div><strong>Blocker</strong> — Stops light completely</div>
+                                        </div>
+                                    </div>
+                                    <div className="pf-htp-section-glass">
+                                        <h4 className="pf-htp-subheading">📱 Controls</h4>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 14a8 8 0 0 1-8 8"></path><path d="M18 11v-1a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V9a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v1"></path><path d="M10 9.5V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v10"></path><path d="M18 11a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"></path></svg></span>
+                                            <div>Tap grid to place selected tool</div>
+                                        </div>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 9l-3 3 3 3"></path><path d="M9 5l3-3 3 3"></path><path d="M19 9l3 3-3 3"></path><path d="M15 19l-3 3-3-3"></path><path d="M2 12h20"></path><path d="M12 2v20"></path></svg></span>
+                                            <div>Tap & drag to move placed objects</div>
+                                        </div>
+                                        <div className="pf-htp-item-glass">
+                                            <span className="pf-htp-icon-glass pf-svg-wrapper"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></span>
+                                            <div>Use Rotate button or Scroll wheel to turn</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         );
     }
 
-    // ─── Render: How to Play ────────────────────────────────
-    if (gameMode === 'howToPlay') {
-        return (
-            <div className="pf-level-select">
-                <div className="pf-ls-header">
-                    <button className="pf-back-btn" onClick={() => setGameMode('home')}>← Back</button>
-                    <h2 className="pf-ls-title">How to Play</h2>
-                </div>
-                <div className="pf-htp-content">
-                    <div className="pf-htp-section">
-                        <h3 className="pf-htp-heading">🎯 Goal</h3>
-                        <p className="pf-htp-text">Direct light beams to hit all colored targets by placing and rotating optical tools.</p>
-                    </div>
-                    <div className="pf-htp-section">
-                        <h3 className="pf-htp-heading">🔧 Tools</h3>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">⟋</span><div><strong>Mirror</strong> — Reflects light at an angle</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">△</span><div><strong>Prism</strong> — Splits white light into RGB colors</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">◇</span><div><strong>Splitter</strong> — Creates two beams from one</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">■</span><div><strong>Blocker</strong> — Stops light completely</div></div>
-                    </div>
-                    <div className="pf-htp-section">
-                        <h3 className="pf-htp-heading">📱 Controls</h3>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">👆</span><div>Select a tool, then tap the grid to place it</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">✋</span><div>Tap a placed object to select it, then drag to move</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">↻</span><div>Use the Rotate button to turn objects 45°</div></div>
-                        <div className="pf-htp-item"><span className="pf-htp-icon">🖱</span><div>Desktop: Scroll wheel over an object to rotate</div></div>
-                    </div>
-                    <button
-                        className="pf-btn pf-btn-primary"
-                        style={{ marginTop: '16px', width: '100%' }}
-                        onClick={() => setGameMode('levelSelect')}
-                    >
-                        Start Playing
-                    </button>
-                </div>
-            </div>
-        );
-    }
+
 
     // ─── Render: Level Select ───────────────────────────────
     if (gameMode === 'levelSelect') {
