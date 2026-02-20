@@ -11,7 +11,7 @@ export class AboutAshin extends Component {
             active_screen: "about", // by default 'about' screen is active
             navbar: false,
         }
-    }f
+    } f
 
     componentDidMount() {
         this.screens = {
@@ -64,22 +64,22 @@ export class AboutAshin extends Component {
                     <img className=" w-3 md:w-4" alt="ashin's experience" src="./themes/Yaru/status/experience.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Experience</span>
                 </div>
-                
+
                 <div id="education" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "education" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's education" src="./themes/Yaru/status/education.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Education</span>
                 </div>
-        
+
                 <div id="skills" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "skills" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's skills" src="./themes/Yaru/status/skills.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Skills</span>
                 </div>
-        
+
                 <div id="projects" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "projects" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's projects" src="./themes/Yaru/status/projects.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Projects</span>
                 </div>
-        
+
                 <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
@@ -131,13 +131,13 @@ function About() {
                 <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-0"></div>
                 <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-0"></div>
             </div>
-            <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
+            <ul className=" mt-4 leading-normal tracking-tight text-sm md:text-base w-11/12 md:w-3/4 emoji-list px-2 md:px-0">
                 <li className=" list-pc">I'm a <span className=" font-medium">Software Engineer</span> proficient in distributed computing, deep neural networks, and data engineering, with a focus on creating scalable, high-performance
-solutions.<br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
-                <li className=" mt-3 list-building"> I enjoy building cool things.</li>
-                <li className=" mt-3 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
-                <li className=" mt-3 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
-                <li className=" mt-3 list-star"> Here are my <u><a href="https://www.github.com/ashinshanly" target="_blank" rel="noreferrer">GitHub</a></u> and <u><a href="https://www.linkedin.com/in/ashinshanly/" target="_blank" rel="noreferrer">LinkedIn</a></u> profiles</li>
+                    solutions.<br></br> ( Hit me up <a className='text-underline' href='mailto:ashinkoottala@gmail.com'><u>@ashinkoottala@gmail.com</u></a> :) )</li>
+                <li className=" mt-4 list-building"> I enjoy building cool things.</li>
+                <li className=" mt-4 list-time"> When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer"> anime,</a> or swing trading</li>
+                <li className=" mt-4 list-star"> I’m also really into deep learning and computer vision! Feel free to check out my research publications <u><a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer">HERE!</a></u></li>
+                <li className=" mt-4 list-star"> Here are my <u><a href="https://www.github.com/ashinshanly" target="_blank" rel="noreferrer">GitHub</a></u> and <u><a href="https://www.linkedin.com/in/ashinshanly/" target="_blank" rel="noreferrer">LinkedIn</a></u> profiles</li>
             </ul>
         </>
     )
@@ -146,76 +146,57 @@ solutions.<br></br> ( Hit me up <a className='text-underline' href='mailto:ashin
 function Experience() {
     return (
         <>
-            <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
+            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
                 Experience
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <ul className=" mt-4 leading-tight tracking-tight text-sm md:text-base w-5/6 md:w-3/4 emoji-list">
-                <li className="list-disc">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+            <ul className=" mt-4 leading-normal tracking-tight text-sm md:text-base w-11/12 md:w-3/4 emoji-list px-2 md:px-0">
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
                         Software Engineer III
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
-                    <ul>
-                        <li> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
-                        </li>   
-                    </ul>            
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
+                    <ul className="pl-2">
+                        <li className="mt-2 text-gray-200"> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
+                        </li>
+                    </ul>
                 </li>
-                <br></br>
-    
-                <li className="list-disc">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
                         Member of Technical Staff (IC2)
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
-                    <ul>
-                        <li> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
-                        </li>   
-                        <br></br>
-                        <li> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
-                        </li>  
-                        <br></br>
-                        <li> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data
-warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution,
-and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction
-and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly
-integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
-                        </li> 
-                        <br></br> 
-                        <li> Created an instance and rack decommissioning dashboard that accelerated throughput for decom-
-missioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host,
-and instance levels), optimising data center resource allocation and saving thousands of dollars annually by
-improving operational efficiency and reducing idle resource costs.
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
+                    <ul className="pl-2">
+                        <li className="mt-2 text-gray-200"> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
                         </li>
-                        <br></br> 
-                        <li> Led the design and implementation of robust data archival and purging frameworks, automating the
-identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while
-purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term
-storage costs and enhanced overall database performance by optimising active data sets. Collaborated with
-cross-functional teams to streamline data governance and ensure audit readiness.
+                        <li className="mt-2 text-gray-200"> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
                         </li>
-                    </ul>            
+                        <li className="mt-2 text-gray-200"> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution, and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
+                        </li>
+                        <li className="mt-2 text-gray-200"> Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
+                        </li>
+                        <li className="mt-2 text-gray-200"> Led the design and implementation of robust data archival and purging frameworks, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimising active data sets. Collaborated with cross-functional teams to streamline data governance and ensure audit readiness.
+                        </li>
+                    </ul>
                 </li>
-                <br></br>
 
-                <li className="list-disc">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
                         Machine Vision Research Scientist Intern
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
-                    <ul>
-                        <li>Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
-                        </li>   
-                        <br></br>
-                        <li>Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
-                        </li>  
-                        <br></br>
-                        <li>Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
-                        </li> 
-                    </ul>            
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
+                    <ul className="pl-2">
+                        <li className="mt-2 text-gray-200">Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
+                        </li>
+                        <li className="mt-2 text-gray-200">Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
+                        </li>
+                        <li className="mt-2 text-gray-200">Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </>
@@ -225,38 +206,37 @@ cross-functional teams to streamline data governance and ensure audit readiness.
 function Education() {
     return (
         <>
-            <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
+            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
                 Education
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <ul className=" w-10/12  mt-4 ml-4 px-0 md:px-1">
-                <li className="list-disc">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+            <ul className=" w-11/12 md:w-10/12 mt-4 ml-2 md:ml-4 px-2 md:px-1">
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
                         IIT Gandhinagar
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">2020 - 2022</div>
-                    <div className=" text-sm md:text-base">Masters in Computer Science and Engineering</div>
-                    <div className="text-sm text-gray-300 font-bold mt-1">Director’s Silver Medal for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.00/10</div>
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2020 - 2022</div>
+                    <div className=" text-sm md:text-base mb-1">Masters in Computer Science and Engineering</div>
+                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Director’s Silver Medal for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.00/10</div>
                 </li>
-                <br></br>
-                <li className="list-disc">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight mt-2">
                         Government Engineering College, Thrissur
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">2016 - 2020</div>
-                    <div className=" text-sm md:text-base">Bachelors in Computer Science and Engineering</div>
-                    <div className="text-sm text-gray-300 font-bold mt-1">Dean’s List for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.11/10</div>
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2016 - 2020</div>
+                    <div className=" text-sm md:text-base mb-1">Bachelors in Computer Science and Engineering</div>
+                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Dean’s List for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.11/10</div>
                 </li>
-                <li className="list-disc mt-5">
-                    <div className=" text-lg md:text-xl text-left font-bold leading-tight">
+                <li className="list-disc mb-6">
+                    <div className=" text-base md:text-xl text-left font-bold leading-tight mt-2">
                         Class 12<sup>th</sup> (CBSE)
                     </div>
-                    <div className=" text-sm text-gray-400 mt-0.5">2015 - 2016</div>
-                    <div className=" text-sm md:text-base">Maths, Physics, Chemistry</div>
-                    <div className="text-sm text-gray-300 font-bold mt-1">Percentile Rank &nbsp; 94.8%</div>
+                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2015 - 2016</div>
+                    <div className=" text-sm md:text-base mb-1">Maths, Physics, Chemistry</div>
+                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Percentile Rank &nbsp; 94.8%</div>
                 </li>
             </ul>
         </>
@@ -265,14 +245,14 @@ function Education() {
 function Skills() {
     return (
         <>
-            <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
+            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
                 Technical Skills
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <ul className=" tracking-tight text-sm md:text-base w-10/12 emoji-list">
+            <ul className=" tracking-tight text-sm md:text-base w-11/12 md:w-10/12 emoji-list px-2 md:px-0">
                 <li className=" list-arrow text-sm md:text-base mt-4 leading-tight tracking-tight">
                     I've worked on a lot of interesting programming languages & frameworks.
                 </li>
@@ -283,13 +263,10 @@ function Skills() {
                     <div>Here are my most frequently used</div>
                 </li>
             </ul>
-            <div className="w-full md:w-10/12 flex mt-4">
-                <div className=" text-sm text-center md:text-base w-1/2 font-bold">Languages & Tools</div>
-                <div className=" text-sm text-center md:text-base w-1/2 font-bold">Frameworks & Libraries</div>
-            </div>
-            <div className="w-full md:w-10/12 flex justify-center items-start font-bold text-center">
-                <div className="px-2 w-1/2">
-                    <div className="flex flex-wrap justify-center items-start w-full mt-2">
+            <div className="w-11/12 md:w-10/12 flex flex-col md:flex-row mt-4 px-2 md:px-0 gap-6 md:gap-0">
+                <div className="w-full md:w-1/2">
+                    <div className="text-sm text-center md:text-base font-bold mb-2">Languages & Tools</div>
+                    <div className="flex flex-wrap justify-center items-start w-full">
                         <img className="m-1" src="http://img.shields.io/badge/-Python-3776AB?style=flat&logo=python&logoColor=ffffff" alt="ashin python" />
                         <img className="m-1" src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat&logo=c%2B%2B&logoColor=white" alt="ashin c++" />
                         <img className="m-1" src="http://img.shields.io/badge/-SQL-4479A1?style=plastic&logo=postgresql&logoColor=ffffff" alt="ashin sql" />
@@ -306,8 +283,9 @@ function Skills() {
                         <img src="https://img.shields.io/badge/-Git-%23F05032?style=flat&logo=git&logoColor=%23ffffff" alt="ashin git" className="m-1" />
                     </div>
                 </div>
-                <div className="px-2 flex flex-wrap items-start w-1/2">
-                    <div className="flex flex-wrap justify-center items-start w-full mt-2">
+                <div className="w-full md:w-1/2">
+                    <div className="text-sm text-center md:text-base font-bold mb-2">Frameworks & Libraries</div>
+                    <div className="flex flex-wrap justify-center items-start w-full">
                         <img className="m-1" src="http://img.shields.io/badge/-Apache%20Spark-E25A1C?style=plastic&logo=apachespark&logoColor=ffffff" alt="ashin spark" />
                         <img className="m-1" src="http://img.shields.io/badge/-Hadoop-66CCFF?style=plastic&logo=apachehadoop&logoColor=ffffff" alt="ashin hadoop" />
                         <img className="m-1" src="http://img.shields.io/badge/-TensorFlow-FF6F00?style=plastic&logo=tensorflow&logoColor=ffffff" alt="ashin tensorflow" />
@@ -385,52 +363,54 @@ function Projects() {
 
     return (
         <>
-        <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
-            Projects
-            <div className="absolute pt-px bg-white mt-px top-full w-full">
-                <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
+                Projects
+                <div className="absolute pt-px bg-white mt-px top-full w-full">
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+                </div>
             </div>
-        </div>
-            {
-                project_list.map((project, index) => {
-                    const projectNameFromLink = project.link.split('/')
-                    const projectName = projectNameFromLink[projectNameFromLink.length - 1]
-                    return (
-                        <a key={index} href={project.link} target="_blank" rel="noreferrer" className="flex w-full flex-col px-4">
-                            <div className="w-full py-1 px-2 my-2 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer">
-                                <div className="flex flex-wrap justify-between items-center">
-                                    <div className='flex justify-center items-center'>
-                                        <div className=" text-base md:text-lg mr-2">{project.name.toLowerCase()}</div>
-                                        <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=true`} frameBorder="0" scrolling="0" width="150" height="20" title={project.name.toLowerCase()+"-star"}></iframe>
+            <div className="w-11/12 md:w-full flex flex-col">
+                {
+                    project_list.map((project, index) => {
+                        const projectNameFromLink = project.link.split('/')
+                        const projectName = projectNameFromLink[projectNameFromLink.length - 1]
+                        return (
+                            <a key={index} href={project.link} target="_blank" rel="noreferrer" className="flex w-full flex-col px-0 md:px-4 mb-4">
+                                <div className="w-full py-3 px-3 md:px-4 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer">
+                                    <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2 md:gap-0">
+                                        <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                            <div className=" text-base md:text-lg mr-2 font-medium">{project.name}</div>
+                                            <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=true`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0"></iframe>
+                                        </div>
+                                        <div className="text-gray-400 font-light text-xs md:text-sm whitespace-nowrap">{project.date}</div>
                                     </div>
-                                    <div className="text-gray-300 font-light text-sm">{project.date}</div>
-                                </div>
-                                <ul className=" tracking-normal leading-tight text-sm font-light ml-4 mt-1">
-                                    {
-                                        project.description.map((desc, index) => {
-                                            return <li key={index} className="list-disc mt-1 text-gray-100">{desc}</li>;
-                                        })
-                                    }
-                                </ul>
-                                <div className="flex flex-wrap items-start justify-start text-xs py-2">
-                                    {
-                                        (project.domains ?
-                                            project.domains.map((domain, index) => {
-                                                const borderColorClass = `border-${tag_colors[domain]}`
-                                                const textColorClass = `text-${tag_colors[domain]}`
-
-                                                return <span key={index} className={`px-1.5 py-0.5 w-max border ${borderColorClass} ${textColorClass} m-1 rounded-full`}>{domain}</span>
+                                    <ul className=" tracking-normal leading-relaxed text-sm font-light mt-3 px-1 md:ml-4">
+                                        {
+                                            project.description.map((desc, index) => {
+                                                return <li key={index} className="list-disc mt-1 text-gray-200">{desc}</li>;
                                             })
+                                        }
+                                    </ul>
+                                    <div className="flex flex-wrap items-start justify-start text-xs py-2">
+                                        {
+                                            (project.domains ?
+                                                project.domains.map((domain, index) => {
+                                                    const borderColorClass = `border-${tag_colors[domain]}`
+                                                    const textColorClass = `text-${tag_colors[domain]}`
 
-                                            : null)
-                                    }
+                                                    return <span key={index} className={`px-1.5 py-0.5 w-max border ${borderColorClass} ${textColorClass} m-1 rounded-full`}>{domain}</span>
+                                                })
+
+                                                : null)
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    )
-                })
-            }
+                            </a>
+                        )
+                    })
+                }
+            </div>
         </>
     )
 }
