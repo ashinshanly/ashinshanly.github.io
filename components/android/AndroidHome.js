@@ -11,6 +11,7 @@ import BackgroundImage from '../util components/background-image';
 import MusicWidget from './MusicWidget';
 import WeatherWidget from './WeatherWidget';
 import AndroidToast, { showToast } from './AndroidToast';
+import LockScreen from './LockScreen';
 
 export default function AndroidHome() {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -23,6 +24,8 @@ export default function AndroidHome() {
     const [page, setPage] = useState(0);
     const [hiddenApps, setHiddenApps] = useState([]); // Support uninstalling simulation
     const [brightness, setBrightness] = useState(100); // Brightness state
+    const [isLocked, setIsLocked] = useState(true);
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
     const touchStartY = useRef(0);
     const touchStartX = useRef(0);
@@ -33,6 +36,38 @@ export default function AndroidHome() {
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
+    }, []);
+
+    // Gyroscope Parallax Logic
+    useEffect(() => {
+        const handleOrientation = (e) => {
+            // beta is front-to-back tilt in degrees, where front is positive (-180 to 180)
+            // gamma is left-to-right tilt in degrees, where right is positive (-90 to 90)
+
+            let x = 0;
+            let y = 0;
+
+            // Constrain the values to avoid extreme movement
+            // When device is flat on table, beta/gamma are close to 0
+            if (e.gamma !== null && e.beta !== null) {
+                // Map a 45 degree tilt to about 25px translation
+                x = Math.max(-25, Math.min(25, (e.gamma / 45) * 25));
+
+                // For beta, standard viewing angle is around 45 degrees, so let's normalize around that
+                const normalizedBeta = e.beta - 45;
+                y = Math.max(-25, Math.min(25, (normalizedBeta / 45) * 25));
+
+                setTilt({ x: -x, y: -y }); // Invert so wallpaper moves opposite to direction of tilt
+            }
+        };
+
+        if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS 13+ requires explicit permission, but we skip requesting it automatically 
+            // to avoid confusing popups. It'll just silently fail or work if already granted.
+        }
+
+        window.addEventListener('deviceorientation', handleOrientation);
+        return () => window.removeEventListener('deviceorientation', handleOrientation);
     }, []);
 
     const vibrate = () => {
@@ -46,9 +81,18 @@ export default function AndroidHome() {
 
         const wallpaper = document.getElementById("android-wallpaper");
         if (wallpaper) {
-            wallpaper.style.transform = `scale(1.1) translate(${x}px, ${y}px)`;
+            // Apply both mouse parallax (for desktop) and gyro parallax (for mobile)
+            wallpaper.style.transform = `scale(1.1) translate(${x + tilt.x}px, ${y + tilt.y}px)`;
         }
     };
+
+    // Apply gyro parallax even when mouse isn't moving
+    useEffect(() => {
+        const wallpaper = document.getElementById("android-wallpaper");
+        if (wallpaper) {
+            wallpaper.style.transform = `scale(1.1) translate(${tilt.x}px, ${tilt.y}px)`;
+        }
+    }, [tilt]);
 
     // Filter apps based on hidden state (simulated uninstall)
     const activeApps = apps.filter(app => !hiddenApps.includes(app.id));
@@ -192,9 +236,18 @@ export default function AndroidHome() {
             onMouseMove={handleMouseMove}
             style={{ filter: `brightness(${brightness}%)` }} // Apply brightness
         >
-            <div id="android-wallpaper" className="absolute inset-0 z-0 transition-transform duration-100 ease-out">
+            <div id="android-wallpaper" className={`absolute inset-0 z-0 ${tilt.x !== 0 ? 'wallpaper-transition' : 'transition-transform duration-100 ease-out'}`}>
                 <BackgroundImage img={bgImage} />
             </div>
+
+            <LockScreen
+                isLocked={isLocked}
+                onUnlock={() => {
+                    setIsLocked(false);
+                    vibrate();
+                }}
+                time={currentTime}
+            />
 
             <AndroidToast />
 

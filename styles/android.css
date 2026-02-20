@@ -178,6 +178,8 @@
     border-radius: var(--android-radius-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* Lower z-index so lock screen covers it */
+    z-index: 10;
 }
 
 .android-dock .android-app-icon {
@@ -617,4 +619,132 @@
 
 .animate-bounce {
     animation: bounce-bars 1s ease-in-out infinite;
+}
+
+/* Lock Screen */
+.android-lock-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15vh 24px 0;
+    background: rgba(0, 0, 0, 0.4);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    touch-action: none;
+    overflow: hidden;
+}
+
+.lock-clock-container {
+    text-align: center;
+    animation: slide-down 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lock-time {
+    font-size: 100px;
+    font-weight: 200;
+    line-height: 1;
+    color: transparent;
+    background: linear-gradient(135deg, #ffffff 0%, #a5c8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    letter-spacing: -4px;
+    text-shadow: 0 0 40px rgba(165, 200, 255, 0.3);
+    margin-bottom: 8px;
+}
+
+.lock-date {
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.lock-hint {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: bounce-hint-lock 2.5s infinite ease-in-out;
+}
+
+.lock-hint-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.lock-hint-icon svg {
+    color: white;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    width: 28px;
+    height: 28px;
+}
+
+.lock-hint span {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+        filter: blur(10px);
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes bounce-hint-lock {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-15px);
+    }
+}
+
+.wallpaper-transition {
+    transition: transform 0.1s linear, filter 0.3s ease;
 }
