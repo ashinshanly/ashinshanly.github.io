@@ -167,9 +167,10 @@
 /* Dock - Glassmorphic */
 .android-dock {
     display: flex;
-    justify-content: center;
-    gap: 24px;
-    padding: 12px 24px 16px;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: clamp(8px, 2vw, 24px);
+    padding: 12px clamp(12px, 3vw, 24px) 16px;
     background: rgba(20, 20, 20, 0.45);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -180,12 +181,15 @@
 }
 
 .android-dock .android-app-icon {
-    padding: 8px;
+    padding: clamp(4px, 1.5vw, 8px);
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .android-dock .android-app-icon img {
-    width: 48px;
-    height: 48px;
+    width: clamp(36px, 12vw, 48px);
+    height: clamp(36px, 12vw, 48px);
+    object-fit: contain;
     margin-bottom: 0;
 }
 
