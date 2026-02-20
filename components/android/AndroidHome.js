@@ -300,20 +300,19 @@ export default function AndroidHome() {
                 </div>
             </div>
 
-            <div className="absolute bottom-[100px] left-0 right-0 flex justify-center gap-2 z-20">
-                <div
-                    className={`w-2 h-2 rounded-full transition-colors ${page === 0 ? 'bg-white' : 'bg-white/30'}`}
-                    onClick={() => setPage(0)}
-                />
-                <div
-                    className={`w-2 h-2 rounded-full transition-colors ${page === 1 ? 'bg-white' : 'bg-white/30'}`}
-                    onClick={() => setPage(1)}
-                />
-            </div>
+            <div className="absolute bottom-[24px] left-0 right-0 z-20 w-full flex flex-col items-center">
+                <div className="flex justify-center gap-2 mb-3">
+                    <div
+                        className={`w-1.5 h-1.5 rounded-full transition-colors ${page === 0 ? 'bg-white' : 'bg-white/30'}`}
+                        onClick={() => setPage(0)}
+                    />
+                    <div
+                        className={`w-1.5 h-1.5 rounded-full transition-colors ${page === 1 ? 'bg-white' : 'bg-white/30'}`}
+                        onClick={() => setPage(1)}
+                    />
+                </div>
 
-            <div className="absolute bottom-[12px] left-0 right-0 z-20">
-                {/* Removed swipe indicator */}
-                <div className="android-dock mx-4">
+                <div className="android-dock w-[calc(100%-32px)]">
                     {dockApps.slice(0, 2).map((app, index) => renderAppIcon(app, index, true))}
                     <div className="android-app-icon ripple" onClick={() => {
                         vibrate();
