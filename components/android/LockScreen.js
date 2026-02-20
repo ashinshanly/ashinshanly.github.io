@@ -113,7 +113,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
                         <span className="glass-notification-time">12m</span>
                     </div>
                     <div className="glass-notification-content">
-                        <strong>Elon Musk</strong> viewed your profile and sent a message: "Bro are we buying Mars or what? Need you to fix the rocket's CSS..."
+                        <strong>Elon Musk</strong> sent a message: "Bro where you at? Need you to fix the rocket's CSS asap..."
                     </div>
                 </div>
             </div>
