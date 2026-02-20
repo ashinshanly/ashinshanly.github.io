@@ -22,6 +22,7 @@ export default function AndroidHome() {
     const [bgImage, setBgImage] = useState('wall-2');
     const [contextMenu, setContextMenu] = useState({ app: null, position: null });
     const [page, setPage] = useState(0);
+    const [swipeX, setSwipeX] = useState(0); // Track real-time swipe position
     const [hiddenApps, setHiddenApps] = useState([]); // Support uninstalling simulation
     const [brightness, setBrightness] = useState(100); // Brightness state
     const [isLocked, setIsLocked] = useState(true);
@@ -121,6 +122,25 @@ export default function AndroidHome() {
         touchStartX.current = e.touches[0].clientX;
     };
 
+    const handleTouchMove = (e) => {
+        if (drawerOpen || notificationOpen || isLocked || contextMenu.app) return;
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const deltaX = currentX - touchStartX.current;
+        const deltaY = currentY - touchStartY.current;
+
+        // If mostly scrolling vertically, ignore horizontal swipe
+        if (Math.abs(deltaY) > Math.abs(deltaX)) return;
+
+        // Limit swipe boundaries to just one screen width
+        if ((page === 0 && deltaX > 0) || (page === 1 && deltaX < 0)) {
+            // Add resistance if trying to swipe past edge
+            setSwipeX(deltaX * 0.2);
+        } else {
+            setSwipeX(deltaX);
+        }
+    };
+
     const handleTouchEnd = (e) => {
         const touchEndY = e.changedTouches[0].clientY;
         const touchEndX = e.changedTouches[0].clientX;
@@ -140,15 +160,19 @@ export default function AndroidHome() {
             setNotificationOpen(true);
         }
 
-        if (Math.abs(deltaX) > 60 && Math.abs(deltaY) < 50) {
-            if (deltaX > 0 && page === 0) {
+        const screenWidth = window.innerWidth;
+        const swipeThreshold = screenWidth * 0.15; // 15% of screen width to register turn
+
+        if (Math.abs(swipeX) > swipeThreshold && Math.abs(deltaY) < 50) {
+            if (swipeX < 0 && page === 0) {
                 setPage(1);
                 vibrate();
-            } else if (deltaX < 0 && page === 1) {
+            } else if (swipeX > 0 && page === 1) {
                 setPage(0);
                 vibrate();
             }
         }
+        setSwipeX(0); // reset swipe distance on release for animating snap
     };
 
     const handleAppTouchStart = (e, app) => {
@@ -232,6 +256,7 @@ export default function AndroidHome() {
             className="android-container overflow-hidden"
             ref={homeRef}
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             onMouseMove={handleMouseMove}
             style={{ filter: `brightness(${brightness}%)` }} // Apply brightness
@@ -258,11 +283,14 @@ export default function AndroidHome() {
             />
 
             <div
-                className="android-home relative z-10 transition-transform duration-300 ease-out"
-                style={{ transform: `translateX(${-page * 20}%)`, opacity: page === 1 ? 0.8 : 1 }}
+                className={`android-home relative z-10 ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                style={{
+                    transform: `translateX(calc(${-page * 20}% + ${swipeX * 0.5}px))`,
+                    opacity: page === 1 && swipeX === 0 ? 0.8 : 1
+                }}
             >
                 <div
-                    className={`flex flex-col h-full transition-opacity duration-300 ${page === 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                    className={`flex flex-col h-full ${swipeX === 0 ? 'transition-opacity duration-300' : ''} ${page === 1 && swipeX === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                 >
                     <div className="at-a-glance">
                         <div className="at-a-glance-date">{formatDate()}</div>
@@ -278,7 +306,11 @@ export default function AndroidHome() {
             </div>
 
             <div
-                className={`absolute inset-0 z-10 pt-24 px-4 transition-all duration-300 ${page === 0 ? 'translate-x-[120%] opacity-0' : 'translate-x-0 opacity-100'}`}
+                className={`absolute inset-0 z-10 pt-24 px-4 ${swipeX === 0 ? 'transition-all duration-300' : ''}`}
+                style={{
+                    transform: `translateX(calc(${page === 0 ? '120%' : '0px'} + ${swipeX}px))`,
+                    opacity: page === 0 && swipeX > -20 ? 0 : 1
+                }}
             >
                 <div className="text-white/60 text-sm font-medium mb-4 pl-2">Widgets</div>
                 <WeatherWidget />
