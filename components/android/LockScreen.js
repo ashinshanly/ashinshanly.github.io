@@ -52,6 +52,19 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
                 </div>
             ),
             content: <>We loved your portfolio! Can you invert a binary tree though?</>
+        },
+        {
+            app: "Messages",
+            title: "Messages",
+            time: "2m",
+            icon: (
+                <div className="glass-notification-icon" style={{ background: 'linear-gradient(135deg, #34C759 0%, #28cd41 100%)' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 2C6.477 2 2 6.134 2 11.232c0 2.872 1.488 5.434 3.791 7.152a9.69 9.69 0 0 1-2.924 3.326c-.443.277.017.962.49.803 3.094-1.037 5.163-2.17 6.326-3.033A10.875 10.875 0 0 0 12 20.464c5.523 0 10-4.134 10-9.232S17.523 2 12 2z" />
+                    </svg>
+                </div>
+            ),
+            content: <><strong>Tim Cook</strong>: "Ashin, can you come fix Siri?"</>
         }
     ];
 
