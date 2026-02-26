@@ -4,6 +4,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
     const [startY, setStartY] = useState(0);
     const [currentY, setCurrentY] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [isUnlocking, setIsUnlocking] = useState(false);
     const containerRef = useRef(null);
 
     const unlockThreshold = -150; // swipe up by 150px to unlock
@@ -69,23 +70,25 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
     ];
 
     useEffect(() => {
-        if (!isLocked) {
+        if (!isLocked && !isUnlocking) {
             setCurrentY(0);
             setIsDragging(false);
-        } else {
+        } else if (isLocked) {
             // When lock screen shows, populate new random notifications
             const shuffled = [...notificationsPool].sort(() => 0.5 - Math.random());
             setSelectedNotifications(shuffled.slice(0, 2));
+            setIsUnlocking(false);
         }
-    }, [isLocked]);
+    }, [isLocked, isUnlocking]);
 
     const handleTouchStart = (e) => {
+        if (isUnlocking) return;
         setStartY(e.touches ? e.touches[0].clientY : e.clientY);
         setIsDragging(true);
     };
 
     const handleTouchMove = (e) => {
-        if (!isDragging) return;
+        if (!isDragging || isUnlocking) return;
         const y = e.touches ? e.touches[0].clientY : e.clientY;
         const delta = y - startY;
 
@@ -96,18 +99,24 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
     };
 
     const handleTouchEnd = () => {
-        if (!isDragging) return;
+        if (!isDragging || isUnlocking) return;
         setIsDragging(false);
 
         if (currentY < unlockThreshold) {
-            onUnlock();
+            setIsUnlocking(true);
+            setCurrentY(typeof window !== 'undefined' ? -window.innerHeight : -800);
+
+            setTimeout(() => {
+                onUnlock();
+                setIsUnlocking(false);
+            }, 300); // Wait for transition to finish
         } else {
             // Snap back
             setCurrentY(0);
         }
     };
 
-    if (!isLocked && currentY === 0 && !isDragging) return null;
+    if (!isLocked && currentY === 0 && !isDragging && !isUnlocking) return null;
 
     const opac = Math.max(0, 1 - Math.abs(currentY) / 300);
     const blur = Math.max(0, 20 - Math.abs(currentY) / 10);

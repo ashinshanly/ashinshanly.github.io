@@ -175,12 +175,22 @@ export default function AndroidHome() {
         setSwipeX(0); // reset swipe distance on release for animating snap
     };
 
+    const appTouchStartPos = useRef({ x: 0, y: 0 });
+    const isAppLongPress = useRef(false);
+
     const handleAppTouchStart = (e, app) => {
+        if (e.touches && e.touches.length > 0) {
+            appTouchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.clientX !== undefined) {
+            appTouchStartPos.current = { x: e.clientX, y: e.clientY };
+        }
+        isAppLongPress.current = false;
         longPressApp(e, app);
     };
 
     const longPressApp = (e, app) => {
         longPressTimer.current = setTimeout(() => {
+            isAppLongPress.current = true;
             vibrate();
             const touch = e.touches ? e.touches[0] : e;
             setContextMenu({
@@ -190,14 +200,33 @@ export default function AndroidHome() {
         }, 500);
     };
 
-    const handleAppTouchEnd = () => {
+    const handleAppTouchEnd = (e, app) => {
         if (longPressTimer.current) {
             clearTimeout(longPressTimer.current);
             longPressTimer.current = null;
         }
+
+        if (e && e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0) {
+            const touch = e.changedTouches[0];
+            const distance = Math.sqrt(
+                Math.pow(touch.clientX - appTouchStartPos.current.x, 2) +
+                Math.pow(touch.clientY - appTouchStartPos.current.y, 2)
+            );
+
+            if (distance < 15 && !isAppLongPress.current && !contextMenu.app) {
+                handleOpenApp(app.id);
+                if (e.cancelable) e.preventDefault();
+            }
+        }
     };
 
+    const lastOpenedTime = useRef(0);
+
     const handleOpenApp = (appId) => {
+        const now = Date.now();
+        if (now - lastOpenedTime.current < 500) return;
+        lastOpenedTime.current = now;
+
         if (contextMenu.app) return;
 
         const app = apps.find(a => a.id === appId);
@@ -231,10 +260,15 @@ export default function AndroidHome() {
             className="android-app-icon ripple"
             onClick={() => handleOpenApp(app.id)}
             onTouchStart={(e) => handleAppTouchStart(e, app)}
-            onMouseDown={(e) => longPressApp(e, app)}
-            onMouseUp={handleAppTouchEnd}
-            onTouchEnd={handleAppTouchEnd}
-            onTouchMove={handleAppTouchEnd}
+            onMouseDown={(e) => handleAppTouchStart(e, app)}
+            onMouseUp={(e) => handleAppTouchEnd(e, app)}
+            onTouchEnd={(e) => handleAppTouchEnd(e, app)}
+            onTouchMove={() => {
+                if (longPressTimer.current) {
+                    clearTimeout(longPressTimer.current);
+                    longPressTimer.current = null;
+                }
+            }}
             onContextMenu={(e) => {
                 e.preventDefault();
             }}

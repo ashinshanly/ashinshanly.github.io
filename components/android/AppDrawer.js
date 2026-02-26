@@ -8,10 +8,40 @@ export default function AppDrawer({ isOpen, onClose, apps, onOpenApp }) {
         app.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const touchStartPos = React.useRef({ x: 0, y: 0 });
+    const lastOpenedTime = React.useRef(0);
+
     // Handle app click
     const handleAppClick = (appId) => {
+        const now = Date.now();
+        if (now - lastOpenedTime.current < 500) return;
+        lastOpenedTime.current = now;
+
         onOpenApp(appId);
         setSearchQuery('');
+    };
+
+    const handleTouchStart = (e) => {
+        if (e.touches && e.touches.length > 0) {
+            touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.clientX !== undefined) {
+            touchStartPos.current = { x: e.clientX, y: e.clientY };
+        }
+    };
+
+    const handleTouchEnd = (e, appId) => {
+        if (e && e.type === 'touchend' && e.changedTouches && e.changedTouches.length > 0) {
+            const touch = e.changedTouches[0];
+            const distance = Math.sqrt(
+                Math.pow(touch.clientX - touchStartPos.current.x, 2) +
+                Math.pow(touch.clientY - touchStartPos.current.y, 2)
+            );
+
+            if (distance < 15) {
+                handleAppClick(appId);
+                if (e.cancelable) e.preventDefault();
+            }
+        }
     };
 
     return (
@@ -47,6 +77,8 @@ export default function AppDrawer({ isOpen, onClose, apps, onOpenApp }) {
                         key={app.id || index}
                         className="android-app-icon ripple"
                         onClick={() => handleAppClick(app.id)}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={(e) => handleTouchEnd(e, app.id)}
                     >
                         <img
                             src={app.icon}
