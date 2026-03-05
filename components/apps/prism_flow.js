@@ -966,8 +966,16 @@ export function PrismFlow() {
         const resizeCanvas = () => {
             // Use canvas's own CSS-rendered size (flex: 1 gives it the right height)
             const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
+            // Minimum internal canvas width to prevent gameplay clipping on small screens
+            const MIN_WIDTH = 550;
+            if (rect.width < MIN_WIDTH && rect.width > 0) {
+                const ratio = MIN_WIDTH / rect.width;
+                canvas.width = MIN_WIDTH;
+                canvas.height = rect.height * ratio;
+            } else {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
         };
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
