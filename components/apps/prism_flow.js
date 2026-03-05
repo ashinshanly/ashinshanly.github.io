@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // ─── Constants ──────────────────────────────────────────────
 const GRID_SIZE = 40;
-const SNAP_SIZE = GRID_SIZE / 2; // Half-grid snap for finer placement
+const SNAP_SIZE = GRID_SIZE / 4; // Quarter-grid snap for very fine placement
 const BEAM_MAX_DEPTH = 20;
 const BEAM_WIDTH = 2.5;
 const ROTATION_STEP = Math.PI / 12; // 15 degrees
@@ -1039,12 +1039,21 @@ export function PrismFlow() {
 
         // If a tool is selected, place it
         if (selectedTool && toolInventory[selectedTool] > 0) {
-            const sx = snapToGrid(mx);
-            const sy = snapToGrid(my);
+            let cx = snapToGrid(mx) + GRID_SIZE / 2;
+            let cy = snapToGrid(my) + GRID_SIZE / 2;
+
+            if (canvasRef.current) {
+                const w = canvasRef.current.width;
+                const h = canvasRef.current.height;
+                const margin = GRID_SIZE / 2;
+                cx = Math.max(margin, Math.min(w - margin, cx));
+                cy = Math.max(margin, Math.min(h - margin, cy));
+            }
+
             const newObj = {
                 type: selectedTool,
-                x: sx + GRID_SIZE / 2,
-                y: sy + GRID_SIZE / 2,
+                x: cx,
+                y: cy,
                 angle: selectedTool === 'mirror' ? Math.PI / 4 : 0,
             };
             setPlacedObjects(prev => {
@@ -1063,9 +1072,18 @@ export function PrismFlow() {
         if (!dragging) return;
         setPlacedObjects(prev => {
             const copy = [...prev];
-            const sx = snapToGrid(mx - dragging.offsetX) + GRID_SIZE / 2;
-            const sy = snapToGrid(my - dragging.offsetY) + GRID_SIZE / 2;
-            copy[dragging.index] = { ...copy[dragging.index], x: sx, y: sy };
+            let cx = snapToGrid(mx - dragging.offsetX) + GRID_SIZE / 2;
+            let cy = snapToGrid(my - dragging.offsetY) + GRID_SIZE / 2;
+
+            if (canvasRef.current) {
+                const w = canvasRef.current.width;
+                const h = canvasRef.current.height;
+                const margin = GRID_SIZE / 2;
+                cx = Math.max(margin, Math.min(w - margin, cx));
+                cy = Math.max(margin, Math.min(h - margin, cy));
+            }
+
+            copy[dragging.index] = { ...copy[dragging.index], x: cx, y: cy };
             return copy;
         });
     }
