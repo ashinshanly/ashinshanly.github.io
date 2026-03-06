@@ -417,7 +417,33 @@ function Projects() {
 function Resume() {
     return (
         <div className="h-full w-full pt-8 md:pt-0">
-            <iframe className="h-full w-full" src="./files/AshinShanly_RESUME.pdf" title="ashin shanly resume" frameBorder="0"></iframe>
+            {/* Desktop: native PDF viewer works fine */}
+            <iframe
+                className="h-full w-full hidden md:block"
+                src="./files/AshinShanly_RESUME.pdf"
+                title="ashin shanly resume"
+                frameBorder="0"
+            />
+            {/* Mobile: use Google Docs Viewer for proper PDF scrolling */}
+            <div className="h-full w-full flex flex-col md:hidden">
+                <iframe
+                    className="flex-grow w-full"
+                    src="https://docs.google.com/gview?url=https://ashinshanly.github.io/files/AshinShanly_RESUME.pdf&embedded=true"
+                    title="ashin shanly resume"
+                    frameBorder="0"
+                    style={{ minHeight: 0 }}
+                />
+                <div className="flex justify-center py-2 shrink-0">
+                    <a
+                        href="./files/AshinShanly_RESUME.pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm text-gray-300 hover:text-white underline"
+                    >
+                        Open / Download Resume
+                    </a>
+                </div>
+            </div>
         </div>
     )
 }
