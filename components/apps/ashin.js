@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga4';
+import { CardContainer, CardBody, CardItem } from '../util components/3d-card';
 
 export class AboutAshin extends Component {
 
@@ -316,7 +317,7 @@ function Projects() {
         {
             name: "Accelerated Implicit Neural Representation with Split Encoder and Multiscale Partitioning",
             date: "Jul 2022",
-            link: "",
+            link: "https://github.com/ashinshanly",
             description: [
                 "Implicit Neural Representation (INR) is an emerging signal representation and rendering technique. These representations are continuous, implicit and differentiable. Their primary advantages are memory efficiency with high spatial resolution and the ability to be incorporated into pipelines based on differentiable learning. However, neural scene representations are slow and cannot represent complex scenes. In this work, we aim to speed up the training time for implicit neural representation networks without compromising the quality of the reconstructed signal. We propose an input-split network architecture that flexibly distributes network resources during training based on the intricacy of the input signal at the given locality. We perform experiments on large-scale images and complex Stanford 3D models. We present a detailed comparison of results indicating speedups of up to ∼ 21.23% more than the state-of-the-art approaches.",
             ],
@@ -325,7 +326,7 @@ function Projects() {
         {
             name: "Image Caption Generator using Siamese Graph Convolutional Networks and LSTM",
             date: "Jun 2021",
-            link: "",
+            link: "https://github.com/ashinshanly",
             description: [
                 "Image captions are those crisp descriptions that you see under images. They generally provide the viewer with a brief idea about the image context. To generate an accurate description of the scene, the model requires a semantic and spatial understanding of the contents in the scene. This project proposes a novel approach using Siamese Graph Convolutional Network (S-GCN), making use of a non-parametric Kernel Activation function (KAF) followed by an LSTM with attention to generate natural language captions for the input image. Siamese-GCN captures deep semantic relations and makes the model more robust to class imbalances. We use an extended kernel activation function and regularize with standard lp-norm techniques, improving the overall model performance by a significant margin. Successfully published this work at the 9th ACM Conference on Data Sciences (CODS) and the 27th Conference on Management of Data (COMAD), garnering recognition for its contribution to the field.",
             ],
@@ -334,7 +335,7 @@ function Projects() {
         {
             name: "Reverse Dictionary using an Improved CBOW model",
             date: "Oct 2020",
-            link: "",
+            link: "https://github.com/ashinshanly",
             description: [
                 "A reverse dictionary is a tool that solves the Tip-of-the-Tongue problem by predicting the target word given a meaning or description. This project proposes a modified Continuous Bag-Of-Words (CBOW) model inspired by the Recurrent Neural Network (RNN), to implement a reverse dictionary. The model possesses the merits of both the CBOW model and RNN while stripping away the complexity associated with RNN. We evaluate the model by measuring accuracy based on the top-2 predictions. Built three deep neural network variants among which one of them was published in the ACM Cods Comad conference 2021.",
             ],
@@ -376,37 +377,47 @@ function Projects() {
                         const projectNameFromLink = project.link.split('/')
                         const projectName = projectNameFromLink[projectNameFromLink.length - 1]
                         return (
-                            <a key={index} href={project.link} target="_blank" rel="noreferrer" className="flex w-full flex-col px-0 md:px-4 mb-4">
-                                <div className="w-full py-3 px-3 md:px-4 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer">
-                                    <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2 md:gap-0">
-                                        <div className='flex flex-col md:flex-row items-start md:items-center'>
-                                            <div className=" text-base md:text-lg mr-2 font-medium">{project.name}</div>
-                                            <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=true`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0"></iframe>
+                            <CardContainer key={index} className="flex w-full flex-col px-0 md:px-4 mb-4">
+                                <CardBody className="w-full">
+                                    <CardItem
+                                        as="a"
+                                        href={project.link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        translateZ="50"
+                                        translateY="-10"
+                                        className="w-full py-3 px-3 md:px-4 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer block pointer-events-auto relative z-20"
+                                    >
+                                        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2 md:gap-0">
+                                            <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                                <CardItem translateZ="100" className=" text-base md:text-lg mr-2 font-medium">{project.name}</CardItem>
+                                                <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=false`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0 pointer-events-none"></iframe>
+                                            </div>
+                                            <div className="text-gray-400 font-light text-xs md:text-sm whitespace-nowrap">{project.date}</div>
                                         </div>
-                                        <div className="text-gray-400 font-light text-xs md:text-sm whitespace-nowrap">{project.date}</div>
-                                    </div>
-                                    <ul className=" tracking-normal leading-relaxed text-sm font-light mt-3 px-1 md:ml-4">
-                                        {
-                                            project.description.map((desc, index) => {
-                                                return <li key={index} className="list-disc mt-1 text-gray-200">{desc}</li>;
-                                            })
-                                        }
-                                    </ul>
-                                    <div className="flex flex-wrap items-start justify-start text-xs py-2">
-                                        {
-                                            (project.domains ?
-                                                project.domains.map((domain, index) => {
-                                                    const borderColorClass = `border-${tag_colors[domain]}`
-                                                    const textColorClass = `text-${tag_colors[domain]}`
-
-                                                    return <span key={index} className={`px-1.5 py-0.5 w-max border ${borderColorClass} ${textColorClass} m-1 rounded-full`}>{domain}</span>
+                                        <ul className=" tracking-normal leading-relaxed text-sm font-light mt-3 px-1 md:ml-4">
+                                            {
+                                                project.description.map((desc, index) => {
+                                                    return <li key={index} className="list-disc mt-1 text-gray-200">{desc}</li>;
                                                 })
+                                            }
+                                        </ul>
+                                        <div className="flex flex-wrap items-start justify-start text-xs py-2">
+                                            {
+                                                (project.domains ?
+                                                    project.domains.map((domain, index) => {
+                                                        const borderColorClass = `border-${tag_colors[domain]}`
+                                                        const textColorClass = `text-${tag_colors[domain]}`
 
-                                                : null)
-                                        }
-                                    </div>
-                                </div>
-                            </a>
+                                                        return <span key={index} className={`px-1.5 py-0.5 w-max border ${borderColorClass} ${textColorClass} m-1 rounded-full`}>{domain}</span>
+                                                    })
+
+                                                    : null)
+                                            }
+                                        </div>
+                                    </CardItem>
+                                </CardBody>
+                            </CardContainer>
                         )
                     })
                 }
