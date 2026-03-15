@@ -1,8 +1,11 @@
 import React from 'react'
+import { AnimatedBorder } from '../util components/animated-border'
 
 export default function VsCode() {
     return (
-        <iframe src="https://github1s.com/ashinshanly/ashinshanly.github.io/blob/HEAD/components/ubuntu.js" frameBorder="0" title="VsCode" className="h-full w-full bg-ub-cool-grey"></iframe>
+        <AnimatedBorder borderClassName="bg-opacity-40" containerClassName="rounded-b-none" className="bg-[#1e1e1e]">
+            <iframe src="https://github1s.com/ashinshanly/ashinshanly.github.io/blob/HEAD/components/ubuntu.js" frameBorder="0" title="VsCode" className="h-full w-full bg-ub-cool-grey"></iframe>
+        </AnimatedBorder>
         // this is not my work, but it's amazing!
         // Here is the link to the original repo: https://github.com/conwnet/github1s
     )

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga4';
 import { CardContainer, CardBody, CardItem } from '../util components/3d-card';
+import { TracingBeam } from '../util components/tracing-beam';
+import { HoverGlare } from '../util components/hover-glare';
 
 export class AboutAshin extends Component {
 
@@ -103,7 +105,7 @@ export class AboutAshin extends Component {
                         {this.renderNavLinks()}
                     </div>
                 </div>
-                <div className="flex flex-col w-3/4 md:w-4/5 justify-start items-center flex-grow bg-ub-grey overflow-y-auto windowMainScreen">
+                <div id="about-screen" className="flex flex-col w-3/4 md:w-4/5 justify-start items-center flex-grow bg-ub-grey overflow-y-auto windowMainScreen">
                     {this.state.screen}
                 </div>
             </div>
@@ -154,52 +156,54 @@ function Experience() {
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <ul className=" mt-4 leading-normal tracking-tight text-sm md:text-base w-11/12 md:w-3/4 emoji-list px-2 md:px-0">
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                        Software Engineer III
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
-                    <ul className="pl-2">
-                        <li className="mt-2 text-gray-200"> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
-                        </li>
-                    </ul>
-                </li>
+            <TracingBeam className="px-6">
+                <ul className=" mt-4 leading-normal tracking-tight text-sm md:text-base w-11/12 md:w-3/4 emoji-list px-2 md:px-0">
+                    <li className="list-disc mb-6">
+                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
+                            Software Engineer III
+                        </div>
+                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
+                        <ul className="pl-2">
+                            <li className="mt-2 text-gray-200"> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
+                            </li>
+                        </ul>
+                    </li>
 
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                        Member of Technical Staff (IC2)
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
-                    <ul className="pl-2">
-                        <li className="mt-2 text-gray-200"> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
-                        </li>
-                        <li className="mt-2 text-gray-200"> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
-                        </li>
-                        <li className="mt-2 text-gray-200"> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution, and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
-                        </li>
-                        <li className="mt-2 text-gray-200"> Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
-                        </li>
-                        <li className="mt-2 text-gray-200"> Led the design and implementation of robust data archival and purging frameworks, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimising active data sets. Collaborated with cross-functional teams to streamline data governance and ensure audit readiness.
-                        </li>
-                    </ul>
-                </li>
+                    <li className="list-disc mb-6">
+                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
+                            Member of Technical Staff (IC2)
+                        </div>
+                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
+                        <ul className="pl-2">
+                            <li className="mt-2 text-gray-200"> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
+                            </li>
+                            <li className="mt-2 text-gray-200"> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
+                            </li>
+                            <li className="mt-2 text-gray-200"> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution, and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
+                            </li>
+                            <li className="mt-2 text-gray-200"> Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
+                            </li>
+                            <li className="mt-2 text-gray-200"> Led the design and implementation of robust data archival and purging frameworks, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimising active data sets. Collaborated with cross-functional teams to streamline data governance and ensure audit readiness.
+                            </li>
+                        </ul>
+                    </li>
 
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                        Machine Vision Research Scientist Intern
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
-                    <ul className="pl-2">
-                        <li className="mt-2 text-gray-200">Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
-                        </li>
-                        <li className="mt-2 text-gray-200">Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
-                        </li>
-                        <li className="mt-2 text-gray-200">Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+                    <li className="list-disc mb-6">
+                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
+                            Machine Vision Research Scientist Intern
+                        </div>
+                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
+                        <ul className="pl-2">
+                            <li className="mt-2 text-gray-200">Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
+                            </li>
+                            <li className="mt-2 text-gray-200">Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
+                            </li>
+                            <li className="mt-2 text-gray-200">Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </TracingBeam>
         </>
     )
 }
@@ -267,39 +271,39 @@ function Skills() {
             <div className="w-11/12 md:w-10/12 flex flex-col md:flex-row mt-4 px-2 md:px-0 gap-6 md:gap-0">
                 <div className="w-full md:w-1/2">
                     <div className="text-sm text-center md:text-base font-bold mb-2">Languages & Tools</div>
-                    <div className="flex flex-wrap justify-center items-start w-full">
-                        <img className="m-1" src="http://img.shields.io/badge/-Python-3776AB?style=flat&logo=python&logoColor=ffffff" alt="ashin python" />
-                        <img className="m-1" src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat&logo=c%2B%2B&logoColor=white" alt="ashin c++" />
-                        <img className="m-1" src="http://img.shields.io/badge/-SQL-4479A1?style=plastic&logo=postgresql&logoColor=ffffff" alt="ashin sql" />
-                        <img className="m-1" src="https://img.shields.io/badge/-JavaScript-%23F7DF1C?style=flat&logo=javascript&logoColor=000000&labelColor=%23F7DF1C&color=%23FFCE5A" alt="ashin javascript" />
-                        <a href="https://www.google.com/search?q=is+html+a+language%3F" target="_blank" rel="noreferrer"><img title="yes it's a language!" className="m-1" src="https://img.shields.io/badge/-HTML5-%23E44D27?style=flat&logo=html5&logoColor=ffffff" alt="ashin HTML" /></a>
-                        <img src="http://img.shields.io/badge/-OCI-F80000?style=plastic&logo=oracle&logoColor=ffffff" alt="ashin oci" className="m-1" />
-                        <img src="http://img.shields.io/badge/-GCP-4285F4?style=plastic&logo=googlecloud&logoColor=ffffff" alt="ashin gcp" className="m-1" />
-                        <img src="http://img.shields.io/badge/-Terraform-623CE4?style=plastic&logo=terraform&logoColor=ffffff" alt="ashin terraform" className="m-1" />
-                        <img src="http://img.shields.io/badge/-Docker-2496ED?style=plastic&logo=docker&logoColor=ffffff" alt="ashin docker" className="m-1" />
-                        <img src="http://img.shields.io/badge/-Kubernetes-326CE5?style=plastic&logo=kubernetes&logoColor=ffffff" alt="ashin kubernetes" className="m-1" />
-                        <img src="http://img.shields.io/badge/-Android%20Studio-3DDC84?style=plastic&logo=androidstudio&logoColor=ffffff" alt="ashin android studio" className="m-1" />
-                        <img src="http://img.shields.io/badge/-XAMPP-FB7A24?style=plastic&logo=xampp&logoColor=ffffff" alt="ashin android xampp" className="m-1" />
-                        <img src="https://img.shields.io/badge/-Sass-%23CC6699?style=flat&logo=sass&logoColor=ffffff" alt="ashin SASS" className="m-1" />
-                        <img src="https://img.shields.io/badge/-Git-%23F05032?style=flat&logo=git&logoColor=%23ffffff" alt="ashin git" className="m-1" />
+                    <div className="flex flex-wrap justify-center items-start w-full gap-2">
+                        <HoverGlare><img src="http://img.shields.io/badge/-Python-3776AB?style=flat&logo=python&logoColor=ffffff" alt="ashin python" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat&logo=c%2B%2B&logoColor=white" alt="ashin c++" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-SQL-4479A1?style=plastic&logo=postgresql&logoColor=ffffff" alt="ashin sql" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/-JavaScript-%23F7DF1C?style=flat&logo=javascript&logoColor=000000&labelColor=%23F7DF1C&color=%23FFCE5A" alt="ashin javascript" /></HoverGlare>
+                        <a href="https://www.google.com/search?q=is+html+a+language%3F" target="_blank" rel="noreferrer"><HoverGlare><img title="yes it's a language!" src="https://img.shields.io/badge/-HTML5-%23E44D27?style=flat&logo=html5&logoColor=ffffff" alt="ashin HTML" /></HoverGlare></a>
+                        <HoverGlare><img src="http://img.shields.io/badge/-OCI-F80000?style=plastic&logo=oracle&logoColor=ffffff" alt="ashin oci" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-GCP-4285F4?style=plastic&logo=googlecloud&logoColor=ffffff" alt="ashin gcp" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Terraform-623CE4?style=plastic&logo=terraform&logoColor=ffffff" alt="ashin terraform" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Docker-2496ED?style=plastic&logo=docker&logoColor=ffffff" alt="ashin docker" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Kubernetes-326CE5?style=plastic&logo=kubernetes&logoColor=ffffff" alt="ashin kubernetes" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Android%20Studio-3DDC84?style=plastic&logo=androidstudio&logoColor=ffffff" alt="ashin android studio" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-XAMPP-FB7A24?style=plastic&logo=xampp&logoColor=ffffff" alt="ashin android xampp" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/-Sass-%23CC6699?style=flat&logo=sass&logoColor=ffffff" alt="ashin SASS" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/-Git-%23F05032?style=flat&logo=git&logoColor=%23ffffff" alt="ashin git" /></HoverGlare>
                     </div>
                 </div>
                 <div className="w-full md:w-1/2">
                     <div className="text-sm text-center md:text-base font-bold mb-2">Frameworks & Libraries</div>
-                    <div className="flex flex-wrap justify-center items-start w-full">
-                        <img className="m-1" src="http://img.shields.io/badge/-Apache%20Spark-E25A1C?style=plastic&logo=apachespark&logoColor=ffffff" alt="ashin spark" />
-                        <img className="m-1" src="http://img.shields.io/badge/-Hadoop-66CCFF?style=plastic&logo=apachehadoop&logoColor=ffffff" alt="ashin hadoop" />
-                        <img className="m-1" src="http://img.shields.io/badge/-TensorFlow-FF6F00?style=plastic&logo=tensorflow&logoColor=ffffff" alt="ashin tensorflow" />
-                        <img className="m-1" src="http://img.shields.io/badge/-PyTorch-EE4C2C?style=plastic&logo=pytorch&logoColor=ffffff" alt="ashin pytorch" />
-                        <img className="m-1" src="http://img.shields.io/badge/-Streamlit-FF4B4B?style=plastic&logo=streamlit&logoColor=ffffff" alt="ashin streamlit" />
-                        <img className="m-1" src="http://img.shields.io/badge/-Flask-000000?style=plastic&logo=flask&logoColor=ffffff" alt="ashin flask" />
-                        <img className=" m-1" src="https://img.shields.io/badge/Next-black?style=flat&logo=next.js&logoColor=ffffff" alt="ashin next" />
-                        <img className=" m-1" src="https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=ffffff" alt="ashin react" />
-                        <img className="m-1" src="http://img.shields.io/badge/-Django-092E20?style=plastic&logo=django&logoColor=ffffff" alt="ashin django" />
-                        <img className="m-1" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="ashin tailwind css" />
-                        <img src="https://img.shields.io/badge/-Nodejs-339933?style=flat&logo=Node.js&logoColor=ffffff" alt="ashin node.js" className="m-1" />
-                        <img src="https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white" alt="ashin jquery" className="m-1" />
-                        <img className="m-1" src="https://img.shields.io/badge/Redux-593D88?style=flat&logo=redux&logoColor=white" alt="ashin redux" />
+                    <div className="flex flex-wrap justify-center items-start w-full gap-2">
+                        <HoverGlare><img src="http://img.shields.io/badge/-Apache%20Spark-E25A1C?style=plastic&logo=apachespark&logoColor=ffffff" alt="ashin spark" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Hadoop-66CCFF?style=plastic&logo=apachehadoop&logoColor=ffffff" alt="ashin hadoop" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-TensorFlow-FF6F00?style=plastic&logo=tensorflow&logoColor=ffffff" alt="ashin tensorflow" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-PyTorch-EE4C2C?style=plastic&logo=pytorch&logoColor=ffffff" alt="ashin pytorch" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Streamlit-FF4B4B?style=plastic&logo=streamlit&logoColor=ffffff" alt="ashin streamlit" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Flask-000000?style=plastic&logo=flask&logoColor=ffffff" alt="ashin flask" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/Next-black?style=flat&logo=next.js&logoColor=ffffff" alt="ashin next" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=ffffff" alt="ashin react" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Django-092E20?style=plastic&logo=django&logoColor=ffffff" alt="ashin django" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="ashin tailwind css" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/-Nodejs-339933?style=flat&logo=Node.js&logoColor=ffffff" alt="ashin node.js" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white" alt="ashin jquery" /></HoverGlare>
+                        <HoverGlare><img src="https://img.shields.io/badge/Redux-593D88?style=flat&logo=redux&logoColor=white" alt="ashin redux" /></HoverGlare>
                     </div>
                 </div>
             </div>

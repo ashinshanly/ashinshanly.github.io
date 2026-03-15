@@ -36,8 +36,8 @@ export default function SideBar(props) {
                 " md:left-0 md:top-0 md:bottom-auto md:h-full md:w-auto md:flex-col md:pt-7 md:pb-0 " +
                 " flex justify-start items-center border-black border-opacity-60 bg-black bg-opacity-50"
             }>
-                {/* Apps container - horizontal scroll on mobile */}
-                <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible overflow-y-visible md:overflow-y-auto flex-grow scrollbar-hide">
+                {/* Apps container */}
+                <div className="flex flex-row md:flex-col overflow-visible flex-grow scrollbar-hide">
                     {
                         (
                             Object.keys(props.closed_windows).length !== 0

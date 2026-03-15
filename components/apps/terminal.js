@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
 import ReactGA from 'react-ga4';
+import { AnimatedBorder } from '../util components/animated-border'
 
 export class Terminal extends Component {
     constructor() {
@@ -420,11 +421,13 @@ export class Terminal extends Component {
 
     render() {
         return (
-            <div className="h-full w-full bg-ub-drk-abrgn text-white text-sm font-bold" id="terminal-body">
-                {
-                    this.state.terminal
-                }
-            </div>
+            <AnimatedBorder borderClassName="bg-opacity-40" containerClassName="rounded-b-none p-[1.5px]" className="bg-ub-drk-abrgn">
+                <div className="h-full w-full text-white text-sm font-bold" id="terminal-body">
+                    {
+                        this.state.terminal
+                    }
+                </div>
+            </AnimatedBorder>
         )
     }
 }
