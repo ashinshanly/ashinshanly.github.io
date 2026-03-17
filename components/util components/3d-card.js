@@ -4,11 +4,12 @@ const MouseEnterContext = createContext();
 
 export const CardContainer = ({ children, className, containerClassName }) => {
     const containerRef = useRef(null);
+    const rectRef = useRef(null);
     const [isMouseEntered, setIsMouseEntered] = useState(false);
 
     const handleMouseMove = (e) => {
-        if (!containerRef.current) return;
-        const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+        if (!containerRef.current || !rectRef.current) return;
+        const { left, top, width, height } = rectRef.current;
         const x = (e.clientX - left - width / 2) / 25;
         const y = (e.clientY - top - height / 2) / 25;
         containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
@@ -16,13 +17,16 @@ export const CardContainer = ({ children, className, containerClassName }) => {
 
     const handleMouseEnter = (e) => {
         setIsMouseEntered(true);
-        if (!containerRef.current) return;
+        if (containerRef.current) {
+            rectRef.current = containerRef.current.getBoundingClientRect();
+        }
     };
 
     const handleMouseLeave = (e) => {
         if (!containerRef.current) return;
         setIsMouseEntered(false);
         containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        rectRef.current = null;
     };
 
     return (

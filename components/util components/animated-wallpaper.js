@@ -2,38 +2,41 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const AnimatedWallpaper = () => {
   const canvasRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isMouseMoving, setIsMouseMoving] = useState(false);
-  
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let lastMouseMoveTime = 0;
+    // Use refs for values that change frequently to avoid re-renders
+    const mousePositionRef = useRef({ x: 0, y: 0 });
+    const isMouseMovingRef = useRef(false);
     
-    // Handle mouse movement
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      setIsMouseMoving(true);
-      lastMouseMoveTime = Date.now();
-      
-      // Set a timeout to detect when mouse stops moving
-      setTimeout(() => {
-        if (Date.now() - lastMouseMoveTime >= 100) {
-          setIsMouseMoving(false);
-        }
-      }, 100);
-    };
-    
-    // Set canvas dimensions
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
-    handleResize();
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        let lastMouseMoveTime = 0;
+        
+        // Handle mouse movement
+        const handleMouseMove = (e) => {
+            mousePositionRef.current = { x: e.clientX, y: e.clientY };
+            isMouseMovingRef.current = true;
+            lastMouseMoveTime = Date.now();
+            
+            // Set a timeout to detect when mouse stops moving
+            setTimeout(() => {
+                if (Date.now() - lastMouseMoveTime >= 100) {
+                    isMouseMovingRef.current = false;
+                }
+            }, 100);
+        };
+        
+        // Set canvas dimensions
+        const handleResize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('mousemove', handleMouseMove);
+        handleResize();
+        
+        // ... (rest of the setup code remains same)
     
     // Enhanced cosmic background with gradient
     const bgColors = {
@@ -308,11 +311,12 @@ const AnimatedWallpaper = () => {
     
     // Draw cursor interaction effects
     const drawCursorEffects = () => {
-      if (isMouseMoving) {
+      if (isMouseMovingRef.current) {
         // Create a glow effect at the cursor position
+        const { x, y } = mousePositionRef.current;
         const gradient = ctx.createRadialGradient(
-          mousePosition.x, mousePosition.y, 0,
-          mousePosition.x, mousePosition.y, 100
+          x, y, 0,
+          x, y, 100
         );
         
         // Use a subtle blue glow
@@ -321,7 +325,7 @@ const AnimatedWallpaper = () => {
         gradient.addColorStop(1, 'rgba(50, 100, 255, 0)');
         
         ctx.beginPath();
-        ctx.arc(mousePosition.x, mousePosition.y, 100, 0, Math.PI * 2);
+        ctx.arc(x, y, 100, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
         
@@ -330,11 +334,11 @@ const AnimatedWallpaper = () => {
           const angle = Math.random() * Math.PI * 2;
           const distance = Math.random() * 20;
           
-          const x = mousePosition.x + Math.cos(angle) * distance;
-          const y = mousePosition.y + Math.sin(angle) * distance;
+          const px = x + Math.cos(angle) * distance;
+          const py = y + Math.sin(angle) * distance;
           
           ctx.beginPath();
-          ctx.arc(x, y, Math.random() * 1.5 + 0.5, 0, Math.PI * 2);
+          ctx.arc(px, py, Math.random() * 1.5 + 0.5, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(200, 220, 255, 0.8)';
           ctx.fill();
         }
