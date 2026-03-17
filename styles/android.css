@@ -99,25 +99,36 @@
     padding-bottom: var(--android-nav-bar-height);
 }
 
-/* At-a-Glance Widget */
+/* At-a-Glance Widget — Google Pixel Style */
 .at-a-glance {
-    padding: 40px 24px 20px;
+    padding: 36px 24px 16px;
     text-align: left;
+    position: relative;
 }
 
 .at-a-glance-date {
-    font-size: 16px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 2px;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.at-a-glance-date::after {
+    content: '☀️';
+    font-size: 14px;
 }
 
 .at-a-glance-time {
-    font-size: 64px;
-    font-weight: 200;
+    font-size: 72px;
+    font-weight: 100;
     color: white;
     line-height: 1;
-    letter-spacing: -2px;
+    letter-spacing: -3px;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
 }
 
 /* App Grid */
@@ -199,7 +210,7 @@
     display: none;
 }
 
-/* Gesture Navigation Bar */
+/* Gesture Navigation Bar — Android 12+ */
 .gesture-nav-bar {
     position: absolute;
     bottom: 8px;
@@ -207,9 +218,16 @@
     transform: translateX(-50%);
     width: 134px;
     height: 5px;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.65);
     border-radius: var(--android-radius-full);
     z-index: 100;
+    transition: width 0.2s ease, opacity 0.2s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.gesture-nav-bar:active {
+    width: 100px;
+    opacity: 0.8;
 }
 
 /* App Drawer - Glassmorphic */
@@ -219,15 +237,15 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 15, 15, 0.65);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+    background: rgba(10, 10, 15, 0.45);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
     z-index: 50;
     transform: translateY(100%);
     transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
     padding-top: 60px;
     overflow-y: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(0, 255, 255, 0.15);
 }
 
 .app-drawer.open {
@@ -237,11 +255,14 @@
 .app-drawer-search {
     margin: 16px;
     padding: 14px 20px;
-    background: var(--android-surface-variant);
+    background: rgba(255, 255, 255, 0.05); /* Glassmorphic search background */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--android-radius-full);
     display: flex;
     align-items: center;
     gap: 12px;
+    box-shadow: 0 4px 16px rgba(0, 255, 255, 0.05);
 }
 
 .app-drawer-search input {
@@ -270,13 +291,17 @@
     top: 0;
     left: 0;
     right: 0;
-    background: var(--android-surface-container);
+    background: rgba(20, 20, 25, 0.65); /* Glassmorphic QS background */
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: 0 0 var(--android-radius-xl) var(--android-radius-xl);
     z-index: 60;
     transform: translateY(-100%);
     transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     padding: 16px;
     padding-top: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .quick-settings.open {
@@ -296,15 +321,18 @@
     align-items: center;
     justify-content: center;
     padding: 16px 8px;
-    background: var(--android-surface-variant);
+    background: rgba(255, 255, 255, 0.05); /* Glass tile */
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--android-radius-lg);
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: all 0.2s ease;
 }
 
 .quick-settings-tile.active {
-    background: var(--android-primary);
-    color: var(--android-surface);
+    background: rgba(0, 255, 255, 0.2); /* Cyan glow toggle */
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    color: #0ff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
 }
 
 .quick-settings-tile svg {
@@ -655,11 +683,11 @@
     font-weight: 200;
     line-height: 1;
     color: transparent;
-    background: linear-gradient(135deg, #ffffff 0%, #a5c8ff 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #06b6d4 100%);
     -webkit-background-clip: text;
     background-clip: text;
     letter-spacing: -4px;
-    text-shadow: 0 0 40px rgba(165, 200, 255, 0.3);
+    text-shadow: 0 0 60px rgba(6, 182, 212, 0.4), 0 0 100px rgba(6, 182, 212, 0.2);
     margin-bottom: 8px;
 }
 
@@ -671,9 +699,9 @@
     letter-spacing: 2px;
     padding: 8px 16px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+    background: rgba(6, 182, 212, 0.05); /* very faint cyan tint */
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.1), inset 0 0 20px rgba(6, 182, 212, 0.05);
 }
 
 .lock-notifications {

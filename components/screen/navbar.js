@@ -14,39 +14,25 @@ export default class Navbar extends Component {
 
 	render() {
 		return (
-			<div className="main-navbar-vp absolute top-0 right-0 w-screen shadow-md flex flex-nowrap justify-between items-center bg-ub-grey text-ubt-grey text-sm select-none z-50">
-				<div className="flex items-center">
-					<div
-						tabIndex="0"
-						className={
-							'pl-2 pr-2 md:pl-3 md:pr-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
-						}
-					>
-						<span className="hidden sm:inline">Activities</span>
-						<span className="sm:hidden">☰</span>
-					</div>
-					<div className="ml-1">
+			<div className="main-navbar-vp absolute top-0 right-0 w-screen flex flex-nowrap justify-between items-center text-white text-sm select-none z-50 bg-gradient-to-b from-black/70 to-transparent px-4 py-1.5 transition-all duration-300">
+				
+				{/* Left Side: Time and Notification Icons */}
+				<div className="flex items-center space-x-2">
 						<LiveCount />
+					{/* Placeholder Android Notification Icons */}
+					<div className="flex space-x-1.5 pl-2 opacity-90 pb-0.5">
+						
 					</div>
 				</div>
-				<div
-					tabIndex="0"
-					className={
-						'pl-2 pr-2 text-xs md:text-sm outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1'
-					}
-				>
-					<Clock />
-				</div>
+
+				{/* Right Side: System Icons (Wi-Fi, Battery, etc) */}
 				<div
 					id="status-bar"
 					tabIndex="0"
-					onFocus={() => {
-						this.setState({ status_card: true });
+					onClick={() => {
+						this.setState({ status_card: !this.state.status_card });
 					}}
-					// removed onBlur from here
-					className={
-						'relative pr-2 pl-2 md:pr-3 md:pl-3 outline-none transition duration-100 ease-in-out border-b-2 border-transparent focus:border-ubb-orange py-1 '
-					}
+					className="relative outline-none transition duration-100 ease-in-out cursor-pointer flex items-center mb-0.5"
 				>
 					<Status />
 					<StatusCard
@@ -54,7 +40,6 @@ export default class Navbar extends Component {
 						lockScreen={this.props.lockScreen}
 						visible={this.state.status_card}
 						toggleVisible={() => {
-							// this prop is used in statusCard component in handleClickOutside callback using react-onclickoutside
 							this.setState({ status_card: false });
 						}}
 						nightLight={this.props.nightLight}

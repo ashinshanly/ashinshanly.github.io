@@ -99,7 +99,7 @@ function Dock({
             className='mx-2 flex max-w-full items-end overflow-hidden'
         >
             <motion.div
-                onMouseMove={({ pageX }) => {
+                onMouseMove={({ pageX }: any) => {
                     isHovered.set(1);
                     mouseX.set(pageX);
                 }}
@@ -108,7 +108,7 @@ function Dock({
                     mouseX.set(Infinity);
                 }}
                 className={cn(
-                    'mx-auto flex w-fit gap-4 rounded-2xl bg-gray-50 px-4 dark:bg-neutral-900',
+                    'mx-auto flex w-fit gap-4 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_0_20px_rgba(0,255,255,0.15)] px-4 dark:bg-black/40',
                     className
                 )}
                 style={{ height: panelHeight }}

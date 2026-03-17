@@ -327,7 +327,12 @@ export default function AndroidHome() {
                     className={`flex flex-col h-full ${swipeX === 0 ? 'transition-opacity duration-300' : ''} ${page === 1 && swipeX === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                 >
                     <div className="at-a-glance">
-                        <div className="at-a-glance-date">{formatDate()}</div>
+                        <div className="flex items-center justify-between w-full mb-1">
+                            <div className="at-a-glance-date">{formatDate()}</div>
+                            <div className="flex items-center gap-1.5 text-white/80 text-sm">
+                                <span>24°</span>
+                            </div>
+                        </div>
                         <div className="at-a-glance-time">{formatTime()}</div>
                     </div>
 

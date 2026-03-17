@@ -47,6 +47,10 @@ module.exports = {
       'full': '100%',
     },
     extend: {
+      fontFamily: {
+        sans: ['"Space Grotesk"', 'sans-serif'],
+        space: ['"Space Grotesk"', 'sans-serif'],
+      },
       zIndex: {
         '-10': '-10',
       },

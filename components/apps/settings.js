@@ -53,14 +53,14 @@ export function Settings(props) {
     };
 
     return (
-        <div className={"w-full flex-col flex-grow z-20 max-h-full overflow-y-auto windowMainScreen select-none bg-ub-cool-grey"}>
+        <div className={"w-full flex-col flex-grow z-20 max-h-full overflow-y-auto windowMainScreen select-none bg-black/60 backdrop-blur-xl"}>
             {renderPreview()}
             <div className="flex flex-wrap justify-center items-center border-t border-gray-900 gap-2 p-2 md:gap-0 md:p-0">
                 {/* Static wallpaper options */}
                 {
                     Object.keys(wallpapers).map((name, index) => {
                         return (
-                            <div key={index} tabIndex="1" onFocus={changeBackgroundImage} data-path={name} className={((name === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-1 px-10 py-8 outline-none border-4 border-opacity-80 rounded-lg"} style={{ backgroundImage: `url(${wallpapers[name]})`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center center" }}></div>
+                            <div key={index} tabIndex="1" onFocus={changeBackgroundImage} data-path={name} className={((name === props.currBgImgName) ? " border-cyan-400 shadow-[0_0_20px_rgba(0,255,255,0.5)] " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-1 px-10 py-8 outline-none border-4 border-opacity-80 rounded-lg transition-all duration-300"} style={{ backgroundImage: `url(${wallpapers[name]})`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center center" }}></div>
                         );
                     })
                 }
@@ -70,7 +70,7 @@ export function Settings(props) {
                     tabIndex="1"
                     onFocus={changeBackgroundImage}
                     data-path="video"
-                    className={(("video" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
+                    className={(("video" === props.currBgImgName) ? " border-cyan-400 shadow-[0_0_20px_rgba(0,255,255,0.5)] " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 rounded-lg transition-all duration-300 relative overflow-hidden"}
                 >
                     <video
                         className="absolute inset-0 w-full h-full object-cover"
@@ -93,7 +93,7 @@ export function Settings(props) {
                     tabIndex="1"
                     onFocus={changeBackgroundImage}
                     data-path="animated"
-                    className={(("animated" === props.currBgImgName) ? " border-yellow-700 " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 relative overflow-hidden"}
+                    className={(("animated" === props.currBgImgName) ? " border-cyan-400 shadow-[0_0_20px_rgba(0,255,255,0.5)] " : " border-transparent ") + " md:px-28 md:py-20 md:m-4 m-2 px-14 py-10 outline-none border-4 border-opacity-80 rounded-lg transition-all duration-300 relative overflow-hidden"}
                 >
                     {/* Space background */}
                     <div className="absolute inset-0 bg-gradient-to-b from-[#141428] to-[#0a0a1e]"></div>

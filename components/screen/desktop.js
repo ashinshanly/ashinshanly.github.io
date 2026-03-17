@@ -7,6 +7,7 @@ import UbuntuApp from '../base/ubuntu_app';
 import AllApplications from '../screen/all-applications'
 import DesktopMenu from '../context menus/desktop-menu';
 import DefaultMenu from '../context menus/default';
+import AtAGlanceWidget from '../util components/AtAGlanceWidget';
 import $ from 'jquery';
 import ReactGA from 'react-ga4';
 
@@ -71,9 +72,12 @@ export class Desktop extends Component {
     }
 
     setEventListeners = () => {
-        document.getElementById("open-settings").addEventListener("click", () => {
-            this.openApp("settings");
-        });
+        const openSettings = document.getElementById("open-settings");
+        if (openSettings) {
+            openSettings.addEventListener("click", () => {
+                this.openApp("settings");
+            });
+        }
     }
 
     setContextListeners = () => {
@@ -507,6 +511,9 @@ export class Desktop extends Component {
     render() {
         return (
             <div className={" h-full w-full flex flex-col items-end justify-start content-start flex-wrap-reverse pt-8 bg-transparent relative overflow-hidden overscroll-none window-parent"}>
+
+                {/* At a Glance Widget */}
+                <AtAGlanceWidget />
 
                 {/* Window Area */}
                 <div className="absolute h-full w-full bg-transparent" data-context="desktop-area">

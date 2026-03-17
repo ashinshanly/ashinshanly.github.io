@@ -18,10 +18,10 @@ export default function SearchWidget({ onSearch }) {
             onSubmit={handleSubmit}
             className={`
                 mx-4 mb-4 flex items-center gap-3 px-4 py-3
-                bg-white/10 backdrop-blur-xl rounded-full
-                border border-white/10
-                transition-all duration-200
-                ${isFocused ? 'bg-white/20 border-white/20' : ''}
+                bg-black/30 backdrop-blur-2xl rounded-full
+                border border-cyan-500/30 shadow-[0_0_15px_rgba(0,255,255,0.1)]
+                transition-all duration-300
+                ${isFocused ? 'bg-black/50 border-cyan-400 shadow-[0_0_25px_rgba(0,255,255,0.3)]' : ''}
             `}
         >
             {/* Google "G" logo */}
@@ -37,12 +37,12 @@ export default function SearchWidget({ onSearch }) {
             {/* Search input */}
             <input
                 type="text"
-                placeholder="Search or type URL"
+                placeholder="Access Global Network..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className="flex-grow bg-transparent text-white placeholder-white/50 outline-none text-base"
+                className="flex-grow bg-transparent text-white placeholder-cyan-200/50 outline-none text-base font-space"
             />
 
 
