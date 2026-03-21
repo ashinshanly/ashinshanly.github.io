@@ -99,12 +99,31 @@ export default function MusicWidget() {
                 <div className="flex items-center gap-3">
                 {/* Album Art */}
                 <div className={`w-14 h-14 rounded-2xl overflow-hidden shadow-md relative flex-shrink-0 bg-white/5 ${isPlaying ? 'animate-pulse-subtle' : ''}`}>
-                    <img src="./themes/Yaru/apps/spotify.png" alt="Album Art" className="w-full h-full object-cover scale-110" />
+                    <img src="https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/d1/74/da/d174dacf-5782-dfe2-19f7-ce037dcd0237/00602527584935.rgb.jpg/400x400bb.jpg" alt="Album Art" className="w-full h-full object-cover scale-110" />
                     {isPlaying && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-1 backdrop-blur-[1px]">
-                            <div className="w-1 h-3 bg-white animate-bounce" style={{ animationDelay: '0s' }}></div>
-                            <div className="w-1 h-5 bg-white animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-1 h-4 bg-white animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="absolute inset-0 bg-black/60 flex items-end justify-center gap-[3px] pb-3 backdrop-blur-[1px]">
+                            <style>{`
+                                @keyframes eq {
+                                    0%, 100% { transform: scaleY(0.2); }
+                                    50% { transform: scaleY(1); }
+                                }
+                                .eq-bar {
+                                    width: 3px;
+                                    height: 14px;
+                                    background-color: #1DB954;
+                                    border-radius: 2px;
+                                    transform-origin: bottom;
+                                    animation: eq 1s ease-in-out infinite;
+                                }
+                                .eq-1 { animation-duration: 0.6s; animation-delay: 0.1s; }
+                                .eq-2 { animation-duration: 0.8s; animation-delay: 0.4s; }
+                                .eq-3 { animation-duration: 0.5s; animation-delay: 0.2s; }
+                                .eq-4 { animation-duration: 0.7s; animation-delay: 0.5s; }
+                            `}</style>
+                            <div className="eq-bar eq-1"></div>
+                            <div className="eq-bar eq-2"></div>
+                            <div className="eq-bar eq-3"></div>
+                            <div className="eq-bar eq-4"></div>
                         </div>
                     )}
                 </div>
