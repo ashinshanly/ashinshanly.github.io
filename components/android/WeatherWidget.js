@@ -37,7 +37,7 @@ export default function WeatherWidget() {
 
     return (
         <div
-            className="w-full rounded-3xl p-5 mb-4 relative overflow-hidden group"
+            className="w-full rounded-3xl p-4 relative overflow-hidden group"
             style={{
                 background: 'rgba(20, 20, 30, 0.6)',
                 backdropFilter: 'blur(24px)',
@@ -74,12 +74,12 @@ export default function WeatherWidget() {
                     {/* Temperature */}
                     <div className="flex items-start gap-1">
                         <span
-                            className="text-[52px] font-extralight text-white leading-none tracking-tighter"
+                            className="text-[42px] font-extralight text-white leading-none tracking-tighter"
                             style={{ textShadow: '0 0 40px rgba(255,255,255,0.1)' }}
                         >
                             {weather.temp}
                         </span>
-                        <span className="text-white/40 text-lg font-light mt-1">°C</span>
+                        <span className="text-white/40 text-base font-light mt-1">°C</span>
                     </div>
 
                     {/* Condition label + details */}
@@ -108,7 +108,7 @@ export default function WeatherWidget() {
                             className="absolute inset-0 blur-xl opacity-40 scale-150"
                             style={{ background: `radial-gradient(circle, ${weather.code === 0 ? 'rgba(251,191,36,0.5)' : 'rgba(96,165,250,0.4)'}, transparent)` }}
                         ></div>
-                        <span className="relative text-5xl" style={{
+                        <span className="relative text-4xl" style={{
                             filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.2))'
                         }}>
                             {weather.emoji}
@@ -128,7 +128,7 @@ export default function WeatherWidget() {
             </div>
 
             {/* Bottom: Hourly forecast placeholders */}
-            <div className="relative z-10 mt-4 pt-3 border-t border-white/5">
+            <div className="relative z-10 mt-3 pt-2 border-t border-white/5">
                 <div className="flex justify-between items-center">
                     {['Now', '+1h', '+2h', '+3h', '+4h'].map((time, i) => (
                         <div key={i} className="flex flex-col items-center gap-1">
