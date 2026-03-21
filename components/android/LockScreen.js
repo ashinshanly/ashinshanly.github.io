@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 
 export default function LockScreen({ isLocked, onUnlock, time }) {
     const [startY, setStartY] = useState(0);
@@ -11,7 +11,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
 
     const [selectedNotifications, setSelectedNotifications] = useState([]);
 
-    const notificationsPool = [
+    const notificationsPool = useMemo(() => [
         {
             app: "GitHub",
             title: "GitHub",
@@ -67,7 +67,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
             ),
             content: <><strong>Tim Cook</strong>: "Ashin, can you come fix Siri?"</>
         }
-    ];
+    ], []);
 
     useEffect(() => {
         if (!isLocked && !isUnlocking) {
@@ -79,7 +79,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
             setSelectedNotifications(shuffled.slice(0, 2));
             setIsUnlocking(false);
         }
-    }, [isLocked, isUnlocking]);
+    }, [isLocked, isUnlocking, notificationsPool]);
 
     const handleTouchStart = (e) => {
         if (isUnlocking) return;

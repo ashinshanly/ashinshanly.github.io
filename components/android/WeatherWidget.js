@@ -1,105 +1,142 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import useWeather from '../util components/useWeather';
 
 export default function WeatherWidget() {
-    const [weather, setWeather] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    // Default to Kochi, India
-    const lat = 9.9312;
-    const lon = 76.2673;
-
-    useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                const response = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
-                );
-                const data = await response.json();
-                setWeather(data.current_weather);
-                setLoading(false);
-            } catch (error) {
-                console.error("Failed to fetch weather:", error);
-                setLoading(false);
-            }
-        };
-
-        fetchWeather();
-    }, []);
-
-    const getWeatherIcon = (code) => {
-        // WMO Weather interpretation codes (http://www.wmo.int/pages/prog/www/IMOP/meetings/Surface/ET-AWS-5/Doc4(1).pdf)
-        // 0: Clear sky
-        // 1, 2, 3: Mainly clear, partly cloudy, and overcast
-        // 45, 48: Fog and depositing rime fog
-        // 51, 53, 55: Drizzle: Light, moderate, and dense intensity
-        // 61, 63, 65: Rain: Slight, moderate and heavy intensity
-        // 80, 81, 82: Rain showers: Slight, moderate, and violent
-        // 95, 96, 99: Thunderstorm: Slight or moderate
-
-        if (code === 0) return "sunny";
-        if (code >= 1 && code <= 3) return "partly_cloudy_day";
-        if (code >= 51 && code <= 67) return "rainy";
-        if (code >= 95) return "thunderstorm";
-        return "cloud-queue"; // default
-    };
+    const { weather, loading } = useWeather();
 
     if (loading) {
         return (
-            <div className="w-full h-40 rounded-3xl p-4 glass-card animate-pulse flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+            <div className="w-full h-44 rounded-3xl p-5 glass-card animate-pulse flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10"></div>
+                <div className="w-10 h-10 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin"></div>
             </div>
         );
     }
 
     if (!weather) return null;
 
-    const iconName = getWeatherIcon(weather.weathercode);
-    const temp = Math.round(weather.temperature);
+    // Dynamic gradient based on weather condition
+    const getWeatherGradient = (code) => {
+        if (code === 0) return 'from-amber-500/15 via-orange-400/10 to-yellow-300/5'; // Clear
+        if (code >= 1 && code <= 3) return 'from-slate-400/15 via-blue-300/10 to-indigo-400/5'; // Cloudy
+        if (code >= 45 && code <= 48) return 'from-gray-500/20 via-slate-400/10 to-gray-300/5'; // Fog
+        if (code >= 51 && code <= 67) return 'from-blue-500/15 via-cyan-400/10 to-blue-300/5'; // Rain
+        if (code >= 71 && code <= 86) return 'from-blue-200/15 via-white/10 to-blue-100/5'; // Snow
+        if (code >= 95) return 'from-purple-500/15 via-indigo-500/10 to-blue-500/5'; // Thunder
+        return 'from-cyan-500/10 via-blue-400/5 to-purple-500/10';
+    };
+
+    // Dynamic glow color
+    const getGlowColor = (code) => {
+        if (code === 0) return 'rgba(251, 191, 36, 0.15)';
+        if (code >= 1 && code <= 3) return 'rgba(148, 163, 184, 0.1)';
+        if (code >= 51 && code <= 67) return 'rgba(96, 165, 250, 0.15)';
+        if (code >= 95) return 'rgba(139, 92, 246, 0.15)';
+        return 'rgba(6, 182, 212, 0.1)';
+    };
 
     return (
-        <div className="w-full rounded-3xl p-5 mb-4 glass-card relative overflow-hidden group">
-            {/* Background Gradient based on weather (simplified) */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-500/20 opacity-50"></div>
+        <div
+            className="w-full rounded-3xl p-5 mb-4 relative overflow-hidden group"
+            style={{
+                background: 'rgba(20, 20, 30, 0.6)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                boxShadow: `0 8px 32px ${getGlowColor(weather.code)}, inset 0 1px 0 rgba(255,255,255,0.05)`
+            }}
+        >
+            {/* Animated gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${getWeatherGradient(weather.code)} opacity-80 transition-all duration-1000`}></div>
 
-            <div className="relative z-10 flex justify-between items-center">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            {/* Scanline effect */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{
+                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
+            }}></div>
+
+            {/* Floating orb decoration */}
+            <div
+                className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20 blur-2xl animate-pulse"
+                style={{ background: `radial-gradient(circle, ${weather.code === 0 ? 'rgba(251,191,36,0.4)' : 'rgba(6,182,212,0.3)'}, transparent)` }}
+            ></div>
+
+            <div className="relative z-10 flex justify-between items-start">
+                {/* Left: Location + Temp */}
+                <div className="flex flex-col">
+                    {/* Location */}
+                    <div className="flex items-center gap-1.5 mb-3">
+                        <svg className="w-3 h-3 text-cyan-400/80" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
-                        <span className="text-sm font-medium text-white/90">Kochi, India</span>
+                        <span className="text-[11px] font-medium text-white/60 tracking-wider uppercase">Kochi, IN</span>
                     </div>
-                    <div className="flex items-start">
-                        <span className="text-5xl font-light text-white">{temp}°</span>
+
+                    {/* Temperature */}
+                    <div className="flex items-start gap-1">
+                        <span
+                            className="text-[52px] font-extralight text-white leading-none tracking-tighter"
+                            style={{ textShadow: '0 0 40px rgba(255,255,255,0.1)' }}
+                        >
+                            {weather.temp}
+                        </span>
+                        <span className="text-white/40 text-lg font-light mt-1">°C</span>
                     </div>
-                    <div className="text-sm text-white/70 mt-1">
-                        Feels like {temp + 2}° • High {temp + 4}°
+
+                    {/* Condition label + details */}
+                    <div className="mt-1 flex items-center gap-2">
+                        <span
+                            className="text-[11px] font-medium tracking-widest uppercase px-2 py-0.5 rounded-full"
+                            style={{
+                                background: 'rgba(255,255,255,0.06)',
+                                border: '1px solid rgba(255,255,255,0.08)',
+                                color: 'rgba(255,255,255,0.7)',
+                            }}
+                        >
+                            {weather.label}
+                        </span>
+                        <span className="text-[10px] text-white/30">
+                            H:{weather.temp + 4}° L:{weather.temp - 3}°
+                        </span>
                     </div>
                 </div>
 
-                <div className="flex flex-col items-end">
-                    {/* Animated Icon Container */}
-                    <div className="w-16 h-16 relative">
-                        {/* Simple SVG icons based on condition */}
-                        {iconName === 'sunny' && (
-                            <svg className="w-full h-full text-yellow-400 animate-[spin_10s_linear_infinite]" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.79 1.41-1.41-1.79-1.79-1.41 1.41zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V15.5h-2v4.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z" />
-                            </svg>
-                        )}
-                        {iconName === 'rainy' && (
-                            <svg className="w-full h-full text-blue-300" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4.13 12c-.23-.59-.26-1.3-.06-1.99.66-2.27 3.01-3.6 5.28-2.96.22-2.3 2.18-4.05 4.54-4.05 2.52 0 4.56 2.04 4.56 4.56 0 .34-.04.68-.11 1.01 2.21.36 3.79 2.37 3.55 4.62-.21 1.95-1.72 3.51-3.65 3.76l-.16.02-.12.02H7.21a5.006 5.006 0 0 1-3.08-4.99zM12 17h1v4h-1v-4zm-4 1h1v4H8v-4zm8 1h1v4h-1v-4z" />
-                            </svg>
-                        )}
-                        {(iconName !== 'sunny' && iconName !== 'rainy') && (
-                            <svg className="w-full h-full text-gray-200" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
-                            </svg>
-                        )}
+                {/* Right: Weather Icon */}
+                <div className="flex flex-col items-center gap-2 mt-1">
+                    {/* Large emoji with glow */}
+                    <div className="relative">
+                        <div
+                            className="absolute inset-0 blur-xl opacity-40 scale-150"
+                            style={{ background: `radial-gradient(circle, ${weather.code === 0 ? 'rgba(251,191,36,0.5)' : 'rgba(96,165,250,0.4)'}, transparent)` }}
+                        ></div>
+                        <span className="relative text-5xl" style={{
+                            filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.2))'
+                        }}>
+                            {weather.emoji}
+                        </span>
                     </div>
-                    <span className="text-white font-medium capitalize mt-1">
-                        {iconName.replace('_', ' ')}
-                    </span>
+
+                    {/* Wind speed */}
+                    {weather.windSpeed > 0 && (
+                        <div className="flex items-center gap-1 text-[10px] text-white/35">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                            </svg>
+                            <span>{weather.windSpeed} km/h</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Bottom: Hourly forecast placeholders */}
+            <div className="relative z-10 mt-4 pt-3 border-t border-white/5">
+                <div className="flex justify-between items-center">
+                    {['Now', '+1h', '+2h', '+3h', '+4h'].map((time, i) => (
+                        <div key={i} className="flex flex-col items-center gap-1">
+                            <span className="text-[9px] text-white/30 font-medium">{time}</span>
+                            <span className="text-sm">{weather.emoji}</span>
+                            <span className="text-[10px] text-white/50 font-light">{weather.temp + (i === 0 ? 0 : Math.round(Math.random() * 3 - 1))}°</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

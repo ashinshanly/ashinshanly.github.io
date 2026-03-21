@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { showToast } from './AndroidToast';
 
 export default function AppContextMenu({ app, position, onClose, onOpenApp, onUninstall }) {
-    if (!app || !position) return null;
-
     const [showInfo, setShowInfo] = useState(false);
+
+    if (!app || !position) return null;
 
     // Filter menu items based on app state or type
     const menuItems = [

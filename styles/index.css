@@ -258,6 +258,16 @@ input[type=range].ubuntu-slider::-webkit-slider-thumb {
     }
 }
 
+/* Granular responsive adjustments for Ubuntu UI */
+@media (max-width: 1280px) {
+    .at-a-glance-clock {
+        font-size: 3.5rem !important; /* Scale down the big clock text */
+    }
+    .at-a-glance-date {
+        font-size: 0.8rem !important;
+    }
+}
+
 /* Scrollbar hide utility class for all screens */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;

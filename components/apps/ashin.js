@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga4';
 import { CardContainer, CardBody, CardItem } from '../util components/3d-card';
-import { TracingBeam } from '../util components/tracing-beam';
 import { HoverGlare } from '../util components/hover-glare';
 
 export class AboutAshin extends Component {
@@ -147,103 +146,174 @@ function About() {
 }
 
 function Experience() {
+    const experiences = [
+        {
+            title: 'Software Engineer III',
+            company: 'Google',
+            period: 'Aug 2025 - Current',
+            color: '#4285F4',
+            logo: '🔵',
+            points: [
+                'Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.'
+            ]
+        },
+        {
+            title: 'Member of Technical Staff (IC2)',
+            company: 'Oracle India Pvt Ltd',
+            period: 'Aug 2022 - Aug 2025',
+            color: '#F80000',
+            logo: '🔴',
+            points: [
+                'Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data.',
+                'Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs. Automated 60% of manual query handling and enhanced query resolution accuracy by 30%.',
+                'Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem. Boosted query performance by 40%.',
+                'Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances, saving thousands of dollars annually.',
+                'Led the design of robust data archival and purging frameworks. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance.'
+            ]
+        },
+        {
+            title: 'Machine Vision Research Scientist Intern',
+            company: 'TCS Research and Innovation Labs',
+            period: 'May 2021 - Aug 2021',
+            color: '#00AEEF',
+            logo: '🔷',
+            points: [
+                'Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology for geospatial analysis in forestry applications.',
+                'Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy.',
+                'Implemented cutting-edge data fusion techniques, integrating geospatial point cloud data with hyperspectral imagery for enhanced classification models.'
+            ]
+        }
+    ];
+
     return (
         <>
-            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
+            <div className="font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
                 Experience
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <TracingBeam className="px-6">
-                <ul className=" mt-4 leading-normal tracking-tight text-sm md:text-base w-11/12 md:w-3/4 emoji-list px-2 md:px-0">
-                    <li className="list-disc mb-6">
-                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                            Software Engineer III
-                        </div>
-                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Google &nbsp;&nbsp;(Aug 2025 - Current)</div>
-                        <ul className="pl-2">
-                            <li className="mt-2 text-gray-200"> Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.
-                            </li>
-                        </ul>
-                    </li>
+            <div className="px-6">
+                <div className="w-11/12 md:w-3/4 mt-4">
+                    {experiences.map((exp, i) => (
+                        <div key={i} className="relative mb-8 last:mb-0">
+                            {/* Timeline connector */}
+                            {i < experiences.length - 1 && (
+                                <div className="absolute left-[7px] top-[24px] bottom-[-16px] w-[2px]" style={{ background: `linear-gradient(to bottom, ${exp.color}40, transparent)` }}></div>
+                            )}
 
-                    <li className="list-disc mb-6">
-                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                            Member of Technical Staff (IC2)
-                        </div>
-                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">Oracle India Pvt Ltd &nbsp;&nbsp;(Aug 2022 - Aug 2025)</div>
-                        <ul className="pl-2">
-                            <li className="mt-2 text-gray-200"> Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data; developed a fault-tolerant, distributed framework that processes billions of records daily and enables dynamic, actionable reporting.
-                            </li>
-                            <li className="mt-2 text-gray-200"> Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs for accurate, context-driven query responses. Automated 60% of manual query handling, enhanced query resolution accuracy by 30%, and significantly elevated cross-departmental operational efficiency.
-                            </li>
-                            <li className="mt-2 text-gray-200"> Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem, leveraging robust ACID compliance, dynamic schema evolution, and time travel to ensure superior data integrity and auditability. Optimised storage with file compaction and partitioning, reducing I/O overhead and boosting query performance by 40%, while seamlessly integrating with Spark-based ETL workflows for real-time analytics and cost-efficient data management.
-                            </li>
-                            <li className="mt-2 text-gray-200"> Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances. Enhanced multi-dimensional visibility (rack, host, and instance levels), optimising data center resource allocation and saving thousands of dollars annually by improving operational efficiency and reducing idle resource costs.
-                            </li>
-                            <li className="mt-2 text-gray-200"> Led the design and implementation of robust data archival and purging frameworks, automating the identification of cold and inactive data. Migrated historical data to cost-effective, long-term storage while purging obsolete records in compliance with retention policies. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance by optimising active data sets. Collaborated with cross-functional teams to streamline data governance and ensure audit readiness.
-                            </li>
-                        </ul>
-                    </li>
+                            {/* Timeline dot */}
+                            <div className="flex items-start gap-4">
+                                <div className="flex-shrink-0 mt-[2px]">
+                                    <div className="w-4 h-4 rounded-full border-2 relative" style={{ borderColor: exp.color }}>
+                                        <div className="absolute inset-[3px] rounded-full" style={{ backgroundColor: exp.color }}></div>
+                                    </div>
+                                </div>
 
-                    <li className="list-disc mb-6">
-                        <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                            Machine Vision Research Scientist Intern
+                                {/* Content card */}
+                                <div className="flex-1 rounded-lg p-3 md:p-4 -mt-1" style={{
+                                    background: 'rgba(255,255,255,0.03)',
+                                    borderLeft: `3px solid ${exp.color}`,
+                                }}>
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
+                                        <div>
+                                            <div className="text-base md:text-lg font-bold text-white leading-tight">{exp.title}</div>
+                                            <div className="text-sm font-medium mt-0.5" style={{ color: exp.color }}>{exp.company}</div>
+                                        </div>
+                                        <div className="text-xs text-gray-400 whitespace-nowrap font-mono tracking-wide">{exp.period}</div>
+                                    </div>
+                                    <ul className="space-y-2 mt-3">
+                                        {exp.points.map((point, j) => (
+                                            <li key={j} className="flex items-start gap-2 text-sm text-gray-300 leading-relaxed">
+                                                <span className="text-gray-500 mt-1.5 flex-shrink-0">▸</span>
+                                                <span>{point}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-2">TCS Research and Innovation Labs &nbsp;&nbsp;(May 2021 - Aug 2021)</div>
-                        <ul className="pl-2">
-                            <li className="mt-2 text-gray-200">Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology, driving a notable increase in segmentation accuracy and advancing precision in geospatial analysis for forestry applications.
-                            </li>
-                            <li className="mt-2 text-gray-200">Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy, thereby setting a new benchmark for high-precision environmental monitoring systems.
-                            </li>
-                            <li className="mt-2 text-gray-200">Implemented cutting-edge data fusion techniques, seamlessly integrating geospatial point cloud data with hyperspectral imagery to significantly enhance classification models, leading to more refined and actionable environmental insights.
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </TracingBeam>
+                    ))}
+                </div>
+            </div>
         </>
     )
 }
 
 function Education() {
+    const educationList = [
+        {
+            degree: 'Masters in Computer Science and Engineering',
+            institution: 'IIT Gandhinagar',
+            period: '2020 - 2022',
+            achievements: 'Director’s Silver Medal for Academic Excellence  •  CGPA 9.00/10',
+            color: '#F59E0B'
+        },
+        {
+            degree: 'Bachelors in Computer Science and Engineering',
+            institution: 'Government Engineering College, Thrissur',
+            period: '2016 - 2020',
+            achievements: 'Dean’s List for Academic Excellence  •  CGPA 9.11/10',
+            color: '#3B82F6'
+        },
+        {
+            degree: 'Maths, Physics, Chemistry',
+            institution: <>Class 12<sup>th</sup> (CBSE)</>,
+            period: '2015 - 2016',
+            achievements: 'Percentile 94.8%',
+            color: '#10B981'
+        }
+    ];
+
     return (
         <>
-            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
+            <div className="font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
                 Education
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <ul className=" w-11/12 md:w-10/12 mt-4 ml-2 md:ml-4 px-2 md:px-1">
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight">
-                        IIT Gandhinagar
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2020 - 2022</div>
-                    <div className=" text-sm md:text-base mb-1">Masters in Computer Science and Engineering</div>
-                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Director’s Silver Medal for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.00/10</div>
-                </li>
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight mt-2">
-                        Government Engineering College, Thrissur
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2016 - 2020</div>
-                    <div className=" text-sm md:text-base mb-1">Bachelors in Computer Science and Engineering</div>
-                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Dean’s List for Academic Excellence &nbsp; - &nbsp; CGPA &nbsp; 9.11/10</div>
-                </li>
-                <li className="list-disc mb-6">
-                    <div className=" text-base md:text-xl text-left font-bold leading-tight mt-2">
-                        Class 12<sup>th</sup> (CBSE)
-                    </div>
-                    <div className=" text-xs md:text-sm text-gray-400 mt-1 mb-1">2015 - 2016</div>
-                    <div className=" text-sm md:text-base mb-1">Maths, Physics, Chemistry</div>
-                    <div className="text-[13px] md:text-sm text-gray-300 font-bold mt-1">Percentile Rank &nbsp; 94.8%</div>
-                </li>
-            </ul>
+            <div className="px-6">
+                <div className="w-11/12 md:w-3/4 mt-4">
+                    {educationList.map((edu, i) => (
+                        <div key={i} className="relative mb-8 last:mb-0">
+                            {/* Timeline connector */}
+                            {i < educationList.length - 1 && (
+                                <div className="absolute left-[7px] top-[24px] bottom-[-16px] w-[2px]" style={{ background: `linear-gradient(to bottom, ${edu.color}40, transparent)` }}></div>
+                            )}
+
+                            {/* Timeline dot */}
+                            <div className="flex items-start gap-4">
+                                <div className="flex-shrink-0 mt-[2px]">
+                                    <div className="w-4 h-4 rounded-full border-2 relative" style={{ borderColor: edu.color }}>
+                                        <div className="absolute inset-[3px] rounded-full" style={{ backgroundColor: edu.color }}></div>
+                                    </div>
+                                </div>
+
+                                {/* Content card */}
+                                <div className="flex-1 rounded-lg p-3 md:p-4 -mt-1" style={{
+                                    background: 'rgba(255,255,255,0.03)',
+                                    borderLeft: `3px solid ${edu.color}`,
+                                }}>
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
+                                        <div>
+                                            <div className="text-base md:text-lg font-bold text-white leading-tight">{edu.institution}</div>
+                                            <div className="text-sm font-medium mt-0.5" style={{ color: edu.color }}>{edu.degree}</div>
+                                        </div>
+                                        <div className="text-xs text-gray-400 whitespace-nowrap font-mono tracking-wide">{edu.period}</div>
+                                    </div>
+                                    <div className="text-sm text-gray-300 mt-3 font-semibold flex items-center gap-2">
+                                        <span className="text-lg">🏆</span>
+                                        {edu.achievements}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </>
     )
 }

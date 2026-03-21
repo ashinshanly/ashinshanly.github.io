@@ -23,10 +23,10 @@ export const SideBarApp = (props) => {
             onClick={handleOpenApp}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            whileHover={{ scale: 1.5 }}
+            whileHover={{ scale: 1.25 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={`w-10 h-10 p-1.5 outline-none relative flex justify-center items-center hover:bg-white hover:bg-opacity-10 rounded-lg m-1 ${isAppFocused ? "bg-white bg-opacity-10" : ""}`}
+            className={`w-9 h-9 p-1.5 outline-none relative flex justify-center items-center hover:bg-white hover:bg-opacity-10 rounded-lg m-1 ${isAppFocused ? "bg-white bg-opacity-10" : ""}`}
             id={"sidebar-" + props.id}
             style={{ overflow: 'visible' }}
         >
@@ -36,8 +36,8 @@ export const SideBarApp = (props) => {
                     <props.custom_icon size="sidebar" />
                 ) : (
                     <>
-                        <img className="w-7 h-7" src={props.icon} alt="Ubuntu App Icon" />
-                        <img className={`${isScaling ? "scale" : ""} scalable-app-icon w-7 h-7 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`} src={props.icon} alt="" />
+                        <img className="w-6 h-6" src={props.icon} alt="Ubuntu App Icon" />
+                        <img className={`${isScaling ? "scale" : ""} scalable-app-icon w-6 h-6 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`} src={props.icon} alt="" />
                     </>
                 )}
             </div>

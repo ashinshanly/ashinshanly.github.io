@@ -37,7 +37,7 @@ export default function SearchWidget({ onSearch }) {
             {/* Search input */}
             <input
                 type="text"
-                placeholder="Access Global Network..."
+                placeholder="Search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setIsFocused(true)}

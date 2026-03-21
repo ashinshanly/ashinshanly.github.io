@@ -36,8 +36,8 @@
     background: var(--android-background);
     /* Wallpaper handles the visual */
     color: var(--android-on-surface);
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     position: relative;
     user-select: none;
@@ -117,10 +117,6 @@
     gap: 8px;
 }
 
-.at-a-glance-date::after {
-    content: '☀️';
-    font-size: 14px;
-}
 
 .at-a-glance-time {
     font-size: 72px;
@@ -256,7 +252,8 @@
 .app-drawer-search {
     margin: 16px;
     padding: 14px 20px;
-    background: rgba(255, 255, 255, 0.05); /* Glassmorphic search background */
+    background: rgba(255, 255, 255, 0.05);
+    /* Glassmorphic search background */
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--android-radius-full);
@@ -292,7 +289,8 @@
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(20, 20, 25, 0.65); /* Glassmorphic QS background */
+    background: rgba(20, 20, 25, 0.65);
+    /* Glassmorphic QS background */
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.15);
@@ -323,7 +321,8 @@
     align-items: center;
     justify-content: center;
     padding: 16px 8px;
-    background: rgba(255, 255, 255, 0.05); /* Glass tile */
+    background: rgba(255, 255, 255, 0.05);
+    /* Glass tile */
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--android-radius-lg);
     cursor: pointer;
@@ -331,7 +330,8 @@
 }
 
 .quick-settings-tile.active {
-    background: rgba(0, 255, 255, 0.2); /* Cyan glow toggle */
+    background: rgba(0, 255, 255, 0.2);
+    /* Cyan glow toggle */
     border: 1px solid rgba(0, 255, 255, 0.5);
     color: #0ff;
     text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
@@ -702,7 +702,8 @@
     letter-spacing: 2px;
     padding: 8px 16px;
     border-radius: 20px;
-    background: rgba(6, 182, 212, 0.05); /* very faint cyan tint */
+    background: rgba(6, 182, 212, 0.05);
+    /* very faint cyan tint */
     border: 1px solid rgba(6, 182, 212, 0.2);
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.1), inset 0 0 20px rgba(6, 182, 212, 0.05);
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Clock from '../util components/clock';
 
 export default function LockScreen(props) {
@@ -14,10 +14,16 @@ export default function LockScreen(props) {
         "wall-8": "./images/wallpapers/wall-8.webp",
     };
 
-    if (props.isLocked) {
-        window.addEventListener('click', props.unLockScreen);
-        window.addEventListener('keypress', props.unLockScreen);
-    };
+    useEffect(() => {
+        if (props.isLocked) {
+            window.addEventListener('click', props.unLockScreen);
+            window.addEventListener('keypress', props.unLockScreen);
+        }
+        return () => {
+            window.removeEventListener('click', props.unLockScreen);
+            window.removeEventListener('keypress', props.unLockScreen);
+        };
+    }, [props.isLocked, props.unLockScreen]);
 
     const renderBackground = () => {
         if (props.bgImgName === "video") {

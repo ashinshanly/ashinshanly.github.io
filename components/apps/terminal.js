@@ -13,7 +13,7 @@ export class Terminal extends Component {
         this.prev_commands = [];
         this.commands_index = -1;
         this.child_directories = {
-            root: ["books", "projects", "personal-documents", "skills", "languages", "PDPU", "interests"],
+            root: ["books", "projects", "personal-documents", "skills", "languages", "interests"],
             IIT_GN: ["Thesis"],
             books: ["Eric-Jorgenson_The-Almanack-of-Naval-Ravikant.pdf", "Elon Musk: How the Billionaire CEO of SpaceX.pdf", "The $100 Startup_CHRIS_GUILLEBEAU.pdf", "The_Magic_of_Thinking_Big.pdf"],
             skills: ["Backend development", "Data Engineering", "Distributed Processing", "Cloud Engineering", "Big Data", "SQL", "Apache Spark"],

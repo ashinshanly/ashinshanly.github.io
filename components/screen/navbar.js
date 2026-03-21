@@ -16,13 +16,14 @@ export default class Navbar extends Component {
 		return (
 			<div className="main-navbar-vp absolute top-0 right-0 w-screen flex flex-nowrap justify-between items-center text-white text-sm select-none z-50 bg-gradient-to-b from-black/70 to-transparent px-4 py-1.5 transition-all duration-300">
 				
-				{/* Left Side: Time and Notification Icons */}
+				{/* Left Side: Live Count */}
 				<div className="flex items-center space-x-2">
-						<LiveCount />
-					{/* Placeholder Android Notification Icons */}
-					<div className="flex space-x-1.5 pl-2 opacity-90 pb-0.5">
-						
-					</div>
+					<LiveCount />
+				</div>
+
+				{/* Center: Clock */}
+				<div className="absolute left-1/2 transform -translate-x-1/2 font-medium">
+					<Clock />
 				</div>
 
 				{/* Right Side: System Icons (Wi-Fi, Battery, etc) */}

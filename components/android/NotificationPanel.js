@@ -140,7 +140,7 @@ export default function NotificationPanel({ isOpen, onClose, notifications = [],
                         onChange={handleBrightness}
                         className="flex-grow h-1 rounded-full appearance-none bg-white/20"
                         style={{
-                            background: `linear-gradient(to right, #8AB4F8 0%, #8AB4F8 ${brightness}%, rgba(255,255,255,0.2) ${brightness}%)`
+                            background: `linear-gradient(to right, #8AB4F8 0%, #8AB4F8 ${((brightness - 20) / 80) * 100}%, rgba(255,255,255,0.2) ${((brightness - 20) / 80) * 100}%)`
                         }}
                     />
                 </div>

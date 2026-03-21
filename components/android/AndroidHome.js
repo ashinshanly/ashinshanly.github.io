@@ -12,6 +12,7 @@ import MusicWidget from './MusicWidget';
 import WeatherWidget from './WeatherWidget';
 import AndroidToast, { showToast } from './AndroidToast';
 import LockScreen from './LockScreen';
+import useWeather from '../util components/useWeather';
 
 export default function AndroidHome() {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -27,6 +28,7 @@ export default function AndroidHome() {
     const [brightness, setBrightness] = useState(100); // Brightness state
     const [isLocked, setIsLocked] = useState(true);
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
+    const { weather } = useWeather();
 
     const touchStartY = useRef(0);
     const touchStartX = useRef(0);
@@ -330,7 +332,7 @@ export default function AndroidHome() {
                         <div className="flex items-center justify-between w-full mb-1">
                             <div className="at-a-glance-date">{formatDate()}</div>
                             <div className="flex items-center gap-1.5 text-white/80 text-sm">
-                                <span>24°</span>
+                                <span>{weather ? `${weather.emoji} ${weather.temp}°` : '☀️ 24°'}</span>
                             </div>
                         </div>
                         <div className="at-a-glance-time">{formatTime()}</div>
@@ -351,24 +353,9 @@ export default function AndroidHome() {
                     opacity: page === 0 && swipeX > -20 ? 0 : 1
                 }}
             >
-                <div className="text-white/60 text-sm font-medium mb-4 pl-2">Widgets</div>
                 <WeatherWidget />
                 <MusicWidget />
 
-                <div className="mx-4 mb-4 p-4 bg-[#2D2D30]/80 backdrop-blur-xl rounded-2xl border border-white/5 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-500/20 rounded-full text-green-400">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="text-white font-medium">Battery</div>
-                            <div className="text-white/60 text-sm">85% • About 8 hr left</div>
-                        </div>
-                    </div>
-                    <div className="text-xl font-bold text-white">85%</div>
-                </div>
             </div>
 
             <div className="absolute bottom-[24px] left-0 right-0 z-20 w-full flex flex-col items-center">
