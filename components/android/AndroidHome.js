@@ -347,15 +347,16 @@ export default function AndroidHome() {
             </div>
 
             <div
-                className={`absolute inset-0 z-10 pt-24 px-4 ${swipeX === 0 ? 'transition-all duration-300' : ''}`}
+                className={`absolute inset-0 z-10 pt-16 px-6 flex flex-col gap-5 ${swipeX === 0 ? 'transition-all duration-300' : ''}`}
                 style={{
                     transform: `translateX(calc(${page === 0 ? '120%' : '0px'} + ${swipeX}px))`,
                     opacity: page === 0 && swipeX > -20 ? 0 : 1
                 }}
             >
-                <WeatherWidget />
+                <div className="mb-2">
+                    <WeatherWidget />
+                </div>
                 <MusicWidget />
-
             </div>
 
             <div className="absolute bottom-[24px] left-0 right-0 z-20 w-full flex flex-col items-center">
