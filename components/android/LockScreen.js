@@ -36,7 +36,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
                     </svg>
                 </div>
             ),
-            content: <><strong>Elon Musk</strong> sent a message: "Bro where you at? Need you to fix the rocket's CSS asap..."</>
+            content: <><strong>Elon Musk</strong> sent a message: "Bro where you at? Stop ignoring my calls..."</>
         },
         {
             app: "Google",
