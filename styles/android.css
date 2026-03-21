@@ -683,10 +683,10 @@
 
 .lock-time {
     font-size: 110px;
-    font-weight: 550;
+    font-weight: 500;
     line-height: 1;
     color: transparent;
-    background: linear-gradient(135deg, #ffffff 0%, #06b6d4 100%);
+    background: white;
     -webkit-background-clip: text;
     background-clip: text;
     letter-spacing: -4px;
