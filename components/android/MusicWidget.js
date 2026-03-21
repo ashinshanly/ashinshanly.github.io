@@ -7,7 +7,7 @@ export default function MusicWidget() {
     const audioRef = useRef(null);
 
     // Sample audio
-    const audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    const audioUrl = "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/e9/94/9d/e9949d01-f581-449b-dfa2-87a39ddebffd/mzaf_6930143096293021426.plus.aac.p.m4a";
 
     useEffect(() => {
         if (audioRef.current) {
