@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import $ from 'jquery';
 
 export function Settings(props) {
@@ -52,19 +52,116 @@ export function Settings(props) {
         );
     };
 
-    return (
-        <div className={"w-full flex-col flex-grow z-20 h-full overflow-y-auto windowMainScreen select-none bg-gradient-to-b from-[#0a0a0c] to-[#121216] text-white font-sans"}>
-            {/* Header */}
-            <div className="sticky top-0 z-30 bg-[#0a0a0c]/80 backdrop-blur-xl border-b border-white/5 px-6 py-5 flex items-center justify-between">
-                <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 p-[2px] shadow-[0_0_15px_rgba(34,211,238,0.3)]">
-                    <div className="w-full h-full bg-black rounded-full overflow-hidden">
-                        <img src="./images/logos/logo.png" alt="Profile" className="w-full h-full object-cover" />
+
+    const [activePage, setActivePage] = useState("main");
+
+    const renderNetworkPage = () => (
+        <div className="p-4 md:p-8 space-y-6 max-w-3xl mx-auto animate-[fadeIn_0.3s_ease-out]">
+            <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 shadow-2xl backdrop-blur-md">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-xl font-bold text-white mb-1">Wi-Fi</h2>
+                        <p className="text-sm text-gray-400">Connected to the multiverse</p>
+                    </div>
+                </div>
+
+                <div className="space-y-3">
+                    <h3 className="text-xs font-bold text-cyan-400 uppercase tracking-widest opacity-80 mb-2">Networks</h3>
+
+                    <div className="flex items-center gap-4 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl relative">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 rounded-l-2xl"></div>
+                        <h4 className="text-white font-medium flex-1">Starlink-5G</h4>
+                        <p className="text-xs text-cyan-300">Ping: -1ms</p>
+                    </div>
+
+                    <div className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-2xl">
+                        <h4 className="text-white font-medium flex-1">FBI Surveillance Van #4</h4>
+                        <p className="text-xs text-gray-500">Secured with Hope</p>
+                    </div>
+
+                    <div className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-2xl">
+                        <h4 className="text-white font-medium flex-1">Pretty Fly for a WiFi</h4>
+                        <p className="text-xs text-gray-500">Saved</p>
                     </div>
                 </div>
             </div>
+        </div>
+    );
 
-            <div className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto">
+    const renderBatteryPage = () => (
+        <div className="p-4 md:p-8 space-y-6 max-w-3xl mx-auto animate-[fadeIn_0.3s_ease-out]">
+            <div className="bg-gradient-to-br from-green-500/10 to-emerald-900/20 border border-green-500/20 rounded-3xl p-8 text-center">
+                <div className="text-4xl font-black text-white mb-2">85<span className="text-2xl text-green-400">%</span></div>
+                <h2 className="text-xl font-bold text-white mb-2">About 100 years left</h2>
+                <p className="text-sm text-green-300/80 max-w-xs mx-auto">Powered by a tiny arc reactor. Do not drop.</p>
+            </div>
+
+            <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 shadow-2xl">
+                <h3 className="text-xs font-bold text-green-400 uppercase tracking-widest opacity-80 mb-6">Usage</h3>
+                <div className="space-y-5">
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">Chrome (2 tabs)</span>
+                        <span className="text-orange-400">150%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">Existential Dread</span>
+                        <span className="text-purple-400">20%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">Settings App</span>
+                        <span className="text-blue-400">0.001%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderSystemPage = () => (
+        <div className="p-4 md:p-8 space-y-6 max-w-3xl mx-auto animate-[fadeIn_0.3s_ease-out]">
+            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-orange-500/20 rounded-3xl p-8 text-center">
+                <h2 className="text-3xl font-bold text-white tracking-tight">AshinOS <span className="text-amber-400 font-light">v14.2</span></h2>
+                <p className="text-orange-300 max-w-sm mx-auto mb-6 mt-2">Optimally imperfect.</p>
+            </div>
+
+            <div className="bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden divide-y divide-white/5">
+                <div className="p-5 flex justify-between">
+                    <span className="text-xs text-gray-500 uppercase font-bold">Storage</span>
+                    <span className="text-white text-sm">2TB / ∞ (Mostly memes)</span>
+                </div>
+                <div className="p-5 flex justify-between">
+                    <span className="text-xs text-gray-500 uppercase font-bold">Uptime</span>
+                    <span className="text-white text-sm">Since 1998</span>
+                </div>
+                <div className="p-5">
+                    <span className="text-xs text-gray-500 uppercase font-bold block mb-2">Changelog</span>
+                    <span className="text-white text-sm">Fixed 99 bugs. Created 102 new ones.</span>
+                </div>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className={"w-full flex-col flex-grow z-20 h-full overflow-y-auto windowMainScreen select-none bg-gradient-to-b from-[#0a0a0c] to-[#121216] text-white font-sans"}>
+            {/* Header */}
+            <div className="sticky top-0 z-30 bg-[#0a0a0c]/80 backdrop-blur-xl border-b border-white/5 px-6 py-5 flex items-center gap-4 transition-all">
+                {activePage !== "main" && (
+                    <button onClick={() => setActivePage("main")} className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors text-white">
+                        ← Back
+                    </button>
+                )}
+                <h1 className="text-2xl font-bold tracking-tight">
+                    {activePage === "main" ? "Settings" :
+                        activePage === "network" ? "Network & Internet" :
+                            activePage === "battery" ? "Battery" :
+                                "System & Updates"}
+                </h1>
+            </div>
+
+            {activePage === "network" && renderNetworkPage()}
+            {activePage === "battery" && renderBatteryPage()}
+            {activePage === "system" && renderSystemPage()}
+
+            <div className={`p-4 md:p-8 space-y-8 max-w-5xl mx-auto ${activePage !== "main" ? 'hidden' : ''}`}>
 
                 {/* Personalization Section */}
                 <section>
@@ -139,7 +236,7 @@ export function Settings(props) {
                     <h2 className="text-xs font-bold text-cyan-400 uppercase tracking-[0.2em] mb-4 ml-2 opacity-80">Network & System</h2>
                     <div className="bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md divide-y divide-white/5">
 
-                        <div className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
+                        <div onClick={() => setActivePage("network")} className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
                             <div className="flex items-center gap-5">
                                 <div className="p-3 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 text-blue-400 rounded-2xl group-hover:scale-110 transition-transform shadow-inner border border-blue-500/10">
                                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.906 14.142 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" /></svg>
@@ -152,7 +249,7 @@ export function Settings(props) {
                             <svg className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
 
-                        <div className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
+                        <div onClick={() => setActivePage("battery")} className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
                             <div className="flex items-center gap-5">
                                 <div className="p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400 rounded-2xl group-hover:scale-110 transition-transform shadow-inner border border-green-500/10">
                                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
@@ -170,7 +267,7 @@ export function Settings(props) {
                             <svg className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
 
-                        <div className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
+                        <div onClick={() => setActivePage("system")} className="flex items-center justify-between p-5 hover:bg-white/5 transition-all cursor-pointer group">
                             <div className="flex items-center gap-5">
                                 <div className="p-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 text-amber-400 rounded-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/10">
                                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
