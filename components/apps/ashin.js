@@ -137,8 +137,8 @@ function About() {
                     <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full p-[2px] bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
                         <div className="w-full h-full bg-[#0a0a0c] rounded-full overflow-hidden relative">
                             <div className="absolute inset-0 bg-white/5 z-10"></div>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 mix-blend-overlay z-10 transition-opacity duration-500 rounded-full"></div>
-                            <img className="w-full h-full object-cover relative z-0 relative brightness-110 contrast-125 saturate-110 transition-transform duration-500 group-hover:scale-105" src="./images/logos/logo.png" alt="Ashin Shanly" />
+                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 to-purple-500/30 mix-blend-overlay z-10 pointer-events-none rounded-full"></div>
+                            <img className="w-full h-full object-cover relative z-0 brightness-110 contrast-110 saturate-110 transition-transform duration-500 group-hover:scale-105" src="./images/logos/headshot.jpg" alt="Ashin Shanly" />
                         </div>
                     </div>
                 </div>
