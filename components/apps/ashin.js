@@ -173,15 +173,15 @@ function About() {
                             </span>
                         </li>
                         <li className="flex items-start gap-4">
-                            <span className="text-purple-400 text-lg mt-0.5 shrink-0">⚡</span>
+                            <span className="text-purple-400 text-lg mt-0.5 shrink-0">❖</span>
                             <span className="leading-relaxed">I enjoy building cool things exploring the boundaries of modern technology.</span>
                         </li>
                         <li className="flex items-start gap-4">
-                            <span className="text-blue-400 text-lg mt-0.5 shrink-0">⎋</span>
+                            <span className="text-blue-400 text-lg mt-0.5 shrink-0">❖</span>
                             <span className="leading-relaxed">When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">anime</a>, or swing trading.</span>
                         </li>
                         <li className="flex items-start gap-4">
-                            <span className="text-rose-400 text-lg mt-0.5 shrink-0">✧</span>
+                            <span className="text-rose-400 text-lg mt-0.5 shrink-0">❖</span>
                             <span className="leading-relaxed">I’m also really into deep learning and computer vision! Feel free to check out my research publications <a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer" className="text-rose-400 hover:underline font-medium">HERE</a>.</span>
                         </li>
                     </ul>
