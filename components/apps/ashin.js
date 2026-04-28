@@ -46,7 +46,8 @@ export class AboutAshin extends Component {
 
         this.setState({
             screen: this.screens[screen],
-            active_screen: screen
+            active_screen: screen,
+            navbar: false, // auto-close mobile menu after selection
         });
     }
 
@@ -102,7 +103,7 @@ export class AboutAshin extends Component {
                         <div className=" w-5 border-t-2 border-white" style={{ marginTop: "3pt", marginBottom: "3pt" }}></div>
                         <div className=" w-5 border-t-2 border-white"></div>
                     </div>
-                    <div onClick={(e) => e.stopPropagation()} className={(this.state.navbar ? " visible animateShow z-50 " : " invisible ") + " md:hidden text-sm absolute bg-ub-cool-grey py-1 px-1.5 rounded-sm top-full mt-1 left-0 shadow-lg border-black border border-opacity-20"}>
+                    <div onClick={(e) => e.stopPropagation()} className={"md:hidden text-sm absolute bg-ub-cool-grey py-1 px-1.5 rounded-sm top-full mt-1 left-0 shadow-lg border-black border border-opacity-20 transition-all duration-200 ease-out origin-top-left " + (this.state.navbar ? "opacity-100 scale-100 translate-y-0 pointer-events-auto z-50" : "opacity-0 scale-95 -translate-y-1 pointer-events-none")}>
                         {this.renderNavLinks()}
                     </div>
                 </div>
