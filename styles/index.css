@@ -277,3 +277,81 @@ input[type=range].ubuntu-slider::-webkit-slider-thumb {
     scrollbar-width: none;
 }
 
+/* Ubuntu workspace polish */
+#monitor-screen {
+    background: #06101f;
+}
+
+.window-parent::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, rgba(8, 20, 44, 0.22), transparent 36%, rgba(76, 26, 107, 0.13));
+}
+
+.ubuntu-future-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.44;
+    background-image: linear-gradient(rgba(129, 221, 255, 0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(129, 221, 255, 0.055) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: linear-gradient(to bottom, transparent, black 22%, transparent 78%);
+}
+
+.ubuntu-ambient-orb {
+    position: absolute;
+    z-index: 0;
+    width: min(44vw, 620px);
+    aspect-ratio: 1;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(35px);
+    opacity: 0.3;
+}
+
+.ubuntu-ambient-orb-one { top: 7%; right: -13%; background: radial-gradient(circle, #19bcff, transparent 66%); }
+.ubuntu-ambient-orb-two { bottom: -22%; left: 4%; background: radial-gradient(circle, #a743ff, transparent 63%); }
+.ubuntu-system-readout { position: absolute; right: 22px; bottom: 16px; z-index: 12; display: flex; align-items: center; gap: 8px; color: rgba(223, 247, 255, 0.64); font-size: 9px; font-weight: 600; letter-spacing: 0.13em; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7); }
+.ubuntu-system-readout i { width: 5px; height: 5px; border-radius: 50%; background: #75ffc4; box-shadow: 0 0 10px #75ffc4; }
+.ubuntu-session-pulse { width: 6px; height: 6px; border-radius: 50%; background: #7ceaff; box-shadow: 0 0 10px #7ceaff; animation: ubuntu-pulse 2.4s ease-in-out infinite; }
+@keyframes ubuntu-pulse { 50% { opacity: 0.4; transform: scale(0.72); } }
+
+.main-navbar-vp {
+    border-bottom: 1px solid rgba(152, 222, 255, 0.11);
+    box-shadow: 0 4px 24px rgba(1, 6, 16, 0.15);
+    backdrop-filter: blur(12px);
+}
+
+.main-window {
+    border-color: rgba(159, 223, 255, 0.18) !important;
+    background: rgba(9, 17, 34, 0.76);
+    box-shadow: 0 22px 52px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(123, 190, 255, 0.05) !important;
+    backdrop-filter: blur(18px);
+}
+
+.main-window .bg-ub-window-title {
+    background: linear-gradient(90deg, rgba(23, 50, 85, 0.95), rgba(16, 31, 59, 0.92));
+    border-top-color: rgba(170, 231, 255, 0.24) !important;
+}
+
+.ubuntu-app-launcher {
+    border-radius: 11px;
+    transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.ubuntu-app-launcher:hover {
+    transform: translateY(-2px);
+    background: rgba(116, 207, 255, 0.15) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.ubuntu-app-launcher img { filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.3)); }
+
+@media (max-width: 767px) {
+    .ubuntu-system-readout { display: none; }
+}

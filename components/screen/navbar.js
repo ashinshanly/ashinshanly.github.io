@@ -19,6 +19,10 @@ export default class Navbar extends Component {
 				{/* Left Side: Live Count */}
 				<div className="flex items-center space-x-2">
 					<LiveCount />
+					<div className="ubuntu-session-label hidden md:flex items-center gap-2 text-[10px] tracking-[0.18em] text-white/60">
+						<span className="ubuntu-session-pulse" />
+						CREATOR WORKSPACE
+					</div>
 				</div>
 
 				{/* Center: Clock */}

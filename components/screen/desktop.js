@@ -512,6 +512,13 @@ export class Desktop extends Component {
         return (
             <div className={" h-full w-full flex flex-col items-end justify-start content-start flex-wrap-reverse pt-8 bg-transparent relative overflow-hidden overscroll-none window-parent"}>
 
+                <div className="ubuntu-future-grid" aria-hidden="true" />
+                <div className="ubuntu-ambient-orb ubuntu-ambient-orb-one" aria-hidden="true" />
+                <div className="ubuntu-ambient-orb ubuntu-ambient-orb-two" aria-hidden="true" />
+                <div className="ubuntu-system-readout pointer-events-none select-none" aria-hidden="true">
+                    <span>ASHIN // WORKSPACE</span><i /><span>ALL SYSTEMS NOMINAL</span>
+                </div>
+
                 {/* At a Glance Widget */}
                 <AtAGlanceWidget />
 

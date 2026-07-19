@@ -10,7 +10,7 @@ import AppContextMenu from './AppContextMenu';
 import BackgroundImage from '../util components/background-image';
 import MusicWidget from './MusicWidget';
 import WeatherWidget from './WeatherWidget';
-import AndroidToast, { showToast } from './AndroidToast';
+import AndroidToast from './AndroidToast';
 import LockScreen from './LockScreen';
 import useWeather from '../util components/useWeather';
 

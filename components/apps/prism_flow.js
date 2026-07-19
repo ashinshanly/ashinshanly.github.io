@@ -153,91 +153,96 @@ function getObjectSegments(obj) {
 // ─── Level Definitions ──────────────────────────────────────
 const LEVELS = [
     {
-        name: "Split Decision",
-        description: "Use a splitter to hit both targets",
-        source: { x: 2, y: 5, angle: 0 },
-        targets: [{ x: 10, y: 5, color: 'white' }, { x: 10, y: 2, color: 'white' }],
-        fixed: [],
-        available: { mirror: 3, splitter: 1 },
-        blockers: [],
+        name: 'Signal One', sector: 'ORBITAL ARRAY', difficulty: '01', par: 2,
+        description: 'Learn to bend a clean beam around the first relay.',
+        source: { x: 1, y: 6, angle: 0 }, targets: [{ x: 10, y: 3, color: 'white' }],
+        fixed: [], available: { mirror: 2 }, blockers: [{ x: 5, y: 6 }],
     },
     {
-        name: "Rainbow",
-        description: "Use a prism to split the light",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [{ x: 11, y: 4, color: 'red' }, { x: 11, y: 5, color: 'green' }, { x: 11, y: 6, color: 'blue' }],
-        fixed: [],
-        available: { prism: 1, mirror: 3 },
-        blockers: [],
+        name: 'Twin Relays', sector: 'ORBITAL ARRAY', difficulty: '02', par: 4,
+        description: 'Split one signal into two synchronized relays.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 10, y: 3, color: 'white' }, { x: 10, y: 7, color: 'white' }],
+        fixed: [], available: { mirror: 3, splitter: 1 }, blockers: [{ x: 6, y: 5 }],
     },
     {
-        name: "Maze of Light",
-        description: "Navigate the beam through the blockers",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [{ x: 11, y: 5, color: 'white' }],
-        fixed: [],
-        available: { mirror: 5 },
-        blockers: [
-            { x: 4, y: 3 }, { x: 4, y: 4 }, { x: 4, y: 5 }, { x: 4, y: 6 }, { x: 4, y: 7 },
-            { x: 8, y: 3 }, { x: 8, y: 4 }, { x: 8, y: 5 }, { x: 8, y: 6 }, { x: 8, y: 7 },
-        ],
-        blockerGaps: [{ x: 4, y: 3 }, { x: 8, y: 7 }],
+        name: 'Spectrum Wake', sector: 'CHROMA BELT', difficulty: '03', par: 4,
+        description: 'Crack white light and send each channel through the wake.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 3, color: 'red' }, { x: 11, y: 5, color: 'green' }, { x: 11, y: 7, color: 'blue' }],
+        fixed: [], available: { prism: 1, mirror: 3 }, blockers: [{ x: 7, y: 5 }],
     },
     {
-        name: "Prism Chain",
-        description: "Chain prisms to route colored beams",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [{ x: 11, y: 4, color: 'red' }, { x: 11, y: 6, color: 'blue' }],
-        fixed: [],
-        available: { prism: 2, mirror: 4 },
-        blockers: [],
-    },
-    {
-        name: "Tight Squeeze",
-        description: "Thread the beam through narrow gaps",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [{ x: 11, y: 2, color: 'white' }],
-        fixed: [],
-        available: { mirror: 4 },
+        name: 'Glass Corridor', sector: 'CHROMA BELT', difficulty: '04', par: 5,
+        description: 'Pass two firewalls through offset openings.',
+        source: { x: 1, y: 6, angle: 0 }, targets: [{ x: 11, y: 2, color: 'white' }],
+        fixed: [], available: { mirror: 4 },
         blockers: [
             { x: 4, y: 1 }, { x: 4, y: 2 }, { x: 4, y: 3 }, { x: 4, y: 5 }, { x: 4, y: 6 }, { x: 4, y: 7 }, { x: 4, y: 8 },
-            { x: 8, y: 1 }, { x: 8, y: 3 }, { x: 8, y: 4 }, { x: 8, y: 5 }, { x: 8, y: 6 }, { x: 8, y: 7 }, { x: 8, y: 8 },
+            { x: 8, y: 1 }, { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 5 }, { x: 8, y: 6 }, { x: 8, y: 7 }, { x: 8, y: 8 },
         ],
     },
     {
-        name: "Color Mixer",
-        description: "Route specific colors to their targets",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [{ x: 11, y: 3, color: 'red' }, { x: 11, y: 7, color: 'blue' }],
-        fixed: [],
-        available: { prism: 1, mirror: 5, splitter: 1 },
-        blockers: [{ x: 6, y: 5 }],
+        name: 'Prism Drift', sector: 'CHROMA BELT', difficulty: '05', par: 6,
+        description: 'Route two color channels around a drifting obstruction.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 2, color: 'red' }, { x: 11, y: 8, color: 'blue' }],
+        fixed: [], available: { prism: 1, mirror: 4 }, blockers: [{ x: 5, y: 5 }, { x: 8, y: 5 }],
     },
     {
-        name: "Hall of Mirrors",
-        description: "Bounce the beam through a mirror maze",
-        source: { x: 1, y: 1, angle: 0 },
-        targets: [{ x: 11, y: 8, color: 'white' }],
-        fixed: [
-            { type: 'mirror', x: 6, y: 1, angle: Math.PI / 4 },
-        ],
-        available: { mirror: 4 },
-        blockers: [{ x: 3, y: 4 }, { x: 3, y: 5 }, { x: 9, y: 3 }, { x: 9, y: 4 }],
+        name: 'Mirror Vault', sector: 'LUMINAR VAULT', difficulty: '06', par: 6,
+        description: 'Use the ancient mirror to escape the vault.',
+        source: { x: 1, y: 1, angle: 0 }, targets: [{ x: 11, y: 8, color: 'white' }],
+        fixed: [{ type: 'mirror', x: 6, y: 1, angle: Math.PI / 4 }], available: { mirror: 4 },
+        blockers: [{ x: 3, y: 4 }, { x: 3, y: 5 }, { x: 8, y: 3 }, { x: 8, y: 4 }, { x: 9, y: 6 }],
     },
     {
-        name: "Grand Finale",
-        description: "Use everything you've learned",
-        source: { x: 1, y: 5, angle: 0 },
-        targets: [
-            { x: 11, y: 2, color: 'red' },
-            { x: 11, y: 5, color: 'green' },
-            { x: 11, y: 8, color: 'blue' },
-        ],
-        fixed: [{ type: 'blocker', x: 5, y: 5 }],
-        available: { prism: 2, mirror: 5, splitter: 2 },
-        blockers: [{ x: 8, y: 3 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 7 }],
+        name: 'Crossfire', sector: 'LUMINAR VAULT', difficulty: '07', par: 7,
+        description: 'Keep both routes alive while the central node blocks the obvious path.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 3, color: 'white' }, { x: 11, y: 7, color: 'white' }],
+        fixed: [{ type: 'blocker', x: 6, y: 5 }], available: { mirror: 4, splitter: 1 },
+        blockers: [{ x: 4, y: 4 }, { x: 4, y: 6 }, { x: 8, y: 4 }, { x: 8, y: 6 }],
+    },
+    {
+        name: 'Nova Weave', sector: 'LUMINAR VAULT', difficulty: '08', par: 8,
+        description: 'A three-channel pattern with no spare optics.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 2, color: 'red' }, { x: 11, y: 5, color: 'green' }, { x: 11, y: 8, color: 'blue' }],
+        fixed: [], available: { prism: 1, mirror: 4, splitter: 1 },
+        blockers: [{ x: 5, y: 4 }, { x: 5, y: 6 }, { x: 8, y: 3 }, { x: 8, y: 7 }],
+    },
+    {
+        name: 'Blackout Gate', sector: 'DEEP FIELD', difficulty: '09', par: 9,
+        description: 'Thread a single beam through a shifting-looking blackout lattice.',
+        source: { x: 1, y: 7, angle: 0 }, targets: [{ x: 11, y: 1, color: 'white' }],
+        fixed: [], available: { mirror: 5 },
+        blockers: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 3, y: 4 }, { x: 3, y: 6 }, { x: 3, y: 7 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 5 }, { x: 6, y: 6 }, { x: 9, y: 3 }, { x: 9, y: 4 }, { x: 9, y: 5 }, { x: 9, y: 7 }],
+    },
+    {
+        name: 'Event Horizon', sector: 'DEEP FIELD', difficulty: '10', par: 10,
+        description: 'Split, refract, and take the long route around the horizon.',
+        source: { x: 1, y:5, angle: 0 }, targets: [{ x: 11, y: 2, color: 'red' }, { x: 11, y: 7, color: 'blue' }],
+        fixed: [{ type: 'blocker', x: 6, y: 5 }], available: { prism: 1, mirror: 5, splitter: 1 },
+        blockers: [{ x: 4, y: 2 }, { x: 4, y: 3 }, { x: 4, y: 7 }, { x: 4, y: 8 }, { x: 8, y: 1 }, { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }],
+    },
+    {
+        name: 'Aurora Engine', sector: 'DEEP FIELD', difficulty: '11', par: 11,
+        description: 'Synchronize every spectrum channel through the engine core.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 2, color: 'red' }, { x: 11, y: 5, color: 'green' }, { x: 11, y: 8, color: 'blue' }],
+        fixed: [{ type: 'mirror', x: 6, y: 2, angle: Math.PI / 4 }, { type: 'blocker', x: 6, y: 5 }], available: { prism: 2, mirror: 5, splitter: 1 },
+        blockers: [{ x: 4, y: 4 }, { x: 4, y: 6 }, { x: 8, y: 3 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 7 }],
+    },
+    {
+        name: 'Prismatic Crown', sector: 'CROWN PROTOCOL', difficulty: '12', par: 13,
+        description: 'The final network. Every spare move costs the signal.',
+        source: { x: 1, y: 5, angle: 0 }, targets: [{ x: 11, y: 1, color: 'red' }, { x: 11, y: 4, color: 'green' }, { x: 11, y: 8, color: 'blue' }],
+        fixed: [{ type: 'blocker', x: 5, y: 5 }, { type: 'mirror', x: 7, y: 7, angle: -Math.PI / 4 }], available: { prism: 2, mirror: 5, splitter: 2 },
+        blockers: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 3, y: 7 }, { x: 3, y: 8 }, { x: 7, y: 2 }, { x: 7, y: 4 }, { x: 7, y: 5 }, { x: 7, y: 6 }, { x: 9, y: 2 }, { x: 9, y: 3 }, { x: 9, y: 6 }, { x: 9, y: 7 }],
     },
 ];
+
+const STORAGE_KEY = 'prism-flow-command-deck-v2';
+const defaultCampaign = { completed: [], records: {}, playerName: 'Pilot' };
+const formatTime = (seconds) => {
+    const safeSeconds = Math.max(0, Math.floor(seconds || 0));
+    return `${Math.floor(safeSeconds / 60)}:${String(safeSeconds % 60).padStart(2, '0')}`;
+};
 
 // ─── Particle System ────────────────────────────────────────
 class ParticleSystem {
@@ -349,9 +354,12 @@ export function PrismFlow() {
     const beamPointsRef = useRef([]);
     const timeRef = useRef(0);
 
-    const [gameMode, setGameMode] = useState('home'); // home, howToPlay, puzzle, zen, levelSelect
+    const [gameMode, setGameMode] = useState('home'); // home, puzzle, zen, levelSelect, leaderboard
     const [currentLevel, setCurrentLevel] = useState(0);
     const [completedLevels, setCompletedLevels] = useState(new Set());
+    const [records, setRecords] = useState({});
+    const [playerName, setPlayerName] = useState('Pilot');
+    const [campaignReady, setCampaignReady] = useState(false);
     const [placedObjects, setPlacedObjects] = useState([]);
     const [selectedTool, setSelectedTool] = useState(null);
     const [dragging, setDragging] = useState(null);
@@ -364,6 +372,55 @@ export function PrismFlow() {
     const lastTouchRef = useRef(null);
     const [fixedObjects, setFixedObjects] = useState([]);
     const [showHowToPlay, setShowHowToPlay] = useState(false);
+    const [elapsed, setElapsed] = useState(0);
+    const [moves, setMoves] = useState(0);
+    const runRef = useRef({ startedAt: null, moves: 0 });
+
+    const highestCompleted = completedLevels.size ? Math.max(...Array.from(completedLevels)) : -1;
+    const unlockedLevel = Math.min(highestCompleted + 1, LEVELS.length - 1);
+    const totalScore = Object.values(records).reduce((sum, record) => sum + (record.bestScore || 0), 0);
+    const highestRecord = Object.values(records).reduce((best, record) => Math.max(best, record.bestScore || 0), 0);
+    const leaderboardRows = Object.entries(records)
+        .map(([levelIndex, record]) => ({ levelIndex: Number(levelIndex), ...record }))
+        .sort((a, b) => b.bestScore - a.bestScore);
+
+    useEffect(() => {
+        try {
+            const savedCampaign = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (savedCampaign) {
+                setCompletedLevels(new Set(savedCampaign.completed || []));
+                setRecords(savedCampaign.records || {});
+                setPlayerName(savedCampaign.playerName || 'Pilot');
+            }
+        } catch (error) {
+            console.warn('Prism Flow campaign data could not be restored.', error);
+        } finally {
+            setCampaignReady(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!campaignReady) return;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            completed: Array.from(completedLevels),
+            records,
+            playerName: playerName.trim().slice(0, 18) || 'Pilot',
+        }));
+    }, [campaignReady, completedLevels, records, playerName]);
+
+    useEffect(() => {
+        if (gameMode !== 'puzzle' || showWin || !runRef.current.startedAt) return undefined;
+        const timer = window.setInterval(() => {
+            setElapsed(Math.floor((Date.now() - runRef.current.startedAt) / 1000));
+        }, 500);
+        return () => window.clearInterval(timer);
+    }, [gameMode, showWin, currentLevel]);
+
+    const registerMove = useCallback(() => {
+        if (gameMode !== 'puzzle' || showWin) return;
+        runRef.current.moves += 1;
+        setMoves(runRef.current.moves);
+    }, [gameMode, showWin]);
 
     // ─── Load Level ─────────────────────────────────────────
     const loadLevel = useCallback((levelIndex) => {
@@ -414,6 +471,9 @@ export function PrismFlow() {
         setSelectedTool(null);
         setSelectedObjIndex(-1);
         setCurrentLevel(levelIndex);
+        runRef.current = { startedAt: Date.now(), moves: 0 };
+        setElapsed(0);
+        setMoves(0);
         setGameMode('puzzle');
     }, []);
 
@@ -434,6 +494,9 @@ export function PrismFlow() {
         setShowWin(false);
         setSelectedTool(null);
         setSelectedObjIndex(-1);
+        runRef.current = { startedAt: null, moves: 0 };
+        setElapsed(0);
+        setMoves(0);
         setGameMode('zen');
     }, []);
 
@@ -551,8 +614,28 @@ export function PrismFlow() {
         if (gameMode === 'puzzle' && levelTargets.length > 0) {
             setLitTargets(newLitTargets);
             if (newLitTargets.size === levelTargets.length && !showWin) {
+                const level = LEVELS[currentLevel];
+                const completionTime = Math.max(1, Math.floor((Date.now() - (runRef.current.startedAt || Date.now())) / 1000));
+                const moveCount = runRef.current.moves;
+                const efficiencyBonus = Math.max(0, (level.par - moveCount) * 140);
+                const score = Math.max(250, 1300 + currentLevel * 260 + efficiencyBonus - completionTime * 8 - moveCount * 35);
+
                 setShowWin(true);
+                setElapsed(completionTime);
                 setCompletedLevels(prev => new Set([...prev, currentLevel]));
+                setRecords(prev => {
+                    const currentRecord = prev[currentLevel] || {};
+                    const nextRecord = {
+                        bestScore: Math.max(currentRecord.bestScore || 0, score),
+                        bestTime: !currentRecord.bestTime || completionTime < currentRecord.bestTime ? completionTime : currentRecord.bestTime,
+                        bestMoves: !currentRecord.bestMoves || moveCount < currentRecord.bestMoves ? moveCount : currentRecord.bestMoves,
+                        lastScore: score,
+                        lastTime: completionTime,
+                        lastMoves: moveCount,
+                        achievedAt: Date.now(),
+                    };
+                    return { ...prev, [currentLevel]: nextRecord };
+                });
                 // Big celebration burst
                 const celebColors = ['rgb(255, 200, 60)', 'rgb(100, 255, 150)', 'rgb(100, 180, 255)', 'rgb(255, 100, 120)'];
                 levelTargets.forEach(t => {
@@ -1017,6 +1100,7 @@ export function PrismFlow() {
         if (isRightClick) {
             const idx = findObjectAt(mx, my);
             if (idx >= 0) {
+                registerMove();
                 setPlacedObjects(prev => {
                     const copy = [...prev];
                     copy[idx] = { ...copy[idx], angle: (copy[idx].angle || 0) + ROTATION_STEP };
@@ -1064,6 +1148,7 @@ export function PrismFlow() {
             });
             setToolInventory(prev => ({ ...prev, [selectedTool]: prev[selectedTool] - 1 }));
             if (toolInventory[selectedTool] <= 1) setSelectedTool(null);
+            registerMove();
             return;
         }
     }
@@ -1089,6 +1174,7 @@ export function PrismFlow() {
     }
 
     function handlePointerUp() {
+        if (dragging) registerMove();
         setDragging(null);
     }
 
@@ -1111,6 +1197,7 @@ export function PrismFlow() {
             e.preventDefault();
             e.stopPropagation();
             const direction = e.deltaY > 0 ? 1 : -1;
+            registerMove();
             setPlacedObjects(prev => {
                 const copy = [...prev];
                 copy[idx] = { ...copy[idx], angle: (copy[idx].angle || 0) + ROTATION_STEP * direction };
@@ -1141,6 +1228,7 @@ export function PrismFlow() {
     // ─── Object Actions ─────────────────────────────────────
     const rotateSelected = () => {
         if (selectedObjIndex < 0) return;
+        registerMove();
         setPlacedObjects(prev => {
             const copy = [...prev];
             copy[selectedObjIndex] = { ...copy[selectedObjIndex], angle: (copy[selectedObjIndex].angle || 0) + ROTATION_STEP };
@@ -1150,6 +1238,7 @@ export function PrismFlow() {
 
     const removeSelected = () => {
         if (selectedObjIndex < 0) return;
+        registerMove();
         const obj = placedObjects[selectedObjIndex];
         setToolInventory(prev => ({ ...prev, [obj.type]: (prev[obj.type] || 0) + 1 }));
         setPlacedObjects(prev => prev.filter((_, i) => i !== selectedObjIndex));
@@ -1163,6 +1252,8 @@ export function PrismFlow() {
         return (
             <div className="pf-home">
                 <div className="pf-home-bg">
+                    <div className="pf-home-orbit pf-home-orbit-one" />
+                    <div className="pf-home-orbit pf-home-orbit-two" />
                     <div className="pf-prism-hero">
                         <div className="pf-prism-shape" />
                         <div className="pf-beam-in" />
@@ -1174,17 +1265,23 @@ export function PrismFlow() {
 
                 <div className="pf-home-content-wrapper">
                     <div className="pf-home-content">
-                        <h1 className="pf-title">Prism Flow</h1>
-                        <p className="pf-subtitle">A Light Physics Odyssey</p>
+                        <div className="pf-eyebrow"><span /> PRISM FLOW // COMMAND DECK</div>
+                        <h1 className="pf-title">Prism <em>Flow</em></h1>
+                        <p className="pf-subtitle">A tactical light-routing odyssey across twelve escalating sectors.</p>
+                        <div className="pf-home-stats" aria-label="Campaign statistics">
+                            <div><strong>{completedLevels.size}</strong><span>sectors cleared</span></div>
+                            <div><strong>{highestRecord.toLocaleString()}</strong><span>highest record</span></div>
+                            <div><strong>{totalScore.toLocaleString()}</strong><span>command score</span></div>
+                        </div>
                         <div className="pf-menu-buttons">
                             <button
                                 className="pf-btn pf-btn-primary pf-btn-glowing"
-                                onClick={() => setGameMode('levelSelect')}
+                                onClick={() => loadLevel(unlockedLevel)}
                             >
                                 <span className="pf-btn-icon">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 </span>
-                                Start Journey
+                                {completedLevels.size ? `Continue: ${LEVELS[unlockedLevel].name}` : 'Begin expedition'}
                             </button>
                             <button
                                 className="pf-btn pf-btn-secondary pf-btn-slide"
@@ -1196,6 +1293,13 @@ export function PrismFlow() {
                                 Zen Sandbox
                             </button>
                             <button
+                                className="pf-btn pf-btn-secondary pf-btn-slide"
+                                onClick={() => setGameMode('leaderboard')}
+                            >
+                                <span className="pf-btn-icon">⌁</span>
+                                Command records
+                            </button>
+                            <button
                                 className="pf-btn pf-btn-secondary pf-btn-slide popup-trigger-btn"
                                 onClick={() => setShowHowToPlay(true)}
                             >
@@ -1204,6 +1308,17 @@ export function PrismFlow() {
                                 </span>
                                 How to Play
                             </button>
+                        </div>
+                        <div className="pf-pilot-strip">
+                            <span>CALLSIGN</span>
+                            <input
+                                value={playerName}
+                                maxLength="18"
+                                onChange={(event) => setPlayerName(event.target.value)}
+                                aria-label="Pilot callsign"
+                            />
+                            <span className="pf-status-dot" />
+                            <small>{campaignReady ? 'Campaign synced locally' : 'Loading campaign...'}</small>
                         </div>
                     </div>
 
@@ -1266,27 +1381,81 @@ export function PrismFlow() {
 
 
 
+    // ─── Render: Personal Leaderboard ───────────────────────
+    if (gameMode === 'leaderboard') {
+        return (
+            <div className="pf-level-select pf-leaderboard">
+                <div className="pf-ls-header">
+                    <button className="pf-back-btn" onClick={() => setGameMode('home')}>← Command deck</button>
+                    <div>
+                        <p className="pf-section-kicker">PILOT ARCHIVE</p>
+                        <h2 className="pf-ls-title">Highest records</h2>
+                    </div>
+                </div>
+                <div className="pf-leaderboard-summary">
+                    <div><span>CALLSIGN</span><strong>{playerName.trim() || 'Pilot'}</strong></div>
+                    <div><span>BEST SIGNAL</span><strong>{highestRecord.toLocaleString()}</strong></div>
+                    <div><span>SECTORS</span><strong>{completedLevels.size}/{LEVELS.length}</strong></div>
+                </div>
+                <div className="pf-records-list">
+                    {leaderboardRows.length ? leaderboardRows.map((record, index) => {
+                        const level = LEVELS[record.levelIndex];
+                        return (
+                            <div className="pf-record-row" key={record.levelIndex}>
+                                <span className="pf-record-rank">{String(index + 1).padStart(2, '0')}</span>
+                                <div className="pf-record-level"><strong>{level?.name || 'Unknown sector'}</strong><small>{level?.sector} · LVL {level?.difficulty}</small></div>
+                                <div className="pf-record-stat"><span>SCORE</span><strong>{record.bestScore.toLocaleString()}</strong></div>
+                                <div className="pf-record-stat pf-record-secondary"><span>BEST RUN</span><strong>{formatTime(record.bestTime)} · {record.bestMoves} moves</strong></div>
+                            </div>
+                        );
+                    }) : (
+                        <div className="pf-empty-records">
+                            <span>◌</span>
+                            <h3>No signal data yet</h3>
+                            <p>Clear a sector to lock in your first high record.</p>
+                            <button className="pf-btn pf-btn-primary" onClick={() => loadLevel(0)}>Launch level one</button>
+                        </div>
+                    )}
+                </div>
+                {leaderboardRows.length > 0 && <p className="pf-records-note">Records are stored on this device so every replay is a real personal best attempt.</p>}
+            </div>
+        );
+    }
+
     // ─── Render: Level Select ───────────────────────────────
     if (gameMode === 'levelSelect') {
         return (
             <div className="pf-level-select">
                 <div className="pf-ls-header">
-                    <button className="pf-back-btn" onClick={() => setGameMode('home')}>← Back</button>
-                    <h2 className="pf-ls-title">Select Level</h2>
+                    <button className="pf-back-btn" onClick={() => setGameMode('home')}>← Command deck</button>
+                    <div>
+                        <p className="pf-section-kicker">CAMPAIGN MAP</p>
+                        <h2 className="pf-ls-title">Signal sectors <span>{completedLevels.size}/{LEVELS.length}</span></h2>
+                    </div>
+                    <button className="pf-record-link" onClick={() => setGameMode('leaderboard')}>⌁ Records</button>
                 </div>
                 <div className="pf-ls-grid">
-                    {LEVELS.map((level, i) => (
-                        <button
-                            key={i}
-                            className={`pf-ls-card ${completedLevels.has(i) ? 'pf-ls-completed' : ''}`}
-                            onClick={() => loadLevel(i)}
-                        >
-                            <div className="pf-ls-number">{i + 1}</div>
-                            <div className="pf-ls-name">{level.name}</div>
-                            <div className="pf-ls-desc">{level.description}</div>
-                            {completedLevels.has(i) && <div className="pf-ls-check">✓</div>}
-                        </button>
-                    ))}
+                    {LEVELS.map((level, i) => {
+                        const isComplete = completedLevels.has(i);
+                        const isLocked = i > unlockedLevel;
+                        const record = records[i];
+                        return (
+                            <button
+                                key={i}
+                                disabled={isLocked}
+                                className={`pf-ls-card ${isComplete ? 'pf-ls-completed' : ''} ${isLocked ? 'pf-ls-locked' : ''}`}
+                                onClick={() => loadLevel(i)}
+                            >
+                                <div className="pf-ls-card-top"><span className="pf-ls-number">{level.difficulty}</span><span className="pf-ls-sector">{level.sector}</span></div>
+                                <div className="pf-ls-name">{isLocked ? 'Encrypted sector' : level.name}</div>
+                                <div className="pf-ls-desc">{isLocked ? 'Clear the preceding sector to unlock this route.' : level.description}</div>
+                                <div className="pf-ls-card-foot">
+                                    {isLocked ? <span>⌁ LOCKED</span> : isComplete ? <span>✓ {record?.bestScore?.toLocaleString() || 'CLEAR'}</span> : <span>PAR {level.par} MOVES</span>}
+                                    {!isLocked && <span>◈</span>}
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -1311,22 +1480,35 @@ export function PrismFlow() {
 
             {/* Top Bar — level name + actions */}
             <div className="pf-topbar">
-                <span className="pf-topbar-title">
-                    {gameMode === 'zen' ? 'Sandbox' : LEVELS[currentLevel]?.name}
-                </span>
+                <div className="pf-hud-identity">
+                    <span className="pf-hud-level">{gameMode === 'zen' ? '∞' : String(currentLevel + 1).padStart(2, '0')}</span>
+                    <div>
+                        <small>{gameMode === 'zen' ? 'OPEN SANDBOX' : LEVELS[currentLevel]?.sector}</small>
+                        <span className="pf-topbar-title">{gameMode === 'zen' ? 'Freeform optics' : LEVELS[currentLevel]?.name}</span>
+                    </div>
+                </div>
+                {gameMode === 'puzzle' && <div className="pf-hud-stats" aria-label="Level status">
+                    <span><b>{litTargets.size}/{levelTargets.length}</b><small>RELAYS</small></span>
+                    <span><b>{moves}</b><small>MOVES</small></span>
+                    <span><b>{formatTime(elapsed)}</b><small>TIME</small></span>
+                </div>}
                 <div className="pf-topbar-actions">
                     <button className="pf-topbar-btn" onClick={() => {
                         if (gameMode === 'puzzle') loadLevel(currentLevel);
                         else loadZenMode();
-                    }}>↻</button>
-                    <button className="pf-topbar-btn" onClick={() => setGameMode(gameMode === 'puzzle' ? 'levelSelect' : 'home')}>✕</button>
+                    }} aria-label="Restart level" title="Restart level">↻</button>
+                    <button className="pf-topbar-btn" onClick={() => setGameMode(gameMode === 'puzzle' ? 'levelSelect' : 'home')} aria-label="Leave game" title="Leave game">✕</button>
                 </div>
+            </div>
+
+            <div className="pf-live-hint">
+                {selectedObjIndex >= 0 ? 'Selected optic — rotate it, move it, or return it to inventory.' : selectedTool ? `Deploying ${selectedTool}. Tap the field to place it.` : 'Select an optic below, then place it on the field.'}
             </div>
 
             {/* Bottom Toolbar — tools + selected object actions */}
             <div className="pf-bottom-bar">
                 {/* Tool buttons */}
-                <div className="pf-bb-tools">
+                <div className="pf-bb-tools" aria-label="Optic inventory">
                     {Object.entries(toolInventory).map(([type, count]) => (
                         count > 0 && (
                             <button
@@ -1336,9 +1518,10 @@ export function PrismFlow() {
                                     setSelectedTool(selectedTool === type ? null : type);
                                     setSelectedObjIndex(-1);
                                 }}
+                                title={`${type} (${count === 99 ? 'unlimited' : count} remaining)`}
                             >
                                 <span className="pf-bb-tool-icon">{TOOL_ICONS[type]}</span>
-                                <span className="pf-bb-tool-count">{count === 99 ? '∞' : count}</span>
+                                <span className="pf-bb-tool-count"><b>{type}</b>{count === 99 ? '∞' : count}</span>
                             </button>
                         )
                     ))}
@@ -1365,8 +1548,14 @@ export function PrismFlow() {
                 <div className="pf-win-overlay">
                     <div className="pf-win-card">
                         <div className="pf-win-icon">✦</div>
-                        <h2 className="pf-win-title">Level Complete!</h2>
+                        <p className="pf-win-kicker">SECTOR STABILIZED</p>
+                        <h2 className="pf-win-title">Signal captured</h2>
                         <p className="pf-win-subtitle">{LEVELS[currentLevel]?.name}</p>
+                        <div className="pf-win-score">
+                            <div><span>RUN SCORE</span><strong>{records[currentLevel]?.lastScore?.toLocaleString() || '—'}</strong></div>
+                            <div><span>TIME</span><strong>{formatTime(elapsed)}</strong></div>
+                            <div><span>MOVES</span><strong>{moves} <small>/ PAR {LEVELS[currentLevel]?.par}</small></strong></div>
+                        </div>
                         <div className="pf-win-actions">
                             {currentLevel < LEVELS.length - 1 && (
                                 <button className="pf-btn pf-btn-primary" onClick={() => loadLevel(currentLevel + 1)}>
