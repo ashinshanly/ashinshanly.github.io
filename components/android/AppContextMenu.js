@@ -68,7 +68,20 @@ export default function AppContextMenu({ app, position, onClose, onOpenApp, onUn
                     className="fixed z-[90] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2D2D30] rounded-2xl w-[80%] max-w-sm overflow-hidden shadow-2xl"
                 >
                     <div className="p-6 flex flex-col items-center">
-                        <img src={app.icon} alt={app.title} className="w-20 h-20 mb-4" />
+                        {app.custom_icon ? (
+                            <div className="w-20 h-20 mb-4 flex items-center justify-center">
+                                <app.custom_icon size="modal" />
+                            </div>
+                        ) : (
+                            <img
+                                src={app.icon}
+                                alt={app.title}
+                                className="w-20 h-20 mb-4 object-contain"
+                                onError={(e) => {
+                                    e.target.src = './themes/Yaru/apps/bash.png';
+                                }}
+                            />
+                        )}
                         <h2 className="text-xl font-bold text-white mb-1">{app.title}</h2>
                         <p className="text-white/60 text-sm mb-6">Version 2.0.0 • 45 MB</p>
 
@@ -124,11 +137,20 @@ export default function AppContextMenu({ app, position, onClose, onOpenApp, onUn
             >
                 {/* App header */}
                 <div className="flex items-center gap-3 p-3 border-b border-white/10">
-                    <img
-                        src={app.icon}
-                        alt={app.title}
-                        className="w-10 h-10 rounded-xl"
-                    />
+                    {app.custom_icon ? (
+                        <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                            <app.custom_icon size="header" />
+                        </div>
+                    ) : (
+                        <img
+                            src={app.icon}
+                            alt={app.title}
+                            className="w-10 h-10 rounded-xl object-contain flex-shrink-0"
+                            onError={(e) => {
+                                e.target.src = './themes/Yaru/apps/bash.png';
+                            }}
+                        />
+                    )}
                     <span className="text-white font-medium text-sm">{app.title}</span>
                 </div>
 

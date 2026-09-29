@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "export": "next export"
+    "export": "next export",
+    "test": "node tests/run_all_suites.mjs",
+    "test:android": "node tests/android/run_all_tests.mjs"
   },
   "engines": {
     "node": ">=16.x"

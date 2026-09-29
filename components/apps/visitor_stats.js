@@ -12,38 +12,45 @@ export function VisitorStats() {
     const [recentViewers, setRecentViewers] = useState([]);
 
     useEffect(() => {
-        const liveRef = ref(db, 'site_stats/live_viewers');
-        const totalRef = ref(db, 'site_stats/total_visitors');
+        if (!db) return;
+        let unsubLive = null;
+        let unsubTotal = null;
+        try {
+            const liveRef = ref(db, 'site_stats/live_viewers');
+            const totalRef = ref(db, 'site_stats/total_visitors');
 
-        const unsubLive = onValue(liveRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const now = Date.now();
-                // Filter out sessions older than 2 minutes
-                const sessions = Object.values(data).filter(s => (now - s.timestamp) < 120000);
-                setStats(prev => ({ ...prev, live: sessions.length }));
-                setRecentViewers(sessions.sort((a, b) => b.timestamp - a.timestamp).slice(0, 5));
-            } else {
-                setStats(prev => ({ ...prev, live: 0 }));
-                setRecentViewers([]);
-            }
-        }, (error) => {
-            console.error("Firebase VisitorStats (live) error:", error);
-        });
+            unsubLive = onValue(liveRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const now = Date.now();
+                    // Filter out sessions older than 2 minutes
+                    const sessions = Object.values(data || {}).filter(s => s && (now - s.timestamp) < 120000);
+                    setStats(prev => ({ ...prev, live: sessions.length }));
+                    setRecentViewers(sessions.sort((a, b) => b.timestamp - a.timestamp).slice(0, 5));
+                } else {
+                    setStats(prev => ({ ...prev, live: 0 }));
+                    setRecentViewers([]);
+                }
+            }, (error) => {
+                console.error("Firebase VisitorStats (live) error:", error);
+            });
 
-        const unsubTotal = onValue(totalRef, (snapshot) => {
-            if (snapshot.exists()) {
-                setStats(prev => ({ ...prev, total: BASE_VISITOR_COUNT + snapshot.val() }));
-            } else {
-                setStats(prev => ({ ...prev, total: BASE_VISITOR_COUNT }));
-            }
-        }, (error) => {
-            console.error("Firebase VisitorStats (total) error:", error);
-        });
+            unsubTotal = onValue(totalRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    setStats(prev => ({ ...prev, total: BASE_VISITOR_COUNT + snapshot.val() }));
+                } else {
+                    setStats(prev => ({ ...prev, total: BASE_VISITOR_COUNT }));
+                }
+            }, (error) => {
+                console.error("Firebase VisitorStats (total) error:", error);
+            });
+        } catch (e) {
+            console.error("Firebase VisitorStats init error:", e);
+        }
 
         return () => {
-            unsubLive();
-            unsubTotal();
+            if (typeof unsubLive === 'function') unsubLive();
+            if (typeof unsubTotal === 'function') unsubTotal();
         };
     }, []);
 

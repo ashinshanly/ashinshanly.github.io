@@ -72,24 +72,33 @@ export default function AppDrawer({ isOpen, onClose, apps, onOpenApp }) {
 
             {/* App Grid */}
             <div className="app-drawer-grid">
-                {filteredApps.map((app, index) => (
-                    <div
-                        key={app.id || index}
-                        className="android-app-icon ripple"
-                        onClick={() => handleAppClick(app.id)}
-                        onTouchStart={handleTouchStart}
-                        onTouchEnd={(e) => handleTouchEnd(e, app.id)}
-                    >
-                        <img
-                            src={app.icon}
-                            alt={app.title}
-                            onError={(e) => {
-                                e.target.src = './themes/Yaru/apps/default.png';
-                            }}
-                        />
-                        <span>{app.title}</span>
-                    </div>
-                ))}
+                {filteredApps.map((app, index) => {
+                    const CustomIcon = app.custom_icon;
+                    return (
+                        <div
+                            key={app.id || index}
+                            className="android-app-icon ripple"
+                            onClick={() => handleAppClick(app.id)}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={(e) => handleTouchEnd(e, app.id)}
+                        >
+                            {CustomIcon ? (
+                                <div className="w-[52px] h-[52px] flex items-center justify-center mb-2">
+                                    <CustomIcon size="android" />
+                                </div>
+                            ) : (
+                                <img
+                                    src={app.icon}
+                                    alt={app.title}
+                                    onError={(e) => {
+                                        e.target.src = './themes/Yaru/apps/default.png';
+                                    }}
+                                />
+                            )}
+                            <span>{app.title}</span>
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Close Button */}

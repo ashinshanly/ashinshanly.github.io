@@ -26,16 +26,24 @@ export function CodingChallenges() {
     const [leaderboard, setLeaderboard] = useState([]);
 
     useEffect(() => {
-        const leaderboardRef = ref(db, 'coding-challenges/leaderboard');
-        const unsubscribe = onValue(leaderboardRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const sortedLeaderboard = Object.values(data).sort((a, b) => b.score - a.score);
-                setLeaderboard(sortedLeaderboard);
-            }
-        });
+        if (!db) return;
+        let unsubscribe = null;
+        try {
+            const leaderboardRef = ref(db, 'coding-challenges/leaderboard');
+            unsubscribe = onValue(leaderboardRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const sortedLeaderboard = Object.values(data || {}).sort((a, b) => b.score - a.score);
+                    setLeaderboard(sortedLeaderboard);
+                }
+            });
+        } catch (e) {
+            console.error("CodingChallenges leaderboard error:", e);
+        }
 
-        return () => unsubscribe();
+        return () => {
+            if (typeof unsubscribe === 'function') unsubscribe();
+        };
     }, []);
 
     const handleCodeSubmit = async () => {

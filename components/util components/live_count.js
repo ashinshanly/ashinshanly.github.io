@@ -6,23 +6,31 @@ export default function LiveCount() {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        const liveRef = ref(db, 'site_stats/live_viewers');
-        const unsub = onValue(liveRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const now = Date.now();
-                // Filter out sessions older than 2 minutes
-                const activeSessions = Object.values(data).filter(s => (now - s.timestamp) < 120000);
-                setCount(activeSessions.length);
-            } else {
+        if (!db) return;
+        let unsub = null;
+        try {
+            const liveRef = ref(db, 'site_stats/live_viewers');
+            unsub = onValue(liveRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const now = Date.now();
+                    // Filter out sessions older than 2 minutes
+                    const activeSessions = Object.values(data || {}).filter(s => s && (now - s.timestamp) < 120000);
+                    setCount(activeSessions.length);
+                } else {
+                    setCount(0);
+                }
+            }, (error) => {
+                console.error("Firebase LiveCount error:", error);
                 setCount(0);
-            }
-        }, (error) => {
-            console.error("Firebase LiveCount error:", error);
-            setCount(0);
-        });
+            });
+        } catch (e) {
+            console.error("Firebase LiveCount init error:", e);
+        }
 
-        return () => unsub();
+        return () => {
+            if (typeof unsub === 'function') unsub();
+        };
     }, []);
 
     // For development/debugging: show 0 if count is 0, but maybe keep it hidden if we want it clean

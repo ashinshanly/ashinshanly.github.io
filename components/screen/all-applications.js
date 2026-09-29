@@ -50,6 +50,7 @@ export class AllApplications extends React.Component {
                 name: app.title,
                 id: app.id,
                 icon: app.icon,
+                custom_icon: app.custom_icon,
                 openApp: this.props.openApp
             }
 

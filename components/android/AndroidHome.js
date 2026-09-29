@@ -98,9 +98,17 @@ export default function AndroidHome() {
     }, [tilt]);
 
     // Filter apps based on hidden state (simulated uninstall)
-    const activeApps = apps.filter(app => !hiddenApps.includes(app.id));
-    const homeApps = activeApps.filter(app => app.favourite).slice(4, 12);
-    const dockApps = activeApps.filter(app => app.favourite).slice(0, 4);
+    const activeApps = apps.filter(app => !hiddenApps.includes(app.id) && !app.disabled);
+    const dockAppIds = ['chrome', 'terminal', 'vscode', 'spotify'];
+    const dockApps = dockAppIds.map(id => activeApps.find(a => a.id === id)).filter(Boolean);
+    const nonDockApps = activeApps.filter(app => !dockAppIds.includes(app.id));
+    
+    // Screen 1: Top 8 non-dock favorite apps
+    const homeApps = nonDockApps.filter(app => app.favourite && app.id !== 'pixel-hud').slice(0, 8);
+    const homeAppIds = homeApps.map(a => a.id);
+
+    // Screen 3: GuestBook + remaining active apps
+    const screen3Apps = nonDockApps.filter(app => !homeAppIds.includes(app.id));
 
     const handleUninstall = (appId) => {
         setHiddenApps(prev => [...prev, appId]);
@@ -134,9 +142,8 @@ export default function AndroidHome() {
         // If mostly scrolling vertically, ignore horizontal swipe
         if (Math.abs(deltaY) > Math.abs(deltaX)) return;
 
-        // Limit swipe boundaries to just one screen width
-        if ((page === 0 && deltaX > 0) || (page === 1 && deltaX < 0)) {
-            // Add resistance if trying to swipe past edge
+        // Resistance on boundaries: page 0 swiping right (deltaX > 0) or page 2 swiping left (deltaX < 0)
+        if ((page === 0 && deltaX > 0) || (page === 2 && deltaX < 0)) {
             setSwipeX(deltaX * 0.2);
         } else {
             setSwipeX(deltaX);
@@ -154,9 +161,6 @@ export default function AndroidHome() {
             longPressTimer.current = null;
         }
 
-        // Removed drawer open on swipe up logic here
-
-
         if (deltaY < -80 && touchStartY.current < 100 && !drawerOpen) {
             vibrate();
             setNotificationOpen(true);
@@ -166,11 +170,11 @@ export default function AndroidHome() {
         const swipeThreshold = screenWidth * 0.15; // 15% of screen width to register turn
 
         if (Math.abs(swipeX) > swipeThreshold && Math.abs(deltaY) < 50) {
-            if (swipeX < 0 && page === 0) {
-                setPage(1);
+            if (swipeX < 0 && page < 2) {
+                setPage((prev) => Math.min(2, prev + 1));
                 vibrate();
-            } else if (swipeX > 0 && page === 1) {
-                setPage(0);
+            } else if (swipeX > 0 && page > 0) {
+                setPage((prev) => Math.max(0, prev - 1));
                 vibrate();
             }
         }
@@ -256,36 +260,45 @@ export default function AndroidHome() {
     const closeNotifications = () => setNotificationOpen(false);
     const closeContextMenu = () => setContextMenu({ app: null, position: null });
 
-    const renderAppIcon = (app, index, inDock = false) => (
-        <div
-            key={app.id || index}
-            className="android-app-icon ripple"
-            onClick={() => handleOpenApp(app.id)}
-            onTouchStart={(e) => handleAppTouchStart(e, app)}
-            onMouseDown={(e) => handleAppTouchStart(e, app)}
-            onMouseUp={(e) => handleAppTouchEnd(e, app)}
-            onTouchEnd={(e) => handleAppTouchEnd(e, app)}
-            onTouchMove={() => {
-                if (longPressTimer.current) {
-                    clearTimeout(longPressTimer.current);
-                    longPressTimer.current = null;
-                }
-            }}
-            onContextMenu={(e) => {
-                e.preventDefault();
-            }}
-        >
-            <img
-                src={app.icon}
-                alt={app.title}
-                draggable={false}
-                onError={(e) => {
-                    e.target.src = './themes/Yaru/apps/bash.png';
+    const renderAppIcon = (app, index, inDock = false) => {
+        const CustomIcon = app.custom_icon;
+        return (
+            <div
+                key={app.id || index}
+                className="android-app-icon ripple"
+                onClick={() => handleOpenApp(app.id)}
+                onTouchStart={(e) => handleAppTouchStart(e, app)}
+                onMouseDown={(e) => handleAppTouchStart(e, app)}
+                onMouseUp={(e) => handleAppTouchEnd(e, app)}
+                onTouchEnd={(e) => handleAppTouchEnd(e, app)}
+                onTouchMove={() => {
+                    if (longPressTimer.current) {
+                        clearTimeout(longPressTimer.current);
+                        longPressTimer.current = null;
+                    }
                 }}
-            />
-            {!inDock && <span>{app.title}</span>}
-        </div>
-    );
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                }}
+            >
+                {CustomIcon ? (
+                    <div className={`flex items-center justify-center ${inDock ? 'w-[clamp(36px,12vw,48px)] h-[clamp(36px,12vw,48px)]' : 'w-[52px] h-[52px] mb-2'}`}>
+                        <CustomIcon size="sidebar" />
+                    </div>
+                ) : (
+                    <img
+                        src={app.icon}
+                        alt={app.title}
+                        draggable={false}
+                        onError={(e) => {
+                            e.target.src = './themes/Yaru/apps/bash.png';
+                        }}
+                    />
+                )}
+                {!inDock && <span>{app.title}</span>}
+            </div>
+        );
+    };
 
     return (
         <div
@@ -318,39 +331,39 @@ export default function AndroidHome() {
                 hasNotifications={true}
             />
 
+            {/* Screen 1: Page 0 (Main Home) */}
             <div
-                className={`android-home relative z-10 ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                className={`absolute inset-0 z-10 pt-[var(--android-status-bar-height,28px)] pb-[130px] px-2 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
                 style={{
-                    transform: `translateX(calc(${-page * 20}% + ${swipeX * 0.5}px))`,
-                    opacity: page === 1 && swipeX === 0 ? 0.8 : 1
+                    transform: `translateX(calc(${(0 - page) * 100}% + ${swipeX}px))`,
+                    pointerEvents: page === 0 ? 'auto' : 'none',
+                    visibility: Math.abs(page - 0) > 1 && swipeX === 0 ? 'hidden' : 'visible',
                 }}
             >
-                <div
-                    className={`flex flex-col h-full ${swipeX === 0 ? 'transition-opacity duration-300' : ''} ${page === 1 && swipeX === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-                >
-                    <div className="at-a-glance">
-                        <div className="flex items-center justify-between w-full mb-1">
-                            <div className="at-a-glance-date">{formatDate()}</div>
-                            <div className="flex items-center gap-1.5 text-white/80 text-sm">
-                                <span>{weather ? `${weather.emoji} ${weather.temp}°` : '☀️ 24°'}</span>
-                            </div>
+                <div className="at-a-glance">
+                    <div className="flex items-center justify-between w-full mb-1">
+                        <div className="at-a-glance-date">{formatDate()}</div>
+                        <div className="flex items-center gap-1.5 text-white/80 text-sm">
+                            <span>{weather ? `${weather.emoji} ${weather.temp}°` : '☀️ 24°'}</span>
                         </div>
-                        <div className="at-a-glance-time">{formatTime()}</div>
                     </div>
+                    <div className="at-a-glance-time">{formatTime()}</div>
+                </div>
 
-                    <SearchWidget />
+                <SearchWidget />
 
-                    <div className="android-app-grid">
-                        {homeApps.map((app, index) => renderAppIcon(app, index))}
-                    </div>
+                <div className="android-app-grid">
+                    {homeApps.map((app, index) => renderAppIcon(app, index))}
                 </div>
             </div>
 
+            {/* Screen 2: Page 1 (Widgets Screen) */}
             <div
-                className={`absolute inset-0 z-10 pt-16 px-6 flex flex-col gap-5 ${swipeX === 0 ? 'transition-all duration-300' : ''}`}
+                className={`absolute inset-0 z-10 pt-14 pb-[130px] px-6 flex flex-col gap-5 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
                 style={{
-                    transform: `translateX(calc(${page === 0 ? '120%' : '0px'} + ${swipeX}px))`,
-                    opacity: page === 0 && swipeX > -20 ? 0 : 1
+                    transform: `translateX(calc(${(1 - page) * 100}% + ${swipeX}px))`,
+                    pointerEvents: page === 1 ? 'auto' : 'none',
+                    visibility: Math.abs(page - 1) > 1 && swipeX === 0 ? 'hidden' : 'visible',
                 }}
             >
                 <div className="mb-2">
@@ -359,24 +372,48 @@ export default function AndroidHome() {
                 <MusicWidget />
             </div>
 
+            {/* Screen 3: Page 2 (More Apps Screen) */}
+            <div
+                className={`absolute inset-0 z-10 pt-12 pb-[130px] px-2 flex flex-col overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                style={{
+                    transform: `translateX(calc(${(2 - page) * 100}% + ${swipeX}px))`,
+                    pointerEvents: page === 2 ? 'auto' : 'none',
+                    visibility: Math.abs(page - 2) > 1 && swipeX === 0 ? 'hidden' : 'visible',
+                }}
+            >
+                <div className="px-4 pt-2 pb-1 flex items-center justify-between">
+                    <h2 className="text-white/90 text-sm font-semibold tracking-wider uppercase">More Apps</h2>
+                    <span className="text-white/40 text-xs">{screen3Apps.length} apps</span>
+                </div>
+                <div className="android-app-grid">
+                    {screen3Apps.map((app, index) => renderAppIcon(app, index))}
+                </div>
+            </div>
+
+            {/* Persistent Dock & 3-Dot Pagination */}
             <div className="absolute bottom-[24px] left-0 right-0 z-20 w-full flex flex-col items-center">
                 <div className="flex justify-center gap-2 mb-3">
-                    <div
-                        className={`w-1.5 h-1.5 rounded-full transition-colors ${page === 0 ? 'bg-white' : 'bg-white/30'}`}
-                        onClick={() => setPage(0)}
-                    />
-                    <div
-                        className={`w-1.5 h-1.5 rounded-full transition-colors ${page === 1 ? 'bg-white' : 'bg-white/30'}`}
-                        onClick={() => setPage(1)}
-                    />
+                    {[0, 1, 2].map((dotIndex) => (
+                        <div
+                            key={dotIndex}
+                            className={`w-1.5 h-1.5 rounded-full transition-colors cursor-pointer ${page === dotIndex ? 'bg-white' : 'bg-white/30'}`}
+                            onClick={() => {
+                                setPage(dotIndex);
+                                vibrate();
+                            }}
+                        />
+                    ))}
                 </div>
 
                 <div className="android-dock w-[calc(100%-32px)]">
                     {dockApps.slice(0, 2).map((app, index) => renderAppIcon(app, index, true))}
-                    <div className="android-app-icon ripple" onClick={() => {
-                        vibrate();
-                        setDrawerOpen(true);
-                    }}>
+                    <div
+                        className="android-app-icon ripple"
+                        onClick={() => {
+                            vibrate();
+                            setDrawerOpen(true);
+                        }}
+                    >
                         <img width="32" height="32" src="./themes/Yaru/system/view-app-grid-symbolic.svg" alt="All Apps" />
                     </div>
                     {dockApps.slice(2, 4).map((app, index) => renderAppIcon(app, index + 2, true))}

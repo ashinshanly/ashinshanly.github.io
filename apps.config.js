@@ -14,11 +14,23 @@ import { displayShootingGame } from './components/apps/shooting_game';
 import { displayMusicSync } from './components/apps/musicsync';
 import { displayPrismFlow } from './components/apps/prism_flow';
 import { displayCamera } from './components/apps/camera';
+import { displayPixelHud } from './components/apps/pixel_hud';
 import { VisitorStats } from './components/apps/visitor_stats';
 import { VisitorIcon } from './components/util components/visitor_icon';
+import { PixelHudIcon } from './components/util components/pixel_hud_icon';
 
 
 const apps = [
+    {
+        id: "pixel-hud",
+        title: "GuestBook",
+        icon: './themes/Yaru/apps/illuminati.png',
+        custom_icon: PixelHudIcon,
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayPixelHud,
+    },
     {
         id: "chrome",
         title: "Google Chrome",

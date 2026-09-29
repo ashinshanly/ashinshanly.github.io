@@ -516,7 +516,7 @@ export class Desktop extends Component {
                 <div className="ubuntu-ambient-orb ubuntu-ambient-orb-one" aria-hidden="true" />
                 <div className="ubuntu-ambient-orb ubuntu-ambient-orb-two" aria-hidden="true" />
                 <div className="ubuntu-system-readout pointer-events-none select-none" aria-hidden="true">
-                    <span>ASHIN // WORKSPACE</span><i /><span>ALL SYSTEMS NOMINAL</span>
+                    <i /><span>ASHIN'S WORKSPACE</span>
                 </div>
 
                 {/* At a Glance Widget */}

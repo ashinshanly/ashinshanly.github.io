@@ -34,32 +34,44 @@ export function ChessGame() {
 
     useEffect(() => {
         if (gameMode === 'online') {
-            const gameRef = ref(db, `games/${gameId}`);
+            if (!db) return;
+            let unsubscribe = null;
+            try {
+                const gameRef = ref(db, `games/${gameId}`);
 
-            const fetchGameState = async () => {
-                const snapshot = await get(gameRef);
-                if (snapshot.exists()) {
+                const fetchGameState = async () => {
+                    try {
+                        const snapshot = await get(gameRef);
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            const newGame = new Chess();
+                            newGame.load(data.board);
+                            setGame(newGame);
+                            setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
+                        }
+                    } catch (e) {
+                        console.error("Chess fetch error:", e);
+                    }
+                };
+
+                fetchGameState();
+
+                unsubscribe = onValue(gameRef, (snapshot) => {
                     const data = snapshot.val();
-                    const newGame = new Chess();
-                    newGame.load(data.board);
-                    setGame(newGame);
-                    setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
-                }
+                    if (data && data.board) {
+                        const newGame = new Chess();
+                        newGame.load(data.board);
+                        setGame(newGame);
+                        setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
+                    }
+                });
+            } catch (e) {
+                console.error("Chess online error:", e);
+            }
+
+            return () => {
+                if (typeof unsubscribe === 'function') unsubscribe();
             };
-
-            fetchGameState();
-
-            const unsubscribe = onValue(gameRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data && data.board) {
-                    const newGame = new Chess();
-                    newGame.load(data.board);
-                    setGame(newGame);
-                    setGameStatus(`Current Turn: ${data.currentTurn === 'white' ? 'White' : 'Black'}`);
-                }
-            });
-
-            return () => unsubscribe();
         } else if (gameMode === 'computer') {
             const newGame = new Chess();
             setGame(newGame);
@@ -76,23 +88,30 @@ export function ChessGame() {
 
     useEffect(() => {
         if (gameMode === 'online') {
-            const viewersRef = ref(db, `games/${gameId}/viewers`);
+            if (!db) return;
             const sessionId = Math.random().toString(36).substr(2, 9);
+            try {
+                const viewersRef = ref(db, `games/${gameId}/viewers`);
 
-            // Add viewer
-            set(ref(db, `games/${gameId}/viewers/${sessionId}`), true);
+                // Add viewer
+                set(ref(db, `games/${gameId}/viewers/${sessionId}`), true).catch(() => {});
 
-            // Remove viewer on disconnect
-            onValue(viewersRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    setViewerCount(Object.keys(snapshot.val()).length);
-                } else {
-                    setViewerCount(0);
-                }
-            });
+                // Remove viewer on disconnect
+                onValue(viewersRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        setViewerCount(Object.keys(snapshot.val()).length);
+                    } else {
+                        setViewerCount(0);
+                    }
+                });
+            } catch (e) {}
 
             return () => {
-                set(ref(db, `games/${gameId}/viewers/${sessionId}`), null);
+                if (db) {
+                    try {
+                        set(ref(db, `games/${gameId}/viewers/${sessionId}`), null).catch(() => {});
+                    } catch (e) {}
+                }
             };
         }
     }, [gameMode, gameId]);

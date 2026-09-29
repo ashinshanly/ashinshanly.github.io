@@ -15,14 +15,10 @@ export default class Navbar extends Component {
 	render() {
 		return (
 			<div className="main-navbar-vp absolute top-0 right-0 w-screen flex flex-nowrap justify-between items-center text-white text-sm select-none z-50 bg-gradient-to-b from-black/70 to-transparent px-4 py-1.5 transition-all duration-300">
-				
+
 				{/* Left Side: Live Count */}
 				<div className="flex items-center space-x-2">
 					<LiveCount />
-					<div className="ubuntu-session-label hidden md:flex items-center gap-2 text-[10px] tracking-[0.18em] text-white/60">
-						<span className="ubuntu-session-pulse" />
-						CREATOR WORKSPACE
-					</div>
 				</div>
 
 				{/* Center: Clock */}

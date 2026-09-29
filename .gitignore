@@ -1,37 +1,53 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Testing & Coverage
 /coverage
+*.lcov
+.nyc_output
 
-# next.js
+# Next.js & Build Outputs
 /.next/
 /out/
-
-# production
 /build
+/dist
 
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logs & Debug
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# local env files
+# Environment & Secrets (NEVER push to GitHub)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+*.pem
+*.key
+*.cert
+*.crt
 
-# vercel
+# Operating System & Editor Artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Vercel
 .vercel
 
+# Agent & Temporary Dev Artifacts
+.agents/
 AGENT.md
+PROJECT.md
+TEST_INFRA.md
+TEST_READY.md
+scripts/
