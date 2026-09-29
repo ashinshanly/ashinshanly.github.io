@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "site_stats": {
+      ".read": true,
+      ".write": true
+    },
+    "games": {
+      ".read": true,
+      ".write": true
+    },
+    "coding-challenges": {
+      ".read": true,
+      ".write": true
+    },
+    "pixel_hud": {
+      ".read": true,
+      ".write": true,
+      "grid": {
+        "$canvasId": {
+          "$coord": {
+            ".validate": "newData.hasChildren(['color', 'author', 'timestamp']) && newData.child('color').isString() && newData.child('author').isString() && newData.child('timestamp').isNumber()"
+          }
+        }
+      },
+      "transmissions": {
+        "$txId": {
+          ".validate": "newData.hasChildren(['author', 'message', 'color', 'timestamp']) && newData.child('message').val().length <= 140"
+        }
+      }
+    }
+  }
+}
