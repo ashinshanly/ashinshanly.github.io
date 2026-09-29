@@ -1,31 +1,55 @@
 {
   "rules": {
+    "games": {
+      "$gameId": {
+        ".read": true,
+        ".write": true,
+        "board": {
+          ".validate": "newData.isString()"
+        },
+        "currentTurn": {
+          ".validate": "newData.val() === 'white' || newData.val() === 'black'"
+        },
+        "gameStatus": {
+          ".validate": "newData.val() === 'active' || newData.val() === 'checkmate' || newData.val() === 'check'"
+        },
+        "viewers": {
+          "$sessionId": {
+            ".validate": "newData.isBoolean()"
+          }
+        }
+      }
+    },
+    "coding_game": {
+      "leaderboard": {
+        ".read": true,
+        ".write": true
+      }
+    },
     "site_stats": {
       ".read": true,
       ".write": true
     },
-    "games": {
+    "chainreaction": {
       ".read": true,
       ".write": true
     },
-    "coding-challenges": {
-      ".read": true,
-      ".write": true
-    },
-    "pixel_hud": {
+    "maze_scores": {
       ".read": true,
       ".write": true,
+      ".indexOn": ["moves"],
+      "$scoreId": {
+        ".validate": "newData.hasChildren(['name', 'moves', 'time', 'timestamp']) && newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('moves').isNumber() && newData.child('time').isNumber() && newData.child('timestamp').isNumber()"
+      }
+    },
+    "pixel_hud": {
       "grid": {
-        "$canvasId": {
-          "$coord": {
-            ".validate": "newData.hasChildren(['color', 'author', 'timestamp']) && newData.child('color').isString() && newData.child('author').isString() && newData.child('timestamp').isNumber()"
-          }
-        }
+        ".read": true,
+        ".write": true
       },
       "transmissions": {
-        "$txId": {
-          ".validate": "newData.hasChildren(['author', 'message', 'color', 'timestamp']) && newData.child('message').val().length <= 140"
-        }
+        ".read": true,
+        ".write": true
       }
     }
   }

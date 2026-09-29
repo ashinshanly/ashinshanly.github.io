@@ -45,7 +45,7 @@ export function getGridPath(canvasId = 'canvas_1') {
   if (!canvasId || canvasId === 'canvas_1') {
     return 'pixel_hud/grid'; // Backward compatibility with established marks
   }
-  return `pixel_hud/grids/${canvasId}`;
+  return `pixel_hud/grid/${canvasId}`;
 }
 
 export function getGridCacheKey(canvasId = 'canvas_1') {

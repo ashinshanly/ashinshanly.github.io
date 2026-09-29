@@ -778,7 +778,7 @@ describe("Tier 3: Pairwise Combinatorial Integration Test Suite", () => {
       if (!canvasId || canvasId === 'canvas_1') {
         return 'pixel_hud/grid';
       }
-      return `pixel_hud/grids/${canvasId}`;
+      return `pixel_hud/grid/${canvasId}`;
     }
 
     function getGridCacheKey(canvasId = 'canvas_1') {
@@ -802,8 +802,8 @@ describe("Tier 3: Pairwise Combinatorial Integration Test Suite", () => {
       expect(getGridPath('canvas_1')).toBe('pixel_hud/grid');
       expect(getGridPath(undefined)).toBe('pixel_hud/grid');
       expect(getGridPath(null)).toBe('pixel_hud/grid');
-      expect(getGridPath('canvas_2')).toBe('pixel_hud/grids/canvas_2');
-      expect(getGridPath('canvas_3')).toBe('pixel_hud/grids/canvas_3');
+      expect(getGridPath('canvas_2')).toBe('pixel_hud/grid/canvas_2');
+      expect(getGridPath('canvas_3')).toBe('pixel_hud/grid/canvas_3');
     });
 
     it("P27.3: getGridCacheKey generates distinct localStorage partition keys", () => {

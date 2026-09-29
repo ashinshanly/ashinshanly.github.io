@@ -29,7 +29,7 @@ export function CodingChallenges() {
         if (!db) return;
         let unsubscribe = null;
         try {
-            const leaderboardRef = ref(db, 'coding-challenges/leaderboard');
+            const leaderboardRef = ref(db, 'coding_game/leaderboard');
             unsubscribe = onValue(leaderboardRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
@@ -93,7 +93,7 @@ export function CodingChallenges() {
                         setCode(problems[currentProblem + 1].template);
                     } else {
                         // Update leaderboard
-                        const leaderboardRef = ref(db, `coding-challenges/leaderboard/${currentUser}`);
+                        const leaderboardRef = ref(db, `coding_game/leaderboard/${currentUser}`);
                         set(leaderboardRef, {
                             name: currentUser,
                             score: (currentProblem + 1) * 100
