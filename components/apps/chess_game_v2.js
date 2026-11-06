@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { db } from '../../config/firebase';
-import { ref, onValue, set, get } from 'firebase/database';
-
-//To do - Fix live viewer count update. Everytime a piece moves, the viewer count is going to zero.
+import { ref, onValue, set, get, update, onDisconnect } from 'firebase/database';
 
 export function ChessGame() {
     const [game, setGame] = useState(new Chess());
@@ -89,15 +87,17 @@ export function ChessGame() {
     useEffect(() => {
         if (gameMode === 'online') {
             if (!db) return;
-            const sessionId = Math.random().toString(36).substr(2, 9);
+            const sessionId = Math.random().toString(36).substring(2, 11);
+            let unsubscribeViewers = null;
+            const viewerSessionRef = ref(db, `games/${gameId}/viewers/${sessionId}`);
             try {
                 const viewersRef = ref(db, `games/${gameId}/viewers`);
 
-                // Add viewer
-                set(ref(db, `games/${gameId}/viewers/${sessionId}`), true).catch(() => {});
+                // Add viewer and register disconnect cleanup
+                set(viewerSessionRef, true).catch(() => {});
+                onDisconnect(viewerSessionRef).remove().catch(() => {});
 
-                // Remove viewer on disconnect
-                onValue(viewersRef, (snapshot) => {
+                unsubscribeViewers = onValue(viewersRef, (snapshot) => {
                     if (snapshot.exists()) {
                         setViewerCount(Object.keys(snapshot.val()).length);
                     } else {
@@ -107,9 +107,10 @@ export function ChessGame() {
             } catch (e) {}
 
             return () => {
+                if (typeof unsubscribeViewers === 'function') unsubscribeViewers();
                 if (db) {
                     try {
-                        set(ref(db, `games/${gameId}/viewers/${sessionId}`), null).catch(() => {});
+                        set(viewerSessionRef, null).catch(() => {});
                     } catch (e) {}
                 }
             };
@@ -160,14 +161,14 @@ export function ChessGame() {
             if (move) {
                 setGame(gameCopy);
 
-                if (gameMode === 'online') {
+                if (gameMode === 'online' && db) {
                     const gameRef = ref(db, `games/${gameId}`);
 
-                    set(gameRef, {
+                    update(gameRef, {
                         board: gameCopy.fen(),
                         currentTurn: gameCopy.turn() === 'w' ? 'white' : 'black',
                         gameStatus: gameCopy.isCheckmate() ? 'checkmate' : gameCopy.isCheck() ? 'check' : 'active'
-                    });
+                    }).catch(() => {});
                 }
 
                 if (gameCopy.isCheckmate()) {
@@ -190,13 +191,13 @@ export function ChessGame() {
 
     const resetGame = () => {
         const newGame = new Chess();
-        if (gameMode === 'online') {
+        if (gameMode === 'online' && db) {
             const gameRef = ref(db, `games/${gameId}`);
-            set(gameRef, {
+            update(gameRef, {
                 board: newGame.fen(),
                 currentTurn: 'white',
                 gameStatus: 'active'
-            });
+            }).catch(() => {});
         }
         setGame(newGame);
         setGameStatus('');
@@ -204,10 +205,11 @@ export function ChessGame() {
 
     const startOnlineGame = () => {
         setGameMode('online');
+        if (!db) return;
         const gameRef = ref(db, `games/${gameId}`);
 
         get(gameRef).then((snapshot) => {
-            if (snapshot.exists()) {
+            if (snapshot.exists() && snapshot.val().board) {
                 const data = snapshot.val();
                 const newGame = new Chess();
                 newGame.load(data.board);
@@ -215,14 +217,14 @@ export function ChessGame() {
             } else {
                 // Only initialize a new game if no existing game is found
                 const newGame = new Chess();
-                set(gameRef, {
+                update(gameRef, {
                     board: newGame.fen(),
                     currentTurn: 'white',
                     gameStatus: 'active'
-                });
+                }).catch(() => {});
                 setGame(newGame);
             }
-        });
+        }).catch(() => {});
     };
 
 

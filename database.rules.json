@@ -28,7 +28,16 @@
     },
     "site_stats": {
       ".read": true,
-      ".write": true
+      "total_visitors": {
+        ".write": true,
+        ".validate": "newData.isNumber() && newData.val() >= 0 && (!data.exists() || newData.val() >= data.val())"
+      },
+      "live_viewers": {
+        "$sessionId": {
+          ".write": true,
+          ".validate": "!newData.exists() || (newData.hasChildren(['timestamp', 'isLive']) && newData.child('timestamp').isNumber() && newData.child('isLive').isBoolean())"
+        }
+      }
     },
     "chainreaction": {
       ".read": true,
@@ -45,11 +54,17 @@
     "pixel_hud": {
       "grid": {
         ".read": true,
-        ".write": true
+        ".write": true,
+        "$cellKey": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 15"
+        }
       },
       "transmissions": {
         ".read": true,
-        ".write": true
+        ".write": true,
+        "$txId": {
+          ".validate": "newData.hasChildren(['handle', 'text', 'timestamp']) && newData.child('handle').isString() && newData.child('handle').val().length <= 32 && newData.child('text').isString() && newData.child('text').val().length <= 160 && newData.child('timestamp').isNumber()"
+        }
       }
     }
   }

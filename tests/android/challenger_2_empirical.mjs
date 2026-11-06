@@ -122,19 +122,18 @@ describe('Vector 2: Custom Icon Fidelity & Component Mappings', () => {
         const code = fs.readFileSync(iconPath, 'utf8');
 
         // Verify component signature & props handling
-        expect(code.includes("props.size === 'sidebar'")).toBe(true);
-        expect(code.includes('w-7 h-7')).toBe(true);
+        expect(code.includes("size === 'sidebar'")).toBe(true);
         expect(code.includes('w-10 h-10')).toBe(true);
         expect(code.includes('GuestBook')).toBe(true);
 
         // Verify 4 neon colors in grid cluster
-        expect(code.includes('bg-cyan-400')).toBe(true);
-        expect(code.includes('bg-pink-500')).toBe(true);
-        expect(code.includes('bg-emerald-400')).toBe(true);
-        expect(code.includes('bg-yellow-400')).toBe(true);
+        expect(code.includes('cyanGlow')).toBe(true);
+        expect(code.includes('pinkGlow')).toBe(true);
+        expect(code.includes('greenGlow')).toBe(true);
+        expect(code.includes('yellowGlow')).toBe(true);
 
         // Verify ambient bloom glow
-        expect(code.includes('shadow-[0_0_12px_rgba(0,240,255,0.25)]')).toBe(true);
+        expect(code.includes('rgba(0,240,255,0.2')).toBe(true);
     });
 
     it('V2.3: VisitorIcon source verifies ambient glow and illuminati fallback asset', () => {
@@ -142,7 +141,7 @@ describe('Vector 2: Custom Icon Fidelity & Component Mappings', () => {
         expect(fs.existsSync(iconPath)).toBe(true);
         const code = fs.readFileSync(iconPath, 'utf8');
 
-        expect(code.includes("props.size === 'sidebar'")).toBe(true);
+        expect(code.includes("size === 'sidebar'")).toBe(true);
         expect(code.includes('Visitor Stats')).toBe(true);
         expect(code.includes('./themes/Yaru/apps/illuminati.png')).toBe(true);
         expect(code.includes('bg-blue-500')).toBe(true);

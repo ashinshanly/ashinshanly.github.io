@@ -51,21 +51,26 @@ export class Desktop extends Component {
 
     checkForNewFolders = () => {
         var new_folders = localStorage.getItem('new_folders');
-        if (new_folders === null && new_folders !== undefined) {
+        if (new_folders === null || new_folders === undefined) {
             localStorage.setItem("new_folders", JSON.stringify([]));
         }
         else {
             new_folders = JSON.parse(new_folders);
             new_folders.forEach(folder => {
-                apps.push({
-                    id: `new-folder-${folder.id}`,
-                    title: folder.name,
-                    icon: './themes/Yaru/system/folder.png',
-                    disabled: true,
-                    favourite: false,
-                    desktop_shortcut: true,
-                    screen: () => { },
-                });
+                const folderId = String(folder.id).startsWith('new-folder-')
+                    ? String(folder.id)
+                    : `new-folder-${folder.id}`;
+                if (!apps.some(app => app.id === folderId)) {
+                    apps.push({
+                        id: folderId,
+                        title: folder.name,
+                        icon: './themes/Yaru/system/folder.png',
+                        disabled: true,
+                        favourite: false,
+                        desktop_shortcut: true,
+                        screen: () => { },
+                    });
+                }
             });
             this.updateAppsData();
         }
@@ -203,11 +208,11 @@ export class Desktop extends Component {
         apps.forEach((app) => {
             focused_windows = {
                 ...focused_windows,
-                [app.id]: ((this.state.focused_windows[app.id] !== undefined || this.state.focused_windows[app.id] !== null) ? this.state.focused_windows[app.id] : false),
+                [app.id]: ((this.state.focused_windows[app.id] !== undefined && this.state.focused_windows[app.id] !== null) ? this.state.focused_windows[app.id] : false),
             };
             minimized_windows = {
                 ...minimized_windows,
-                [app.id]: ((this.state.minimized_windows[app.id] !== undefined || this.state.minimized_windows[app.id] !== null) ? this.state.minimized_windows[app.id] : false)
+                [app.id]: ((this.state.minimized_windows[app.id] !== undefined && this.state.minimized_windows[app.id] !== null) ? this.state.minimized_windows[app.id] : false)
             };
             disabled_apps = {
                 ...disabled_apps,
@@ -215,7 +220,7 @@ export class Desktop extends Component {
             };
             closed_windows = {
                 ...closed_windows,
-                [app.id]: ((this.state.closed_windows[app.id] !== undefined || this.state.closed_windows[app.id] !== null) ? this.state.closed_windows[app.id] : true)
+                [app.id]: ((this.state.closed_windows[app.id] !== undefined && this.state.closed_windows[app.id] !== null) ? this.state.closed_windows[app.id] : true)
             };
             favourite_apps = {
                 ...favourite_apps,
@@ -418,7 +423,7 @@ export class Desktop extends Component {
             setTimeout(() => {
                 favourite_apps[objId] = true; // adds opened app to sideBar
                 closed_windows[objId] = false; // openes app's window
-                this.setState({ closed_windows, favourite_apps, allAppsView: false }, this.focus(objId));
+                this.setState({ closed_windows, favourite_apps, allAppsView: false }, () => this.focus(objId));
                 this.app_stack.push(objId);
             }, 200);
         }
@@ -463,21 +468,28 @@ export class Desktop extends Component {
     }
 
     addToDesktop = (folder_name) => {
+        if (!folder_name) return;
         folder_name = folder_name.trim();
+        if (!folder_name) return;
         let folder_id = folder_name.replace(/\s+/g, '-').toLowerCase();
-        apps.push({
-            id: `new-folder-${folder_id}`,
-            title: folder_name,
-            icon: './themes/Yaru/system/folder.png',
-            disabled: true,
-            favourite: false,
-            desktop_shortcut: true,
-            screen: () => { },
-        });
+        const fullFolderId = `new-folder-${folder_id}`;
+        if (!apps.some(app => app.id === fullFolderId)) {
+            apps.push({
+                id: fullFolderId,
+                title: folder_name,
+                icon: './themes/Yaru/system/folder.png',
+                disabled: true,
+                favourite: false,
+                desktop_shortcut: true,
+                screen: () => { },
+            });
+        }
         // store in local storage
-        var new_folders = JSON.parse(localStorage.getItem('new_folders'));
-        new_folders.push({ id: `new-folder-${folder_id}`, name: folder_name });
-        localStorage.setItem("new_folders", JSON.stringify(new_folders));
+        var new_folders = JSON.parse(localStorage.getItem('new_folders') || '[]');
+        if (!new_folders.some(f => f.id === folder_id || f.id === fullFolderId)) {
+            new_folders.push({ id: folder_id, name: folder_name });
+            localStorage.setItem("new_folders", JSON.stringify(new_folders));
+        }
 
         this.setState({ showNameBar: false }, this.updateAppsData);
     }

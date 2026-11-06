@@ -109,12 +109,12 @@ export default function SideBar(props) {
                     '--dock-width': `${dimensions.dockWidth}px`,
                     '--dock-dot-size': `${dimensions.dotSize}px`,
                     maxHeight: '100vh',
-                    overflow: 'hidden',
+                    overflow: 'visible',
                 }}
             >
-                {/* Apps container - strictly contained so it never overflows */}
+                {/* Apps container - vertically sized to fit viewport while allowing horizontal tooltips */}
                 <div
-                    className="flex flex-col items-center w-full overflow-hidden flex-shrink-0"
+                    className="flex flex-col items-center w-full overflow-visible flex-shrink-0"
                     style={{
                         maxHeight: `calc(100vh - 28px - ${dimensions.itemSize + dimensions.marginY * 2}px - 6px)`,
                     }}

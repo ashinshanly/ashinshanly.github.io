@@ -13,7 +13,7 @@ export class Terminal extends Component {
         this.prev_commands = [];
         this.commands_index = -1;
         this.child_directories = {
-            root: ["books", "projects", "personal-documents", "skills", "languages", "interests"],
+            root: ["books", "projects", "personal-documents", "skills", "languages", "interests", "IIT_GN"],
             IIT_GN: ["Thesis"],
             books: ["Eric-Jorgenson_The-Almanack-of-Naval-Ravikant.pdf", "Elon Musk: How the Billionaire CEO of SpaceX.pdf", "The $100 Startup_CHRIS_GUILLEBEAU.pdf", "The_Magic_of_Thinking_Big.pdf"],
             skills: ["Backend development", "Data Engineering", "Distributed Processing", "Cloud Engineering", "Big Data", "SQL", "Apache Spark"],
@@ -236,10 +236,16 @@ export class Terminal extends Component {
     }
 
     closeTerminal = () => {
-        $("#close-terminal").trigger('click');
+        const closeBtn = $("#close-terminal");
+        if (closeBtn.length > 0) {
+            closeBtn.trigger('click');
+        } else if (typeof this.props.onClose === 'function') {
+            this.props.onClose();
+        }
     }
 
     handleCommands = (command, rowId) => {
+        const availableCommandsMsg = "Command not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, trash, settings, sendmsg, matrix ]";
         let words = command.split(' ').filter(Boolean);
         let main = words[0];
         words.shift()
@@ -263,9 +269,13 @@ export class Terminal extends Component {
                     break;
                 }
 
-                if (this.child_directories[this.curr_dir_name].includes(rest)) {
-                    this.current_directory += "/" + rest;
-                    this.curr_dir_name = rest;
+                if ((this.child_directories[this.curr_dir_name] || []).includes(rest)) {
+                    if (Object.prototype.hasOwnProperty.call(this.child_directories, rest)) {
+                        this.current_directory += "/" + rest;
+                        this.curr_dir_name = rest;
+                    } else {
+                        result = `bash: cd: ${rest}: Not a directory`;
+                    }
                 }
                 else if (rest === "." || rest === ".." || rest === "../") {
                     result = "Type 'cd' to go back 😅";
@@ -296,7 +306,14 @@ export class Terminal extends Component {
                 break;
             case "mkdir":
                 if (words[0] !== undefined && words[0] !== "") {
-                    this.props.addFolder(words[0]);
+                    if (typeof this.props.addFolder === "function") {
+                        this.props.addFolder(words[0]);
+                    } else {
+                        if (!this.child_directories.root.includes(words[0])) {
+                            this.child_directories.root.push(words[0]);
+                            this.child_directories[words[0]] = [];
+                        }
+                    }
                     result = "";
                 } else {
                     result = "mkdir: missing operand";
@@ -308,9 +325,9 @@ export class Terminal extends Component {
                 break;
             case "code":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("vscode");
+                    if (typeof this.props.openApp === "function") this.props.openApp("vscode");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands:[ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "echo":
@@ -318,58 +335,51 @@ export class Terminal extends Component {
                 break;
             case "spotify":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("spotify");
+                    if (typeof this.props.openApp === "function") this.props.openApp("spotify");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "chrome":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("chrome");
+                    if (typeof this.props.openApp === "function") this.props.openApp("chrome");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
-                }
-                break;
-            case "todoist":
-                if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("todo-ist");
-                } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "trash":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("trash");
+                    if (typeof this.props.openApp === "function") this.props.openApp("trash");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "about-ashin":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("about-ashin");
+                    if (typeof this.props.openApp === "function") this.props.openApp("about-ashin");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "terminal":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("terminal");
+                    if (typeof this.props.openApp === "function") this.props.openApp("terminal");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "settings":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("settings");
+                    if (typeof this.props.openApp === "function") this.props.openApp("settings");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "sendmsg":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("gedit");
+                    if (typeof this.props.openApp === "function") this.props.openApp("gedit");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                    result = availableCommandsMsg;
                 }
                 break;
             case "clear":
@@ -391,28 +401,28 @@ export class Terminal extends Component {
                 result = "<img class=' w-2/5' src='./images/memes/used-sudo-command.webp' />";
                 break;
             default:
-                result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-ashin, todoist, trash, settings, sendmsg ]";
+                result = availableCommandsMsg;
         }
         document.getElementById(`row-result-${rowId}`).innerHTML = result;
         this.appendTerminalRow();
     }
 
     xss(str) {
-        if (!str) return;
+        if (!str) return "";
         return str.split('').map(char => {
             switch (char) {
                 case '&':
-                    return '&amp';
+                    return '&amp;';
                 case '<':
-                    return '&lt';
+                    return '&lt;';
                 case '>':
-                    return '&gt';
+                    return '&gt;';
                 case '"':
-                    return '&quot';
+                    return '&quot;';
                 case "'":
-                    return '&#x27';
+                    return '&#x27;';
                 case '/':
-                    return '&#x2F';
+                    return '&#x2F;';
                 default:
                     return char;
             }
@@ -435,5 +445,8 @@ export class Terminal extends Component {
 export default Terminal
 
 export const displayTerminal = (addFolder, openApp) => {
-    return <Terminal addFolder={addFolder} openApp={openApp}> </Terminal>;
+    if (addFolder && typeof addFolder === 'object' && typeof addFolder !== 'function') {
+        return <Terminal {...addFolder} />;
+    }
+    return <Terminal addFolder={addFolder} openApp={openApp} />;
 }

@@ -36,7 +36,7 @@ export default function AndroidApp({ app, onClose, onOpenApp, closing, ...props 
 
         return (
             <div className="h-full bg-ub-cool-grey">
-                <ScreenComponent openApp={onOpenApp} {...props} />
+                <ScreenComponent openApp={onOpenApp} onClose={onClose} {...props} />
             </div>
         );
     };

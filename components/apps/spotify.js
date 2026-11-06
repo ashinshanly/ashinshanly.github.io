@@ -7,5 +7,5 @@ export default function Spotify() {
 }
 
 export const displaySpotify = () => {
-    <Spotify> </Spotify>
+    return <Spotify />;
 }

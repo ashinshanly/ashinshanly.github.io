@@ -35,7 +35,10 @@ export default class Clock extends Component {
             minute = "0" + minute
         }
 
-        if (this.state.hour_12 && hour > 12) hour -= 12;
+        if (this.state.hour_12) {
+            if (hour > 12) hour -= 12;
+            else if (hour === 0) hour = 12;
+        }
 
         let display_time;
         if (this.props.onlyTime) {

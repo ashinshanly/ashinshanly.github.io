@@ -91,7 +91,7 @@ export default function AppDrawer({ isOpen, onClose, apps, onOpenApp }) {
                                     src={app.icon}
                                     alt={app.title}
                                     onError={(e) => {
-                                        e.target.src = './themes/Yaru/apps/default.png';
+                                        e.target.src = './themes/Yaru/apps/bash.png';
                                     }}
                                 />
                             )}

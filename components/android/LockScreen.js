@@ -6,6 +6,7 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
     const [isDragging, setIsDragging] = useState(false);
     const [isUnlocking, setIsUnlocking] = useState(false);
     const containerRef = useRef(null);
+    const dragRef = useRef({ startY: 0, currentY: 0, isDragging: false });
 
     const unlockThreshold = -150; // swipe up by 150px to unlock
 
@@ -83,26 +84,32 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
 
     const handleTouchStart = (e) => {
         if (isUnlocking) return;
-        setStartY(e.touches ? e.touches[0].clientY : e.clientY);
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        dragRef.current = { startY: y, currentY: 0, isDragging: true };
+        setStartY(y);
         setIsDragging(true);
     };
 
     const handleTouchMove = (e) => {
-        if (!isDragging || isUnlocking) return;
+        if ((!isDragging && !dragRef.current.isDragging) || isUnlocking) return;
         const y = e.touches ? e.touches[0].clientY : e.clientY;
-        const delta = y - startY;
+        const baseStartY = dragRef.current.isDragging ? dragRef.current.startY : startY;
+        const delta = y - baseStartY;
 
         // Only allow upward swiping
         if (delta < 0) {
+            dragRef.current.currentY = delta;
             setCurrentY(delta);
         }
     };
 
     const handleTouchEnd = () => {
-        if (!isDragging || isUnlocking) return;
+        if ((!isDragging && !dragRef.current.isDragging) || isUnlocking) return;
+        const finalY = dragRef.current.currentY !== 0 ? dragRef.current.currentY : currentY;
+        dragRef.current = { startY: 0, currentY: 0, isDragging: false };
         setIsDragging(false);
 
-        if (currentY < unlockThreshold) {
+        if (finalY < unlockThreshold) {
             setIsUnlocking(true);
             setCurrentY(typeof window !== 'undefined' ? -window.innerHeight : -800);
 

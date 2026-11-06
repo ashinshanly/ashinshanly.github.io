@@ -169,7 +169,12 @@ export class Calc extends Component {
     }
 
     closeTerminal = () => {
-        $("#close-calc").trigger('click');
+        const closeBtn = $("#close-calc");
+        if (closeBtn.length > 0) {
+            closeBtn.trigger('click');
+        } else if (typeof this.props.onClose === 'function') {
+            this.props.onClose();
+        }
     }
 
     handleCommands = (command, rowId) => {
@@ -200,7 +205,7 @@ export class Calc extends Component {
                 expr=parser.parse(command)
                 try{
                     result = parser.evaluate(command,this.variables)
-                    if(expr.tokens.length===2&&expr.tokens[2].type==="IOP2")
+                    if(expr.tokens.length===2 && expr.tokens[1] && expr.tokens[1].type==="IOP2")
                     this.variables[expr.variables()[0]]=result
                 }
                 catch (e) {
@@ -213,21 +218,21 @@ export class Calc extends Component {
         return result;
     }
     xss(str) {
-        if (!str) return;
+        if (!str) return "";
         return str.split('').map(char => {
             switch (char) {
                 case '&':
-                    return '&amp';
+                    return '&amp;';
                 case '<':
-                    return '&lt';
+                    return '&lt;';
                 case '>':
-                    return '&gt';
+                    return '&gt;';
                 case '"':
-                    return '&quot';
+                    return '&quot;';
                 case "'":
-                    return '&#x27';
+                    return '&#x27;';
                 case '/':
-                    return '&#x2F';
+                    return '&#x2F;';
                 default:
                     return char;
             }
@@ -251,6 +256,9 @@ export class Calc extends Component {
 
 export default Calc
 
-export const displayTerminalCalc = (addFolder,openApp) => {
-    return <Calc addFolder={addFolder} openApp={openApp}> </Calc>;
+export const displayTerminalCalc = (addFolder, openApp) => {
+    if (addFolder && typeof addFolder === 'object' && typeof addFolder !== 'function') {
+        return <Calc {...addFolder} />;
+    }
+    return <Calc addFolder={addFolder} openApp={openApp} />;
 }

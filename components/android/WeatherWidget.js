@@ -130,13 +130,16 @@ export default function WeatherWidget() {
             {/* Bottom: Hourly forecast placeholders */}
             <div className="relative z-10 mt-3 pt-2 border-t border-white/5">
                 <div className="flex justify-between items-center">
-                    {['Now', '+1h', '+2h', '+3h', '+4h'].map((time, i) => (
-                        <div key={i} className="flex flex-col items-center gap-1">
-                            <span className="text-[9px] text-white/30 font-medium">{time}</span>
-                            <span className="text-sm">{weather.emoji}</span>
-                            <span className="text-[10px] text-white/50 font-light">{weather.temp + (i === 0 ? 0 : Math.round(Math.random() * 3 - 1))}°</span>
-                        </div>
-                    ))}
+                    {['Now', '+1h', '+2h', '+3h', '+4h'].map((time, i) => {
+                        const offsets = [0, 1, 2, 1, 0];
+                        return (
+                            <div key={i} className="flex flex-col items-center gap-1">
+                                <span className="text-[9px] text-white/30 font-medium">{time}</span>
+                                <span className="text-sm">{weather.emoji}</span>
+                                <span className="text-[10px] text-white/50 font-light">{weather.temp + offsets[i]}°</span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

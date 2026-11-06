@@ -9,17 +9,30 @@ export class Gedit extends Component {
         super();
         this.state = {
             sending: false,
+            statusMessage: null,
+            statusType: null,
         }
     }
 
     componentDidMount() {
-        emailjs.init(process.env.NEXT_PUBLIC_USER_ID);
+        if (process.env.NEXT_PUBLIC_USER_ID) {
+            emailjs.init(process.env.NEXT_PUBLIC_USER_ID);
+        }
+    }
+
+    closeWindow = () => {
+        const closeBtn = $("#close-gedit");
+        if (closeBtn.length > 0) {
+            closeBtn.trigger("click");
+        } else if (typeof this.props.onClose === "function") {
+            this.props.onClose();
+        }
     }
 
     sendMessage = async () => {
-        let name = $("#sender-name").val();
-        let subject = $("#sender-subject").val();
-        let message = $("#sender-message").val();
+        let name = $("#sender-name").val() || "";
+        let subject = $("#sender-subject").val() || "";
+        let message = $("#sender-message").val() || "";
 
         name = name.trim();
         subject = subject.trim();
@@ -40,7 +53,7 @@ export class Gedit extends Component {
         }
         if (error) return;
 
-        this.setState({ sending: true });
+        this.setState({ sending: true, statusMessage: null, statusType: null });
 
         const serviceID = process.env.NEXT_PUBLIC_SERVICE_ID;
         const templateID = process.env.NEXT_PUBLIC_TEMPLATE_ID;
@@ -50,12 +63,30 @@ export class Gedit extends Component {
             'message': message,
         }
 
+        if (!serviceID || !templateID) {
+            this.setState({
+                sending: false,
+                statusType: 'error',
+                statusMessage: 'Email service is not configured in this environment. Please try again later.'
+            });
+            return;
+        }
+
         emailjs.send(serviceID, templateID, templateParams).then(() => {
-            this.setState({ sending: false });
-            $("#close-gedit").trigger("click");
+            this.setState({
+                sending: false,
+                statusType: 'success',
+                statusMessage: 'Message sent successfully!'
+            });
+            setTimeout(() => {
+                this.closeWindow();
+            }, 900);
         }).catch(() => {
-            this.setState({ sending: false });
-            $("#close-gedit").trigger("click");
+            this.setState({
+                sending: false,
+                statusType: 'error',
+                statusMessage: 'Failed to send message. Please check your connection and try again.'
+            });
         })
 
         ReactGA.event({
@@ -71,9 +102,27 @@ export class Gedit extends Component {
                 <div className="flex items-center justify-between w-full bg-ub-gedit-light bg-opacity-60 border-b border-t border-blue-400 text-sm">
                     <span className="font-bold ml-2">Send a Message to Me</span>
                     <div className="flex">
-                        <div onClick={this.sendMessage} className="border border-black bg-black bg-opacity-50 px-3 py-0.5 my-1 mx-1 rounded hover:bg-opacity-80">Send</div>
+                        <div onClick={this.sendMessage} className="border border-black bg-black bg-opacity-50 px-3 py-0.5 my-1 mx-1 rounded hover:bg-opacity-80 cursor-pointer">Send</div>
                     </div>
                 </div>
+                {this.state.statusMessage && (
+                    <div
+                        className={`px-3 py-1.5 text-xs font-medium flex items-center justify-between ${
+                            this.state.statusType === 'success'
+                                ? 'bg-green-700/80 text-white'
+                                : 'bg-red-700/80 text-white'
+                        }`}
+                    >
+                        <span>{this.state.statusMessage}</span>
+                        <button
+                            type="button"
+                            onClick={() => this.setState({ statusMessage: null, statusType: null })}
+                            className="ml-2 text-white/80 hover:text-white font-bold"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
                 <div className="relative flex-grow flex flex-col bg-ub-gedit-dark font-normal windowMainScreen">
                     <div className="absolute left-0 top-0 h-full px-2 bg-ub-gedit-darker"></div>
                     <div className="relative">
@@ -105,6 +154,6 @@ export class Gedit extends Component {
 
 export default Gedit;
 
-export const displayGedit = () => {
-    return <Gedit> </Gedit>;
+export const displayGedit = (props) => {
+    return <Gedit {...(props && typeof props === 'object' ? props : {})} />;
 }

@@ -26,7 +26,7 @@
     --android-radius-full: 9999px;
 
     /* Status bar height */
-    --android-status-bar-height: 24px;
+    --android-status-bar-height: 32px;
     --android-nav-bar-height: 20px;
 }
 
@@ -42,6 +42,12 @@
     position: relative;
     user-select: none;
     -webkit-user-select: none;
+}
+
+.android-container button,
+.android-container [role="button"] {
+    min-height: 0;
+    min-width: 0;
 }
 
 /* Glass Utility Classes */
@@ -69,18 +75,19 @@
 /* Android Status Bar */
 .android-status-bar {
     height: var(--android-status-bar-height);
-    background: transparent;
+    min-height: var(--android-status-bar-height);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 100%);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px;
-    font-size: 12px;
+    padding: 0 18px;
+    font-size: 13px;
     color: white;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 210;
 }
 
 .android-status-bar-icons {

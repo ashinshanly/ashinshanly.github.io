@@ -28,6 +28,10 @@ export default function AndroidHome() {
     const [brightness, setBrightness] = useState(100); // Brightness state
     const [isLocked, setIsLocked] = useState(true);
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
+    const [wifiOn, setWifiOn] = useState(true);
+    const [btOn, setBtOn] = useState(true);
+    const [dndOn, setDndOn] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(3);
     const { weather } = useWeather();
 
     const touchStartY = useRef(0);
@@ -327,8 +331,15 @@ export default function AndroidHome() {
 
             <AndroidStatusBar
                 time={currentTime}
-                onPullDown={() => setNotificationOpen(true)}
-                hasNotifications={true}
+                onPullDown={() => {
+                    vibrate();
+                    setNotificationOpen(true);
+                }}
+                hasNotifications={notificationCount > 0}
+                notificationCount={notificationCount}
+                wifiOn={wifiOn}
+                btOn={btOn}
+                dndOn={dndOn}
             />
 
             {/* Screen 1: Page 0 (Main Home) */}
@@ -392,11 +403,17 @@ export default function AndroidHome() {
 
             {/* Persistent Dock & 3-Dot Pagination */}
             <div className="absolute bottom-[24px] left-0 right-0 z-20 w-full flex flex-col items-center">
-                <div className="flex justify-center gap-2 mb-3">
+                <div className="flex justify-center items-center gap-2 mb-3">
                     {[0, 1, 2].map((dotIndex) => (
-                        <div
+                        <button
                             key={dotIndex}
-                            className={`w-1.5 h-1.5 rounded-full transition-colors cursor-pointer ${page === dotIndex ? 'bg-white' : 'bg-white/30'}`}
+                            type="button"
+                            aria-label={`Go to screen ${dotIndex + 1}`}
+                            className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                                page === dotIndex
+                                    ? 'w-4 bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]'
+                                    : 'w-1.5 bg-white/30'
+                            }`}
                             onClick={() => {
                                 setPage(dotIndex);
                                 vibrate();
@@ -421,9 +438,11 @@ export default function AndroidHome() {
             </div>
 
             <GestureNavBar
-                // Removed onSwipeUp
                 onHome={() => {
                     handleCloseApp();
+                    setDrawerOpen(false);
+                    setNotificationOpen(false);
+                    setContextMenu({ app: null, position: null });
                     setPage(0);
                     vibrate();
                 }}
@@ -440,6 +459,15 @@ export default function AndroidHome() {
                 isOpen={notificationOpen}
                 onClose={closeNotifications}
                 onBrightnessChange={setBrightness}
+                onOpenSettings={() => handleOpenApp('settings')}
+                time={currentTime}
+                wifiOn={wifiOn}
+                onToggleWifi={setWifiOn}
+                btOn={btOn}
+                onToggleBt={setBtOn}
+                dndOn={dndOn}
+                onToggleDnd={setDndOn}
+                onNotificationsCountChange={setNotificationCount}
             />
 
             <AppContextMenu

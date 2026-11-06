@@ -13,7 +13,7 @@ export class AboutAshin extends Component {
             active_screen: "about", // by default 'about' screen is active
             navbar: false,
         }
-    } f
+    }
 
     componentDidMount() {
         this.screens = {
@@ -35,7 +35,9 @@ export class AboutAshin extends Component {
     }
 
     changeScreen = (e) => {
-        const screen = e.id || e.target.id;
+        if (!e) return;
+        const screen = e.id || e.currentTarget?.id || e.target?.id;
+        if (!screen || !this.screens[screen]) return;
 
         // store this state
         localStorage.setItem("about-section", screen);
@@ -58,32 +60,32 @@ export class AboutAshin extends Component {
     renderNavLinks = () => {
         return (
             <>
-                <div id="about" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "about" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="about" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "about" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="about ashin" src="./themes/Yaru/status/about.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">About Me</span>
                 </div>
 
-                <div id="experience" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "experience" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="experience" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "experience" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's experience" src="./themes/Yaru/status/experience.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Experience</span>
                 </div>
 
-                <div id="education" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "education" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="education" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "education" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's education" src="./themes/Yaru/status/education.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Education</span>
                 </div>
 
-                <div id="skills" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "skills" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="skills" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "skills" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's skills" src="./themes/Yaru/status/skills.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Skills</span>
                 </div>
 
-                <div id="projects" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "projects" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="projects" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "projects" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's projects" src="./themes/Yaru/status/projects.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Projects</span>
                 </div>
 
-                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="resume" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
                     <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
                 </div>
@@ -150,7 +152,7 @@ function About() {
                     <div className="text-gray-400 font-mono tracking-widest text-xs mb-2 camelcase">Hey, there!</div>
                     <div className="text-3xl md:text-5xl font-black mb-2 tracking-tight flex items-center justify-center gap-2">
                         <span className="text-white">My name is</span>
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-500">Ashin Shanly</span>
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">Ashin Shanly</span>
                     </div>
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
                         <span className="relative flex h-2 w-2">
@@ -478,23 +480,27 @@ function Projects() {
         }
     ];
 
-    const tag_colors = {
-        "javascript": "yellow-300",
-        "firebase": "red-600",
-        "firestore": "red-500",
-        "firebase auth": "red-400",
-        "chrome-extension": "yellow-400",
-        "flutter": "blue-400",
-        "dart": "blue-500",
-        "react-native": "purple-500",
-        "html5": "pink-600",
-        "sass": "pink-400",
-        "tensorflow": "yellow-600",
-        "django": "green-600",
-        "python": "green-200",
-        "codeforces-api": "gray-300",
-        "tailwindcss": "blue-300",
-        "next.js": "purple-600"
+    const tag_styles = {
+        "Deep Learning": "border-cyan-400/60 text-cyan-300 bg-cyan-950/30",
+        "Computer Vision": "border-purple-400/60 text-purple-300 bg-purple-950/30",
+        "Machine Learning": "border-emerald-400/60 text-emerald-300 bg-emerald-950/30",
+        "NLP": "border-amber-400/60 text-amber-300 bg-amber-950/30",
+        "javascript": "border-yellow-300 text-yellow-300",
+        "firebase": "border-red-600 text-red-500",
+        "firestore": "border-red-500 text-red-400",
+        "firebase auth": "border-red-400 text-red-400",
+        "chrome-extension": "border-yellow-400 text-yellow-400",
+        "flutter": "border-blue-400 text-blue-400",
+        "dart": "border-blue-500 text-blue-400",
+        "react-native": "border-purple-500 text-purple-400",
+        "html5": "border-pink-600 text-pink-400",
+        "sass": "border-pink-400 text-pink-400",
+        "tensorflow": "border-yellow-600 text-yellow-400",
+        "django": "border-green-600 text-green-400",
+        "python": "border-green-300 text-green-300",
+        "codeforces-api": "border-gray-300 text-gray-300",
+        "tailwindcss": "border-blue-300 text-blue-300",
+        "next.js": "border-purple-600 text-purple-400"
     }
 
     return (
@@ -509,8 +515,9 @@ function Projects() {
             <div className="w-11/12 md:w-full flex flex-col">
                 {
                     project_list.map((project, index) => {
-                        const projectNameFromLink = project.link.split('/')
-                        const projectName = projectNameFromLink[projectNameFromLink.length - 1]
+                        const projectNameFromLink = project.link.split('/');
+                        const projectName = projectNameFromLink[projectNameFromLink.length - 1];
+                        const hasDedicatedRepo = projectName && projectName.toLowerCase() !== "ashinshanly";
                         return (
                             <CardContainer key={index} className="flex w-full flex-col px-0 md:px-4 mb-4">
                                 <CardBody className="w-full">
@@ -524,9 +531,11 @@ function Projects() {
                                         className="w-full py-3 px-3 md:px-4 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer block pointer-events-auto relative z-20"
                                     >
                                         <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2 md:gap-0">
-                                            <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                            <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
                                                 <CardItem translateZ="100" className=" text-base md:text-lg mr-2 font-medium">{project.name}</CardItem>
-                                                <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=false`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0 pointer-events-none"></iframe>
+                                                {hasDedicatedRepo && (
+                                                    <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=false`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0 pointer-events-none"></iframe>
+                                                )}
                                             </div>
                                             <div className="text-gray-400 font-light text-xs md:text-sm whitespace-nowrap">{project.date}</div>
                                         </div>
@@ -541,10 +550,9 @@ function Projects() {
                                             {
                                                 (project.domains ?
                                                     project.domains.map((domain, index) => {
-                                                        const borderColorClass = `border-${tag_colors[domain]}`
-                                                        const textColorClass = `text-${tag_colors[domain]}`
+                                                        const domainClasses = tag_styles[domain] || "border-gray-400 text-gray-300";
 
-                                                        return <span key={index} className={`px-1.5 py-0.5 w-max border ${borderColorClass} ${textColorClass} m-1 rounded-full`}>{domain}</span>
+                                                        return <span key={index} className={`px-2 py-0.5 w-max border ${domainClasses} m-1 rounded-full font-medium`}>{domain}</span>
                                                     })
 
                                                     : null)
