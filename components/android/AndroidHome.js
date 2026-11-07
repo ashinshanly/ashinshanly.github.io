@@ -10,14 +10,25 @@ import AppContextMenu from './AppContextMenu';
 import BackgroundImage from '../util components/background-image';
 import MusicWidget from './MusicWidget';
 import WeatherWidget from './WeatherWidget';
-import AndroidToast from './AndroidToast';
+import AndroidToast, { showToast } from './AndroidToast';
 import LockScreen from './LockScreen';
 import useWeather from '../util components/useWeather';
+
+const MATERIAL_THEMES = [
+    { id: 'blue', name: 'Pixel Blue', primary: '#A8C7FA', wall: 'wall-2' },
+    { id: 'mint', name: 'Emerald Mint', primary: '#81C995', wall: 'wall-4' },
+    { id: 'violet', name: 'Cosmic Violet', primary: '#D0BCFF', wall: 'wall-1' },
+    { id: 'coral', name: 'Sunset Coral', primary: '#FFB4AB', wall: 'wall-6' },
+];
 
 export default function AndroidHome() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
+    const [recentsOpen, setRecentsOpen] = useState(false);
+    const [styleSheetOpen, setStyleSheetOpen] = useState(false);
+    const [recentAppIds, setRecentAppIds] = useState(['about-ashin', 'terminal', 'vscode']);
+    const [themeId, setThemeId] = useState('blue');
     const [openApp, setOpenApp] = useState(null);
     const [closingApp, setClosingApp] = useState(false);
     const [bgImage, setBgImage] = useState('wall-2');
@@ -246,8 +257,10 @@ export default function AndroidHome() {
                 window.open(app.url, "_blank");
                 return;
             }
+            setRecentAppIds(prev => [app.id, ...prev.filter(id => id !== app.id)].slice(0, 6));
             setOpenApp(app);
             setDrawerOpen(false);
+            setRecentsOpen(false);
         }
     };
 
@@ -344,7 +357,7 @@ export default function AndroidHome() {
 
             {/* Screen 1: Page 0 (Main Home) */}
             <div
-                className={`absolute inset-0 z-10 pt-[var(--android-status-bar-height,28px)] pb-[130px] px-2 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                className={`absolute top-[var(--android-status-bar-height,36px)] bottom-0 left-0 right-0 z-10 pt-2 pb-[130px] px-2 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
                 style={{
                     transform: `translateX(calc(${(0 - page) * 100}% + ${swipeX}px))`,
                     pointerEvents: page === 0 ? 'auto' : 'none',
@@ -361,7 +374,7 @@ export default function AndroidHome() {
                     <div className="at-a-glance-time">{formatTime()}</div>
                 </div>
 
-                <SearchWidget />
+                <SearchWidget apps={activeApps} onOpenApp={handleOpenApp} />
 
                 <div className="android-app-grid">
                     {homeApps.map((app, index) => renderAppIcon(app, index))}
@@ -370,7 +383,7 @@ export default function AndroidHome() {
 
             {/* Screen 2: Page 1 (Widgets Screen) */}
             <div
-                className={`absolute inset-0 z-10 pt-14 pb-[130px] px-6 flex flex-col gap-5 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                className={`absolute top-[var(--android-status-bar-height,36px)] bottom-0 left-0 right-0 z-10 pt-5 pb-[130px] px-6 flex flex-col gap-5 overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
                 style={{
                     transform: `translateX(calc(${(1 - page) * 100}% + ${swipeX}px))`,
                     pointerEvents: page === 1 ? 'auto' : 'none',
@@ -385,7 +398,7 @@ export default function AndroidHome() {
 
             {/* Screen 3: Page 2 (More Apps Screen) */}
             <div
-                className={`absolute inset-0 z-10 pt-12 pb-[130px] px-2 flex flex-col overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
+                className={`absolute top-[var(--android-status-bar-height,36px)] bottom-0 left-0 right-0 z-10 pt-4 pb-[130px] px-2 flex flex-col overflow-y-auto ${swipeX === 0 ? 'transition-transform duration-300 ease-out' : ''}`}
                 style={{
                     transform: `translateX(calc(${(2 - page) * 100}% + ${swipeX}px))`,
                     pointerEvents: page === 2 ? 'auto' : 'none',
@@ -438,15 +451,224 @@ export default function AndroidHome() {
             </div>
 
             <GestureNavBar
+                onSwipeUp={() => {
+                    vibrate();
+                    setDrawerOpen(false);
+                    setNotificationOpen(false);
+                    setRecentsOpen(prev => !prev);
+                }}
                 onHome={() => {
                     handleCloseApp();
                     setDrawerOpen(false);
                     setNotificationOpen(false);
+                    setRecentsOpen(false);
+                    setStyleSheetOpen(false);
                     setContextMenu({ app: null, position: null });
                     setPage(0);
                     vibrate();
                 }}
             />
+
+            {/* Android 14 Recents / Multitasking Carousel */}
+            {recentsOpen && (
+                <div
+                    className="fixed top-[var(--android-status-bar-height,36px)] bottom-0 left-0 right-0 z-[200] bg-black/80 backdrop-blur-2xl flex flex-col justify-between pt-5 pb-10 px-5 animate-fade-in"
+                    onClick={() => setRecentsOpen(false)}
+                >
+                    <div className="flex items-center justify-between px-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#CAC4D0]">
+                            Recent Apps ({recentAppIds.length})
+                        </span>
+                        {recentAppIds.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setRecentAppIds([]);
+                                    handleCloseApp();
+                                    setRecentsOpen(false);
+                                    showToast('Cleared all recent apps');
+                                }}
+                                className="px-3.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#A8C7FA] text-xs font-semibold transition-all"
+                            >
+                                Clear all
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Horizontal Card Deck */}
+                    <div
+                        className="flex items-center gap-4 overflow-x-auto py-4 px-2 scrollbar-hide"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {recentAppIds.length === 0 ? (
+                            <div className="w-full py-20 text-center text-white/60 text-sm">
+                                No recent items
+                            </div>
+                        ) : (
+                            recentAppIds.map((id) => {
+                                const recentApp = apps.find((a) => a.id === id);
+                                if (!recentApp) return null;
+                                return (
+                                    <div
+                                        key={recentApp.id}
+                                        onClick={() => handleOpenApp(recentApp.id)}
+                                        className="flex-shrink-0 w-[230px] h-[360px] rounded-[28px] bg-[#211F26]/95 border border-white/15 shadow-2xl flex flex-col overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+                                    >
+                                        {/* App Header inside Recents Card */}
+                                        <div className="px-4 py-3 flex items-center justify-between bg-[#2B2930]">
+                                            <div className="flex items-center gap-2.5 min-w-0">
+                                                <img
+                                                    src={recentApp.icon}
+                                                    alt={recentApp.title}
+                                                    className="w-5 h-5 rounded-md object-contain"
+                                                    onError={(e) => {
+                                                        e.target.src = './themes/Yaru/apps/bash.png';
+                                                    }}
+                                                />
+                                                <span className="text-xs font-semibold text-white truncate">
+                                                    {recentApp.title}
+                                                </span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                aria-label={`Close ${recentApp.title}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setRecentAppIds((prev) => prev.filter((item) => item !== recentApp.id));
+                                                    if (openApp && openApp.id === recentApp.id) {
+                                                        handleCloseApp();
+                                                    }
+                                                }}
+                                                className="w-6 h-6 rounded-full hover:bg-white/15 flex items-center justify-center text-white/60 hover:text-white"
+                                            >
+                                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        {/* Live Stylized Preview Surface */}
+                                        <div className="flex-1 p-4 flex flex-col justify-between bg-gradient-to-br from-[#1A1822] via-[#141318] to-[#252232]">
+                                            <div className="space-y-2">
+                                                <div className="h-2.5 w-2/3 rounded-full bg-white/15" />
+                                                <div className="h-2 w-1/2 rounded-full bg-white/10" />
+                                                <div className="mt-4 p-3 rounded-2xl bg-white/[0.04] border border-white/5 flex items-center justify-center h-36">
+                                                    <img
+                                                        src={recentApp.icon}
+                                                        alt={recentApp.title}
+                                                        className="w-14 h-14 object-contain opacity-90 drop-shadow-lg"
+                                                        onError={(e) => {
+                                                            e.target.src = './themes/Yaru/apps/bash.png';
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between text-[11px] text-[#A8C7FA] font-medium">
+                                                <span>Tap to resume</span>
+                                                <span>Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+
+                    {/* Android 14 Recents Bottom Action Bar */}
+                    <div
+                        className="flex items-center justify-center gap-3 pt-2"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => {
+                                showToast('Screenshot saved to gallery');
+                                setRecentsOpen(false);
+                            }}
+                            className="px-4 py-2.5 rounded-full bg-[#2B2930] hover:bg-[#383540] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 active:scale-95 transition-all"
+                        >
+                            <svg className="w-4 h-4 text-[#A8C7FA]" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" />
+                            </svg>
+                            Screenshot
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setRecentsOpen(false);
+                                setStyleSheetOpen(true);
+                            }}
+                            className="px-4 py-2.5 rounded-full bg-[#2B2930] hover:bg-[#383540] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 active:scale-95 transition-all"
+                        >
+                            <svg className="w-4 h-4 text-[#81C995]" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" />
+                            </svg>
+                            Wallpaper &amp; style
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Material You "Wallpaper & Style" Bottom Sheet */}
+            {styleSheetOpen && (
+                <div
+                    className="fixed inset-0 z-[230] bg-black/60 backdrop-blur-md flex items-end"
+                    onClick={() => setStyleSheetOpen(false)}
+                >
+                    <div
+                        className="w-full rounded-t-[32px] bg-[#1C1B1F] border-t border-white/15 p-5 pb-9 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="w-10 h-1 rounded-full bg-white/30 mx-auto mb-4" />
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 className="text-base font-semibold text-white">Wallpaper &amp; style</h3>
+                                <p className="text-xs text-[#CAC4D0]">Material You Dynamic Color Palette</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setStyleSheetOpen(false)}
+                                className="px-3 py-1 rounded-full bg-white/10 text-xs text-white"
+                            >
+                                Done
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2.5">
+                            {MATERIAL_THEMES.map((theme) => {
+                                const active = themeId === theme.id;
+                                return (
+                                    <button
+                                        key={theme.id}
+                                        type="button"
+                                        onClick={() => {
+                                            setThemeId(theme.id);
+                                            setBgImage(theme.wall);
+                                            document.documentElement.style.setProperty('--android-primary', theme.primary);
+                                            showToast(`Applied ${theme.name} theme`);
+                                        }}
+                                        className={`p-3 rounded-[20px] flex items-center gap-3 border text-left transition-all ${
+                                            active
+                                                ? 'bg-white/15 border-white/40'
+                                                : 'bg-[#2B2930] border-white/5 hover:bg-[#35333C]'
+                                        }`}
+                                    >
+                                        <span
+                                            className="w-7 h-7 rounded-full flex-shrink-0 border border-white/20 shadow-inner"
+                                            style={{ backgroundColor: theme.primary }}
+                                        />
+                                        <div className="min-w-0">
+                                            <div className="text-xs font-semibold text-white truncate">{theme.name}</div>
+                                            <div className="text-[10px] text-[#CAC4D0]">{theme.wall}</div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <AppDrawer
                 isOpen={drawerOpen}
@@ -491,6 +713,10 @@ export default function AndroidHome() {
                     app={openApp}
                     onClose={handleCloseApp}
                     onOpenApp={handleOpenApp}
+                    onOpenRecents={() => {
+                        vibrate();
+                        setRecentsOpen(true);
+                    }}
                     closing={closingApp}
                     changeBackgroundImage={setBgImage}
                     currBgImgName={bgImage}

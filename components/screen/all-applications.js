@@ -72,7 +72,7 @@ export class AllApplications extends React.Component {
 
     render() {
         return (
-            <div className={"absolute h-full top-7 w-full z-20 md:pl-12 pl-0 pb-16 md:pb-0 justify-center md:pl-20 border-black border-opacity-60 bg-black bg-opacity-70"}>
+            <div className={"absolute h-[calc(100%-2rem)] top-8 w-full z-20 md:pl-12 pl-0 pb-16 md:pb-0 justify-center md:pl-20 border-black border-opacity-60 bg-black bg-opacity-70"}>
                 <div className={"flex md:pr-20 pt-5 align-center justify-center px-4 md:px-0"}>
                     <div className={"flex w-full h-full items-center pl-2 pr-2 bg-white border-black border-width-2 rounded-xl overflow-hidden md:w-1/3 "}>
                         <img className={"w-5 h-5"} alt="search icon" src={'./images/logos/search.png'} />

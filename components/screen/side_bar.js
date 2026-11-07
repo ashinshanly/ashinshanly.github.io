@@ -37,9 +37,9 @@ export default function SideBar(props) {
     const updateDimensions = useCallback(() => {
         if (typeof window === 'undefined') return;
         const windowHeight = window.innerHeight;
-        // Top navbar height is ~28px, bottom padding is ~6px
-        const navbarHeight = 28;
-        const bottomSafetyPadding = 6;
+        // Top navbar height is 32px + 8px top padding, bottom padding is ~8px
+        const navbarHeight = 40;
+        const bottomSafetyPadding = 8;
         const availableHeight = Math.max(180, windowHeight - navbarHeight - bottomSafetyPadding);
 
         // Count visible favourite apps + 1 for AllApps button
@@ -97,9 +97,9 @@ export default function SideBar(props) {
             <div
                 className={
                     (props.hide ? " -translate-x-full " : "") +
-                    " absolute top-0 left-0 h-full transform duration-300 select-none z-40 " +
+                    " absolute top-8 left-0 h-[calc(100vh-2rem)] transform duration-300 select-none z-40 " +
                     " flex flex-col justify-start items-center border-r border-black border-opacity-40 bg-black/60 backdrop-blur-md " +
-                    " pt-7 pb-1"
+                    " pt-2 pb-1.5"
                 }
                 style={{
                     width: `${dimensions.dockWidth}px`,
@@ -108,7 +108,7 @@ export default function SideBar(props) {
                     '--dock-margin-y': `${dimensions.marginY}px`,
                     '--dock-width': `${dimensions.dockWidth}px`,
                     '--dock-dot-size': `${dimensions.dotSize}px`,
-                    maxHeight: '100vh',
+                    maxHeight: 'calc(100vh - 32px)',
                     overflow: 'visible',
                 }}
             >
@@ -116,7 +116,7 @@ export default function SideBar(props) {
                 <div
                     className="flex flex-col items-center w-full overflow-visible flex-shrink-0"
                     style={{
-                        maxHeight: `calc(100vh - 28px - ${dimensions.itemSize + dimensions.marginY * 2}px - 6px)`,
+                        maxHeight: `calc(100vh - 40px - ${dimensions.itemSize + dimensions.marginY * 2}px - 8px)`,
                     }}
                 >
                     {

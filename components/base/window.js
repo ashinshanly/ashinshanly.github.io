@@ -8,8 +8,8 @@ export class Window extends Component {
     constructor() {
         super();
         this.id = null;
-        this.startX = 60;
-        this.startY = 10;
+        this.startX = 64;
+        this.startY = 14;
         this.isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
         this.state = {
             cursorType: "cursor-default",
@@ -17,6 +17,8 @@ export class Window extends Component {
             height: 85,
             closed: false,
             maximized: false,
+            snapped: null,
+            snapPreview: null,
             parentSize: {
                 height: 100,
                 width: 100
@@ -50,7 +52,7 @@ export class Window extends Component {
         this.isMobile = window.innerWidth < 640;
         if (this.isMobile) {
             // On mobile, start maximized
-            this.setState({ height: 96.3, width: 100.2, maximized: true }, this.resizeBoundries);
+            this.setState({ height: 100, width: 100, maximized: true }, this.resizeBoundries);
         }
         else {
             this.setState({ height: 85, width: 60 }, this.resizeBoundries);
@@ -58,28 +60,47 @@ export class Window extends Component {
     }
 
     resizeBoundries = () => {
+        const workspaceHeight = Math.max(200, window.innerHeight - 32);
         this.setState({
             parentSize: {
-                height: window.innerHeight //parent height
-                    - (window.innerHeight * (this.state.height / 100.0))  // this window's height
-                    - 28 // some padding
+                height: workspaceHeight
+                    - (workspaceHeight * (this.state.height / 100.0))
                 ,
-                width: window.innerWidth // parent width
-                    - (window.innerWidth * (this.state.width / 100.0)) //this window's width
+                width: window.innerWidth
+                    - (window.innerWidth * (this.state.width / 100.0))
             }
         });
     }
 
     changeCursorToMove = () => {
         this.focusWindow();
-        if (this.state.maximized) {
+        if (this.state.maximized || this.state.snapped) {
             this.restoreWindow();
         }
-        this.setState({ cursorType: "cursor-move" })
+        this.setState({ cursorType: "cursor-move", snapPreview: null })
     }
 
     changeCursorToDefault = () => {
-        this.setState({ cursorType: "cursor-default" })
+        const preview = this.state.snapPreview;
+        this.setState({ cursorType: "cursor-default", snapPreview: null });
+        if (preview === 'top') {
+            this.maximizeWindow();
+        } else if (preview === 'left' || preview === 'right') {
+            this.snapWindow(preview);
+        }
+    }
+
+    snapWindow = (side) => {
+        this.focusWindow();
+        const r = document.querySelector("#" + this.id);
+        if (!r) return;
+        this.setWinowsPosition();
+        const targetX = side === 'left' ? '0px' : '50vw';
+        r.style.transform = `translate(${targetX}, 0px)`;
+        this.setState({ snapped: side, maximized: false, height: 100, width: 50 });
+        if (side === 'left') {
+            this.props.hideSideBar(this.id, true);
+        }
     }
 
     handleVerticleResize = () => {
@@ -97,14 +118,31 @@ export class Window extends Component {
         r.style.setProperty('--window-transform-y', (rect.y.toFixed(1) - 32).toString() + "px");
     }
 
-    checkOverlap = () => {
+    checkOverlap = (e) => {
         var r = document.querySelector("#" + this.id);
+        if (!r) return;
         var rect = r.getBoundingClientRect();
         if (rect.x.toFixed(1) < 50) { // if this window overlapps with SideBar
             this.props.hideSideBar(this.id, true);
         }
         else {
             this.props.hideSideBar(this.id, false);
+        }
+
+        if (!this.isMobile && e && typeof window !== 'undefined') {
+            const clientX = e.clientX ?? rect.x;
+            const clientY = e.clientY ?? rect.y;
+            let nextPreview = null;
+            if (clientY <= 38 || rect.y <= 34) {
+                nextPreview = 'top';
+            } else if (clientX <= 24 || rect.x <= 8) {
+                nextPreview = 'left';
+            } else if (clientX >= window.innerWidth - 24 || rect.right >= window.innerWidth - 8) {
+                nextPreview = 'right';
+            }
+            if (nextPreview !== this.state.snapPreview) {
+                this.setState({ snapPreview: nextPreview });
+            }
         }
     }
 
@@ -137,7 +175,7 @@ export class Window extends Component {
 
         r.style.transform = `translate(${posx},${posy})`;
         setTimeout(() => {
-            this.setState({ maximized: false });
+            this.setState({ maximized: false, snapped: null });
             this.checkOverlap();
         }, 300);
     }
@@ -150,9 +188,9 @@ export class Window extends Component {
             this.focusWindow();
             var r = document.querySelector("#" + this.id);
             this.setWinowsPosition();
-            // translate window to maximize position
-            r.style.transform = `translate(-1pt,-2pt)`;
-            this.setState({ maximized: true, height: 96.3, width: 100.2 });
+            // translate window to maximize position cleanly below navbar
+            r.style.transform = `translate(0px, 0px)`;
+            this.setState({ maximized: true, height: 100, width: 100 });
             this.props.hideSideBar(this.id, true);
         }
     }
@@ -168,35 +206,50 @@ export class Window extends Component {
     }
 
     render() {
+        const { snapPreview } = this.state;
         return (
-            <Draggable
-                axis="both"
-                handle=".bg-ub-window-title"
-                grid={[1, 1]}
-                scale={1}
-                disabled={this.isMobile}
-                onStart={this.changeCursorToMove}
-                onStop={this.changeCursorToDefault}
-                onDrag={this.checkOverlap}
-                allowAnyClick={false}
-                defaultPosition={{ x: this.isMobile ? 0 : this.startX, y: this.isMobile ? 0 : this.startY }}
-                bounds={{ left: 0, top: 0, right: this.state.parentSize.width, bottom: this.state.parentSize.height }}
-            >
-                <div style={{ width: `${this.state.width}%`, height: `${this.state.height}%` }}
-                    className={this.state.cursorType + " " + (this.state.closed ? " closed-window " : "") + (this.state.maximized ? " duration-300 rounded-none" : " rounded-lg rounded-b-none") + (this.props.minimized ? " opacity-0 invisible duration-200 " : "") + (this.props.isFocused ? " z-30 " : " z-20 notFocused") + " opened-window overflow-hidden min-w-1/4 min-h-1/4 main-window absolute window-shadow border-black border-opacity-40 border border-t-0 flex flex-col"}
-                    id={this.id}
+            <>
+                {snapPreview && (
+                    <div
+                        className="fixed z-20 pointer-events-none border-2 border-cyan-400/70 bg-cyan-500/15 backdrop-blur-sm rounded-2xl transition-all duration-150 shadow-[0_0_30px_rgba(6,182,212,0.25)]"
+                        style={
+                            snapPreview === 'top'
+                                ? { top: '34px', left: '8px', right: '8px', bottom: '8px' }
+                                : snapPreview === 'left'
+                                ? { top: '34px', left: '8px', width: 'calc(50vw - 12px)', bottom: '8px' }
+                                : { top: '34px', right: '8px', width: 'calc(50vw - 12px)', bottom: '8px' }
+                        }
+                    />
+                )}
+                <Draggable
+                    axis="both"
+                    handle=".bg-ub-window-title"
+                    grid={[1, 1]}
+                    scale={1}
+                    disabled={this.isMobile}
+                    onStart={this.changeCursorToMove}
+                    onStop={this.changeCursorToDefault}
+                    onDrag={this.checkOverlap}
+                    allowAnyClick={false}
+                    defaultPosition={{ x: this.isMobile ? 0 : this.startX, y: this.isMobile ? 0 : this.startY }}
+                    bounds={{ left: 0, top: 0, right: this.state.parentSize.width, bottom: this.state.parentSize.height }}
                 >
-                    <WindowYBorder resize={this.handleHorizontalResize} />
-                    <WindowXBorder resize={this.handleVerticleResize} />
-                    <WindowTopBar title={this.props.title} />
-                    <WindowEditButtons minimize={this.minimizeWindow} maximize={this.maximizeWindow} isMaximised={this.state.maximized} close={this.closeWindow} id={this.id} />
-                    {(this.id === "settings"
-                        ? <Settings changeBackgroundImage={this.props.changeBackgroundImage} currBgImgName={this.props.bg_image_name} />
-                        : <WindowMainScreen screen={this.props.screen} title={this.props.title}
-                            addFolder={this.props.id === "terminal" ? this.props.addFolder : null}
-                            openApp={this.props.openApp} />)}
-                </div>
-            </Draggable >
+                    <div style={{ width: `${this.state.width}%`, height: `${this.state.height}%` }}
+                        className={this.state.cursorType + " " + (this.state.closed ? " closed-window " : "") + (this.state.maximized ? " duration-300 rounded-none" : " rounded-lg rounded-b-none") + (this.props.minimized ? " opacity-0 invisible duration-200 " : "") + (this.props.isFocused ? " z-30 " : " z-20 notFocused") + " opened-window overflow-hidden min-w-1/4 min-h-1/4 main-window absolute window-shadow border-black border-opacity-40 border border-t-0 flex flex-col"}
+                        id={this.id}
+                    >
+                        <WindowYBorder resize={this.handleHorizontalResize} />
+                        <WindowXBorder resize={this.handleVerticleResize} />
+                        <WindowTopBar title={this.props.title} onDoubleClick={this.maximizeWindow} />
+                        <WindowEditButtons minimize={this.minimizeWindow} maximize={this.maximizeWindow} isMaximised={this.state.maximized} close={this.closeWindow} id={this.id} />
+                        {(this.id === "settings"
+                            ? <Settings changeBackgroundImage={this.props.changeBackgroundImage} currBgImgName={this.props.bg_image_name} />
+                            : <WindowMainScreen screen={this.props.screen} title={this.props.title}
+                                addFolder={this.props.id === "terminal" ? this.props.addFolder : null}
+                                openApp={this.props.openApp} />)}
+                    </div>
+                </Draggable >
+            </>
         )
     }
 }
@@ -206,7 +259,10 @@ export default Window
 // Window's title bar
 export function WindowTopBar(props) {
     return (
-        <div className={" relative bg-ub-window-title border-t-2 border-white border-opacity-5 py-1.5 px-3 text-white w-full select-none rounded-b-none"}>
+        <div
+            onDoubleClick={props.onDoubleClick}
+            className={" relative bg-ub-window-title border-t-2 border-white border-opacity-5 py-1.5 px-3 text-white w-full select-none rounded-b-none"}
+        >
             <div className="flex justify-center text-sm font-bold">{props.title}</div>
         </div>
     )

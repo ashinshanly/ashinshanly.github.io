@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="ubuntuBg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E95420" />
+      <stop offset="65%" stop-color="#C7432B" />
+      <stop offset="100%" stop-color="#77216F" />
+    </linearGradient>
+    <mask id="ubuntuCutout">
+      <rect width="100" height="100" fill="white" />
+      <!-- Center hole -->
+      <circle cx="50" cy="50" r="14.5" fill="black" />
+      <!-- 3 radial gap bars at 120deg, 240deg, 0deg -->
+      <line x1="50" y1="50" x2="88" y2="50" stroke="black" stroke-width="4" />
+      <line x1="50" y1="50" x2="31" y2="17.1" stroke="black" stroke-width="4" />
+      <line x1="50" y1="50" x2="31" y2="82.9" stroke="black" stroke-width="4" />
+      <!-- Dark halos around the 3 outer heads -->
+      <circle cx="21" cy="50" r="8.8" fill="black" />
+      <circle cx="64.5" cy="24.9" r="8.8" fill="black" />
+      <circle cx="64.5" cy="75.1" r="8.8" fill="black" />
+    </mask>
+  </defs>
+
+  <!-- Ubuntu Circle Background -->
+  <circle cx="50" cy="50" r="48" fill="url(#ubuntuBg)" />
+
+  <!-- Circle of Friends Ring (Masked) -->
+  <circle cx="50" cy="50" r="24" fill="white" mask="url(#ubuntuCutout)" />
+
+  <!-- 3 Friends Heads -->
+  <circle cx="21" cy="50" r="5.6" fill="white" />
+  <circle cx="64.5" cy="24.9" r="5.6" fill="white" />
+  <circle cx="64.5" cy="75.1" r="5.6" fill="white" />
+</svg>

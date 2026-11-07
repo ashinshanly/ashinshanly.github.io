@@ -32,6 +32,8 @@ export class Desktop extends Component {
                 default: false,
             },
             showNameBar: false,
+            spotlightOpen: false,
+            spotlightQuery: '',
         }
     }
 
@@ -83,6 +85,24 @@ export class Desktop extends Component {
                 this.openApp("settings");
             });
         }
+        window.addEventListener("keydown", this.handleGlobalKeyDown);
+        window.addEventListener("ubuntu-toggle-spotlight", this.toggleSpotlight);
+    }
+
+    handleGlobalKeyDown = (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            this.toggleSpotlight();
+        } else if (e.key === "Escape" && this.state.spotlightOpen) {
+            this.setState({ spotlightOpen: false, spotlightQuery: "" });
+        }
+    }
+
+    toggleSpotlight = () => {
+        this.setState((prev) => ({
+            spotlightOpen: !prev.spotlightOpen,
+            spotlightQuery: "",
+        }));
     }
 
     setContextListeners = () => {
@@ -94,6 +114,8 @@ export class Desktop extends Component {
     removeContextListeners = () => {
         document.removeEventListener("contextmenu", this.checkContextMenu);
         document.removeEventListener("click", this.hideAllContextMenu);
+        window.removeEventListener("keydown", this.handleGlobalKeyDown);
+        window.removeEventListener("ubuntu-toggle-spotlight", this.toggleSpotlight);
     }
 
     checkContextMenu = (e) => {
@@ -522,7 +544,7 @@ export class Desktop extends Component {
 
     render() {
         return (
-            <div className={" h-full w-full flex flex-col items-end justify-start content-start flex-wrap-reverse pt-8 bg-transparent relative overflow-hidden overscroll-none window-parent"}>
+            <div className={" h-full w-full flex flex-col items-end justify-start content-start flex-wrap-reverse pt-11 pr-2 bg-transparent relative overflow-hidden overscroll-none window-parent"}>
 
                 <div className="ubuntu-future-grid" aria-hidden="true" />
                 <div className="ubuntu-ambient-orb ubuntu-ambient-orb-one" aria-hidden="true" />
@@ -535,7 +557,7 @@ export class Desktop extends Component {
                 <AtAGlanceWidget />
 
                 {/* Window Area */}
-                <div className="absolute h-full w-full bg-transparent" data-context="desktop-area">
+                <div className="absolute top-8 left-0 right-0 h-[calc(100%-2rem)] w-full bg-transparent" data-context="desktop-area">
                     {this.renderWindows()}
                 </div>
 
@@ -573,6 +595,91 @@ export class Desktop extends Component {
                     <AllApplications apps={apps}
                         recentApps={this.app_stack}
                         openApp={this.openApp} /> : null}
+
+                {/* GNOME 46 Spotlight / Command Palette (Ctrl+K) */}
+                {this.state.spotlightOpen && (
+                    <div
+                        id="ubuntu-spotlight-modal"
+                        className="fixed inset-0 z-50 bg-black/55 backdrop-blur-md flex items-start justify-center pt-24 px-4"
+                        onClick={() => this.setState({ spotlightOpen: false, spotlightQuery: '' })}
+                    >
+                        <div
+                            className="w-full max-w-xl rounded-[24px] bg-[#0F172A]/95 border border-cyan-400/25 shadow-[0_24px_64px_rgba(0,0,0,0.75)] overflow-hidden text-white"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/10">
+                                <svg className="w-5 h-5 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
+                                </svg>
+                                <input
+                                    id="ubuntu-spotlight-input"
+                                    type="text"
+                                    autoFocus
+                                    placeholder="Type to search apps, portfolio sections, or commands..."
+                                    value={this.state.spotlightQuery}
+                                    onChange={(e) => this.setState({ spotlightQuery: e.target.value })}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            const q = this.state.spotlightQuery.trim().toLowerCase();
+                                            const matched = apps.find(
+                                                (a) => !a.disabled && a.title.toLowerCase().includes(q)
+                                            );
+                                            if (matched) {
+                                                this.openApp(matched.id);
+                                                this.setState({ spotlightOpen: false, spotlightQuery: '' });
+                                            }
+                                        }
+                                    }}
+                                    className="w-full bg-transparent text-sm text-white placeholder-white/40 outline-none"
+                                />
+                                <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-white/10 text-white/60">
+                                    ESC
+                                </span>
+                            </div>
+
+                            <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+                                {apps
+                                    .filter(
+                                        (a) =>
+                                            !a.disabled &&
+                                            a.title
+                                                .toLowerCase()
+                                                .includes(this.state.spotlightQuery.trim().toLowerCase())
+                                    )
+                                    .slice(0, 7)
+                                    .map((app) => (
+                                        <button
+                                            key={app.id}
+                                            type="button"
+                                            onClick={() => {
+                                                this.openApp(app.id);
+                                                this.setState({ spotlightOpen: false, spotlightQuery: '' });
+                                            }}
+                                            className="w-full px-3.5 py-2.5 rounded-xl hover:bg-cyan-500/15 flex items-center justify-between text-left transition-colors group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <img
+                                                    src={app.icon}
+                                                    alt={app.title}
+                                                    className="w-6 h-6 object-contain"
+                                                    onError={(e) => {
+                                                        e.target.src = './themes/Yaru/apps/bash.png';
+                                                    }}
+                                                />
+                                                <span className="text-sm font-medium text-white group-hover:text-cyan-300">
+                                                    {app.title}
+                                                </span>
+                                            </div>
+                                            <span className="text-[11px] text-white/40 group-hover:text-cyan-300">
+                                                {app.type === 'external' ? 'Open Link ↗' : 'Launch App ↵'}
+                                            </span>
+                                        </button>
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             </div>
         )

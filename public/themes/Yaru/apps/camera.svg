@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <defs>
+    <!-- Squircle Base Gradient -->
+    <linearGradient id="bgSquircle" x1="48" y1="32" x2="464" y2="480" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2B303C" />
+      <stop offset="50%" stop-color="#1B1F27" />
+      <stop offset="100%" stop-color="#101318" />
+    </linearGradient>
+
+    <!-- Camera Body Metallic Rim -->
+    <linearGradient id="camBody" x1="96" y1="128" x2="416" y2="396" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3C4252" />
+      <stop offset="100%" stop-color="#20242D" />
+    </linearGradient>
+
+    <!-- Outer Lens Ring -->
+    <linearGradient id="lensRing" x1="156" y1="156" x2="356" y2="356" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+
+    <!-- Deep Optical Glass -->
+    <radialGradient id="lensGlass" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="55%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#050811" />
+    </radialGradient>
+
+    <!-- Inner Aperture Glow -->
+    <radialGradient id="lensCore" cx="38%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#6366F1" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Outer Rounded Icon Squircle -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bgSquircle)" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="6" />
+
+  <!-- Top Shutter Button & Flash Bump -->
+  <rect x="116" y="102" width="60" height="24" rx="10" fill="#E95420" />
+  <path d="M196 96H316L340 126H172L196 96Z" fill="#353B49" />
+
+  <!-- Camera Chassis -->
+  <rect x="76" y="122" width="360" height="276" rx="56" fill="url(#camBody)" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="4" filter="url(#dropShadow)" />
+
+  <!-- Subtle Grip Texture Accent on Left -->
+  <rect x="100" y="154" width="16" height="212" rx="8" fill="#13161C" opacity="0.65" />
+
+  <!-- Top-Right Flash / Sensor Indicator -->
+  <circle cx="382" cy="170" r="14" fill="#FBBF24" />
+  <circle cx="382" cy="170" r="7" fill="#FEF08A" />
+
+  <!-- Top-Left Recording Status LED -->
+  <circle cx="144" cy="168" r="8" fill="#EF4444" />
+
+  <!-- Outer Anodized Lens Bezel -->
+  <circle cx="256" cy="260" r="108" fill="#11141B" stroke="url(#lensRing)" stroke-width="10" />
+
+  <!-- Middle Machined Step Ring -->
+  <circle cx="256" cy="260" r="88" fill="url(#lensGlass)" stroke="#475569" stroke-width="3" stroke-dasharray="10 6" />
+
+  <!-- Inner Optical Element -->
+  <circle cx="256" cy="260" r="68" fill="url(#lensCore)" />
+  <circle cx="256" cy="260" r="36" fill="#060913" stroke="#38BDF8" stroke-opacity="0.35" stroke-width="2" />
+
+  <!-- Specular Lens Reflections -->
+  <ellipse cx="228" cy="230" rx="22" ry="13" transform="rotate(-30 228 230)" fill="#FFFFFF" fill-opacity="0.55" />
+  <circle cx="284" cy="288" r="9" fill="#38BDF8" fill-opacity="0.5" />
+  <circle cx="272" cy="296" r="4" fill="#FFFFFF" fill-opacity="0.6" />
+</svg>

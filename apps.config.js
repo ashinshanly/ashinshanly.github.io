@@ -106,6 +106,15 @@ const apps = [
         screen: displayChessGame,
     },
     {
+        id: "camera",
+        title: "Camera",
+        icon: './themes/Yaru/apps/camera.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayCamera,
+    },
+    {
         id: "musicsync",
         title: "MusicSync",
         icon: './images/logos/apple-touch-icon.png',
@@ -179,15 +188,6 @@ const apps = [
         favourite: true,
         desktop_shortcut: false,
         screen: displaySettings,
-    },
-    {
-        id: "camera",
-        title: "Camera",
-        icon: './themes/Yaru/apps/camera.png', // We'll need to check if this icon exists or use a fallback
-        disabled: false,
-        favourite: true,
-        desktop_shortcut: false,
-        screen: displayCamera,
     },
     {
         id: "trash",
