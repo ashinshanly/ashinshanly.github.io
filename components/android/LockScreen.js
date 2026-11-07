@@ -8,9 +8,22 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
     const containerRef = useRef(null);
     const dragRef = useRef({ startY: 0, currentY: 0, isDragging: false });
 
-    const unlockThreshold = -150; // swipe up by 150px to unlock
+    const unlockThreshold = -60; // swipe up by 60px to unlock
 
     const [selectedNotifications, setSelectedNotifications] = useState([]);
+
+    const triggerUnlock = () => {
+        if (isUnlocking) return;
+        dragRef.current = { startY: 0, currentY: 0, isDragging: false };
+        setIsDragging(false);
+        setIsUnlocking(true);
+        setCurrentY(typeof window !== 'undefined' ? -window.innerHeight : -800);
+
+        setTimeout(() => {
+            onUnlock();
+            setIsUnlocking(false);
+        }, 280);
+    };
 
     const notificationsPool = useMemo(() => [
         {
@@ -84,7 +97,9 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
 
     const handleTouchStart = (e) => {
         if (isUnlocking) return;
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        if (e.type === 'mousedown' && e.button !== 0) return;
+        const y = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+        if (typeof y !== 'number') return;
         dragRef.current = { startY: y, currentY: 0, isDragging: true };
         setStartY(y);
         setIsDragging(true);
@@ -92,34 +107,66 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
 
     const handleTouchMove = (e) => {
         if ((!isDragging && !dragRef.current.isDragging) || isUnlocking) return;
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const y = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+        if (typeof y !== 'number') return;
         const baseStartY = dragRef.current.isDragging ? dragRef.current.startY : startY;
         const delta = y - baseStartY;
 
-        // Only allow upward swiping
+        // Allow upward swiping
         if (delta < 0) {
             dragRef.current.currentY = delta;
             setCurrentY(delta);
         }
     };
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e) => {
         if ((!isDragging && !dragRef.current.isDragging) || isUnlocking) return;
-        const finalY = dragRef.current.currentY !== 0 ? dragRef.current.currentY : currentY;
+        const baseStartY = dragRef.current.isDragging ? dragRef.current.startY : startY;
+        let endDelta = dragRef.current.currentY !== 0 ? dragRef.current.currentY : currentY;
+
+        if (e) {
+            const endY =
+                e.changedTouches && e.changedTouches.length > 0
+                    ? e.changedTouches[0].clientY
+                    : typeof e.clientY === 'number'
+                      ? e.clientY
+                      : null;
+            if (typeof endY === 'number') {
+                const directDelta = endY - baseStartY;
+                if (directDelta < endDelta) {
+                    endDelta = directDelta;
+                }
+            }
+        }
+
         dragRef.current = { startY: 0, currentY: 0, isDragging: false };
         setIsDragging(false);
 
-        if (finalY < unlockThreshold) {
-            setIsUnlocking(true);
-            setCurrentY(typeof window !== 'undefined' ? -window.innerHeight : -800);
-
-            setTimeout(() => {
-                onUnlock();
-                setIsUnlocking(false);
-            }, 300); // Wait for transition to finish
+        if (endDelta <= unlockThreshold) {
+            triggerUnlock();
         } else {
             // Snap back
             setCurrentY(0);
+        }
+    };
+
+    // Global window listeners while mouse-dragging so moving upward never drops the drag via mouseleave
+    useEffect(() => {
+        if (!isDragging || isUnlocking) return;
+        const onWindowMouseMove = (e) => handleTouchMove(e);
+        const onWindowMouseUp = (e) => handleTouchEnd(e);
+        window.addEventListener('mousemove', onWindowMouseMove);
+        window.addEventListener('mouseup', onWindowMouseUp);
+        return () => {
+            window.removeEventListener('mousemove', onWindowMouseMove);
+            window.removeEventListener('mouseup', onWindowMouseUp);
+        };
+    });
+
+    const handleWheel = (e) => {
+        if (!isLocked || isUnlocking) return;
+        if (Math.abs(e.deltaY) > 25) {
+            triggerUnlock();
         }
     };
 
@@ -150,14 +197,16 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
                 opacity: isLocked ? opac : 0,
                 backdropFilter: `blur(${blur}px)`,
                 WebkitBackdropFilter: `blur(${blur}px)`,
+                pointerEvents: isLocked && !isUnlocking ? 'auto' : 'none',
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
             onMouseDown={handleTouchStart}
             onMouseMove={handleTouchMove}
             onMouseUp={handleTouchEnd}
-            onMouseLeave={handleTouchEnd}
+            onWheel={handleWheel}
         >
             <div className="lock-clock-container" style={{ opacity: opac }}>
                 <div className="lock-time">{timeStr}</div>
@@ -179,7 +228,13 @@ export default function LockScreen({ isLocked, onUnlock, time }) {
                 ))}
             </div>
 
-            <div className="lock-hint" style={{ opacity: opac }}>
+            <div
+                className="lock-hint"
+                style={{ opacity: opac, cursor: 'pointer' }}
+                onClick={triggerUnlock}
+                role="button"
+                aria-label="Swipe up or tap to unlock"
+            >
                 <div className="lock-hint-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>

@@ -223,7 +223,7 @@ export default class Navbar extends Component {
 
 	render() {
 		return (
-			<div className="main-navbar-vp fixed top-0 left-0 right-0 h-8 w-screen flex flex-nowrap justify-between items-center text-white text-xs select-none z-50 bg-[#0B101B]/95 backdrop-blur-xl border-b border-cyan-300/20 shadow-[0_2px_14px_rgba(0,0,0,0.7)] px-3 transition-all duration-300">
+			<div className="main-navbar-vp fixed top-0 left-0 right-0 h-8 w-screen flex flex-nowrap justify-between items-center text-white text-xs select-none z-50 px-3 transition-all duration-300">
 				{/* Left Side: GNOME 46 Activities Pill + Live Count */}
 				<div className="flex items-center space-x-2.5">
 					<button
