@@ -17,7 +17,6 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  actions: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -30,40 +29,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel competing default Jekyll Pages runs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Ensure Pages build_type is set to workflow if permitted
-          curl -s -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/pages" \
-            -d '{"build_type":"workflow"}' || true
-
-          # Cancel any queued or in-progress "pages build and deployment" (Jekyll) runs
-          for attempt in 1 2 3; do
-            RUN_IDS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=10" \
-              | node -e '
-                let raw = "";
-                process.stdin.on("data", d => raw += d);
-                process.stdin.on("end", () => {
-                  try {
-                    const runs = (JSON.parse(raw).workflow_runs || []).filter(
-                      r => r.name === "pages build and deployment" && r.status !== "completed"
-                    );
-                    runs.forEach(r => console.log(r.id));
-                  } catch (e) {}
-                });
-              ')
-            for id in $RUN_IDS; do
-              echo "Cancelling competing Jekyll workflow run: $id"
-              curl -s -X POST -H "Authorization: Bearer $GH_TOKEN" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runs/$id/cancel" || true
-            done
-            sleep 2
-          done
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect package manager
@@ -91,19 +56,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-          #
-          # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
       - name: Restore cache
         uses: actions/cache@v4
         with:
           path: |
             .next/cache
-          # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
@@ -122,29 +81,6 @@ jobs:
           NEXT_PUBLIC_USER_ID: ${{ secrets.USER_ID }}
           NEXT_PUBLIC_SERVICE_ID: ${{ secrets.SERVICE_ID }}
           NEXT_PUBLIC_TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
-      - name: Cancel any late-queued Jekyll Pages runs before upload
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RUN_IDS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=10" \
-            | node -e '
-              let raw = "";
-              process.stdin.on("data", d => raw += d);
-              process.stdin.on("end", () => {
-                try {
-                  const runs = (JSON.parse(raw).workflow_runs || []).filter(
-                    r => r.name === "pages build and deployment" && r.status !== "completed"
-                  );
-                  runs.forEach(r => console.log(r.id));
-                } catch (e) {}
-              });
-            ')
-          for id in $RUN_IDS; do
-            echo "Cancelling competing Jekyll workflow run: $id"
-            curl -s -X POST -H "Authorization: Bearer $GH_TOKEN" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs/$id/cancel" || true
-          done
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
