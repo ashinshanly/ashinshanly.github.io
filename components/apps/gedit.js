@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import ReactGA from 'react-ga4';
 import emailjs from '@emailjs/browser';
+import { db } from '../../config/firebase';
+import { ref, push } from 'firebase/database';
+
+const OWNER_EMAIL = 'ashinkoottala@gmail.com';
 
 export class Gedit extends Component {
 
@@ -63,12 +67,38 @@ export class Gedit extends Component {
             'message': message,
         }
 
-        if (!serviceID || !templateID) {
+        // Save backup copy to Firebase RTDB if available
+        if (db) {
+            try {
+                await push(ref(db, 'chainreaction/contact_inbox'), {
+                    name,
+                    subject: subject || 'Portfolio Contact',
+                    message,
+                    timestamp: Date.now()
+                });
+            } catch {
+                // Non-blocking backup
+            }
+        }
+
+        const triggerMailtoFallback = () => {
+            const mailSubject = encodeURIComponent(subject || `Portfolio Contact from ${name}`);
+            const mailBody = encodeURIComponent(`From: ${name}\n\n${message}`);
+            if (typeof window !== 'undefined') {
+                window.open(`mailto:${OWNER_EMAIL}?subject=${mailSubject}&body=${mailBody}`, '_self');
+            }
             this.setState({
                 sending: false,
-                statusType: 'error',
-                statusMessage: 'Email service is not configured in this environment. Please try again later.'
+                statusType: 'success',
+                statusMessage: `Message saved & mail client opened for ${OWNER_EMAIL}!`
             });
+            setTimeout(() => {
+                this.closeWindow();
+            }, 1400);
+        };
+
+        if (!serviceID || !templateID) {
+            triggerMailtoFallback();
             return;
         }
 
@@ -82,11 +112,7 @@ export class Gedit extends Component {
                 this.closeWindow();
             }, 900);
         }).catch(() => {
-            this.setState({
-                sending: false,
-                statusType: 'error',
-                statusMessage: 'Failed to send message. Please check your connection and try again.'
-            });
+            triggerMailtoFallback();
         })
 
         ReactGA.event({

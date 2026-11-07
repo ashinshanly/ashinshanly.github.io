@@ -74,15 +74,6 @@ export default function NotificationPanel({
     const [brightness, setBrightness] = useState(100);
     const [dismissedIds, setDismissedIds] = useState([]);
     const [expandedIds, setExpandedIds] = useState([1]);
-    const [mediaPlaying, setMediaPlaying] = useState(false);
-    const [trackIdx, setTrackIdx] = useState(0);
-
-    const mediaTracks = [
-        { title: 'Midnight City', artist: 'M83 • Synthwave Mix', accent: '#A8C7FA' },
-        { title: 'Starboy', artist: 'The Weeknd • Daft Punk', accent: '#F28B82' },
-        { title: 'Veridis Quo', artist: 'Daft Punk • Discovery', accent: '#81C995' }
-    ];
-    const activeTrack = mediaTracks[trackIdx % mediaTracks.length];
 
     const panelTouchStartY = useRef(null);
 
@@ -398,97 +389,6 @@ export default function NotificationPanel({
                             aria-label="Screen brightness"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                         />
-                    </div>
-                </div>
-
-                {/* Android 14 Material You Media Player Card */}
-                <div className="px-4 pb-2">
-                    <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#2B2538] via-[#22202A] to-[#1A1820] border border-white/10 p-3.5 shadow-md">
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                                <div
-                                    className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner"
-                                    style={{ backgroundColor: `${activeTrack.accent}24`, color: activeTrack.accent }}
-                                >
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                                    </svg>
-                                </div>
-                                <div className="flex flex-col min-w-0">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-[13px] font-semibold text-white truncate">
-                                            {activeTrack.title}
-                                        </span>
-                                        <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[9px] font-medium text-[#CAC4D0] flex-shrink-0">
-                                            Pixel Buds
-                                        </span>
-                                    </div>
-                                    <span className="text-[11px] text-[#CAC4D0] truncate">
-                                        {activeTrack.artist}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Media Controls: Prev, Play/Pause Pill, Next */}
-                            <div className="flex items-center gap-1.5 flex-shrink-0">
-                                <button
-                                    type="button"
-                                    aria-label="Previous track"
-                                    onClick={() => setTrackIdx((i) => (i - 1 + mediaTracks.length) % mediaTracks.length)}
-                                    className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/80 active:scale-90 transition-all"
-                                >
-                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-                                    </svg>
-                                </button>
-                                <button
-                                    type="button"
-                                    aria-label={mediaPlaying ? 'Pause media' : 'Play media'}
-                                    onClick={() => {
-                                        const next = !mediaPlaying;
-                                        setMediaPlaying(next);
-                                        showToast(next ? `Playing ${activeTrack.title}` : 'Paused');
-                                    }}
-                                    className="w-10 h-9 rounded-2xl bg-[#A8C7FA] text-[#062E6F] flex items-center justify-center shadow-sm active:scale-95 transition-all"
-                                >
-                                    {mediaPlaying ? (
-                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                                        </svg>
-                                    ) : (
-                                        <svg className="w-4 h-4 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                    )}
-                                </button>
-                                <button
-                                    type="button"
-                                    aria-label="Next track"
-                                    onClick={() => setTrackIdx((i) => (i + 1) % mediaTracks.length)}
-                                    className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/80 active:scale-90 transition-all"
-                                >
-                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Android 14 Squiggly/Progress Scrubber Line */}
-                        <div className="mt-2.5 flex items-center gap-2">
-                            <div className="flex-grow h-1 rounded-full bg-white/10 overflow-hidden">
-                                <div
-                                    className="h-full rounded-full transition-all duration-300"
-                                    style={{
-                                        width: mediaPlaying ? '64%' : '38%',
-                                        backgroundColor: activeTrack.accent
-                                    }}
-                                />
-                            </div>
-                            <span className="text-[10px] text-white/50 tabular-nums">
-                                {mediaPlaying ? '2:14 / 3:38' : '1:18 / 3:38'}
-                            </span>
-                        </div>
                     </div>
                 </div>
 
