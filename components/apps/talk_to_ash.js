@@ -1,146 +1,141 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
- * Talk to Ash — Ashin Shanly's Interactive Voice AI App
+ * Talk to Ash — Ashin Shanly's Minimal Interactive Voice AI App
  * Compatible with both Ubuntu 24.04 Windowed UI (any window size) and Android 14 Mobile UI (all screen sizes).
- * Inspired by valentinhervouet.com:
- * - Interactive 60fps Canvas Orb with cursor-tracking blinking pill-shaped eyes, voice-reactive liquid caustics, and poke physics
- * - Container-aware responsive layout (3-column flanking choice pills on wide containers, stacked grid on compact/mobile containers)
- * - Synchronized typewriter subtitles (click or Space to skip) + timed [[card:...]] Story Cards
- * - Web Speech API voice synthesis + Web Speech Recognition ("Ask by Voice") + natural language prompt input
  */
 
 const ASH_DIALOGUE_GRAPH = {
     greet: {
         id: 'greet',
-        text: "Hey there, and welcome to Ashin's portfolio! I'm Ash, his personal AI voice guide. Want the quick 30-second intro, or the full story?",
+        text: "Hi, I'm Ash — Ashin's AI guide. Where should we start?",
         choices: [
-            { id: 'quick', label: 'Quick · 30s', to: 'intro_quick' },
-            { id: 'full', label: 'Full story · 2 min', to: 'intro_full' },
-            { id: 'projects', label: 'Projects & Apps', to: 'projects_ask' },
+            { id: 'quick', label: 'Quick intro', to: 'intro_quick' },
+            { id: 'full', label: 'Full story', to: 'intro_full' },
+            { id: 'projects', label: 'Projects', to: 'projects_ask' },
             { id: 'experience', label: 'Experience', to: 'roles_ask' },
         ],
     },
     intro_quick: {
         id: 'intro_quick',
-        text: "Here's Ashin in thirty seconds. [[card:google]]He's a Software Engineer III at Google, building planetary-scale data and fleet intelligence systems. He holds a Master's in Computer Science from [[card:iitgn]]IIT Gandhinagar, where he won the Director's Silver Medal with a 9.0 CGPA. Before Google, he engineered petabyte-scale PySpark pipelines and enterprise GenAI RAG systems at [[card:oracle]]Oracle, and researched 3D LiDAR computer vision at TCS Research. What would you like to explore next?",
+        text: "[[card:google]]Ashin is a Software Engineer at Google and an [[card:iitgn]]IIT Gandhinagar medalist, previously building cloud AI at [[card:oracle]]Oracle.",
         choices: 'menu',
         tracksHeard: true,
     },
     intro_full: {
         id: 'intro_full',
-        text: "Let's take it from the start! Ashin graduated on the Dean's List from GEC Thrissur with a 9.11 CGPA, then earned his Master's in Computer Science at [[card:iitgn]]IIT Gandhinagar, graduating with the prestigious Director's Silver Medal for Academic Excellence. Along the way, he published peer-reviewed deep learning research at ACM CODS-COMAD on Siamese Graph Convolutional Networks and Neural Reverse Dictionaries. He began his industry career at [[card:tcs]]TCS Research working on airborne LiDAR tree segmentation, then joined [[card:oracle]]Oracle as a Member of Technical Staff, where he architected petabyte-scale PySpark & Delta Lake pipelines and built an enterprise GenAI RAG assistant that automated 60% of support queries. Today, he's a [[card:google]]Software Engineer III at Google, helping Alphabet run the most efficient and elastic compute fleet in the industry. What part of his journey should we dive into?",
+        text: "[[card:iitgn]]Ashin won the Director's Silver Medal at IIT Gandhinagar, researched 3D vision at [[card:tcs]]TCS, scaled GenAI at [[card:oracle]]Oracle, and now engineers fleet intelligence at [[card:google]]Google.",
         choices: 'menu',
         tracksHeard: true,
     },
     menu_return: {
         id: 'menu_return',
-        text: 'What else would you like to know about Ashin?',
+        text: 'What should we explore next?',
         choices: 'menu',
     },
     roles_ask: {
         id: 'roles_ask',
-        text: 'Where should we start — his current work at Google, his cloud & AI systems at Oracle, his research at TCS, or his degree at IIT Gandhinagar?',
+        text: "Pick a chapter of Ashin's journey.",
         choices: 'roles',
     },
     roles_again: {
         id: 'roles_again',
-        text: 'Which chapter of his career or education would you like to hear next?',
+        text: 'Which role should we check out next?',
         choices: 'roles',
     },
     role_google: {
         id: 'role_google',
-        text: "[[card:google]]Ashin joined Google in August 2025 as a Software Engineer III. He works on high-scale distributed data platforms that enable Alphabet to run the most efficient and elastic compute fleet in the industry, turning massive telemetry streams into trusted, actionable engineering insights. Want to hear about another role?",
+        text: "[[card:google]]At Google, Ashin builds distributed data platforms powering Alphabet's elastic compute fleet.",
         choices: 'after_role',
         tracksHeard: true,
     },
     role_oracle: {
         id: 'role_oracle',
-        text: "[[card:oracle]]From 2022 to 2025 at Oracle, Ashin architected petabyte-scale PySpark ETL pipelines on Oracle Cloud Infrastructure and led a 5-engineer migration to Delta Lake that boosted query speeds by 40%. He also built an enterprise Generative AI RAG chatbot with vector search that automated 60% of manual queries and improved resolution accuracy by 30%. Want to hear about another role?",
+        text: '[[card:oracle]]At Oracle, he led petabyte-scale Delta Lake pipelines and built a GenAI RAG assistant automating 60% of support queries.',
         choices: 'after_role',
         tracksHeard: true,
     },
     role_tcs: {
         id: 'role_tcs',
-        text: "[[card:tcs]]At TCS Research and Innovation Labs, Ashin was a Machine Vision Research Scientist Intern. He combined airborne LiDAR 3D point clouds with hyperspectral imagery using a hybrid machine learning and signal processing framework, boosting forestry tree-segmentation accuracy by 18%. Want to hear about another role?",
+        text: '[[card:tcs]]At TCS Research, he fused 3D LiDAR point clouds with hyperspectral imagery, boosting tree segmentation by 18%.',
         choices: 'after_role',
         tracksHeard: true,
     },
     role_iitgn: {
         id: 'role_iitgn',
-        text: "[[card:iitgn]]Ashin completed his M.Tech in Computer Science at IIT Gandhinagar from 2020 to 2022, graduating with a 9.00 CGPA and receiving the Director's Silver Medal for Academic Excellence. His thesis accelerated Implicit Neural Representations by over 21% using split encoders and multiscale partitioning. Want to hear about another role?",
+        text: "[[card:iitgn]]At IIT Gandhinagar, he graduated with a 9.0 CGPA and the Director's Silver Medal, accelerating 3D neural training by 21%.",
         choices: 'after_role',
         tracksHeard: true,
     },
     projects_ask: {
         id: 'projects_ask',
-        text: 'Ashin builds everything from published deep learning models to interactive web apps and games. Which project catches your eye?',
+        text: 'From deep learning papers to interactive web apps — pick one to explore.',
         choices: 'projects',
     },
     projects_again: {
         id: 'projects_again',
-        text: 'Sure thing! Which project or research paper should we check out next?',
+        text: 'Which project should we look at next?',
         choices: 'projects',
     },
     project_inr: {
         id: 'project_inr',
-        text: "[[card:inr]]In his research on Accelerated Implicit Neural Representations, Ashin designed an input-split neural architecture with multiscale spatial partitioning. Tested on complex Stanford 3D scenes and ultra-high-resolution images, it sped up neural scene training by 21.23% without losing reconstruction quality. Want to explore another project?",
+        text: '[[card:inr]]His split-encoder 3D neural architecture speeds up scene training by 21% without losing visual fidelity.',
         choices: 'after_project',
         projectUrl: 'https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en',
         tracksHeard: true,
     },
     project_sgcn: {
         id: 'project_sgcn',
-        text: "[[card:sgcn]]Published at ACM CODS-COMAD, Ashin's Image Caption Generator pairs Siamese Graph Convolutional Networks with a non-parametric Kernel Activation Function and an attention LSTM. It captures deep spatial-semantic relationships across objects and stays robust even under heavy class imbalance. Want to explore another project?",
+        text: '[[card:sgcn]]Published at ACM CODS-COMAD, his Siamese Graph Network generates rich semantic image captions.',
         choices: 'after_project',
         projectUrl: 'https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en',
         tracksHeard: true,
     },
     project_lumina: {
         id: 'project_lumina',
-        text: "[[card:lumina]]Lumina is an interactive cosmic sequence-memory game right here in this portfolio! It features a 60fps parallax starfield, spatial Web Audio harmonic chimes, progressive glassmorphic node grids, and a live global Firebase leaderboard. You can launch it right now or check out another project!",
+        text: '[[card:lumina]]Lumina is a minimal cosmic rhythm-memory game with pulsar constellations and ambient synthesis.',
         choices: 'after_project',
         projectUrl: 'https://ashinshanly.github.io/lumina/',
         tracksHeard: true,
     },
     project_musicsync: {
         id: 'project_musicsync',
-        text: "[[card:musicsync]]MusicSync lets multiple devices play audio in millisecond-accurate harmony over the web, turning phones and laptops into a synchronized spatial soundstage. You can open it directly or explore another project!",
+        text: '[[card:musicsync]]MusicSync synchronizes audio playback across multiple phones and laptops in real time.',
         choices: 'after_project',
         projectUrl: 'https://ashinshanly.github.io/musicsync/',
         tracksHeard: true,
     },
     project_guestbook: {
         id: 'project_guestbook',
-        text: "[[card:guestbook]]The Collaborative Neon GuestBook is a real-time 64 by 64 cyber-matrix canvas powered by Firebase and a pentatonic Web Audio synthesizer. Every pixel you paint plays a spatial musical note and syncs live to every visitor on the site!",
+        text: '[[card:guestbook]]GuestBook is a live 64 by 64 neon pixel matrix where every cell plays a musical note.',
         choices: 'after_project',
         appId: 'pixel-hud',
         tracksHeard: true,
     },
     hobbies: {
         id: 'hobbies',
-        text: "[[card:hobbies]]When Ashin isn't architecting distributed systems or training neural networks, you'll find him smashing shuttlecocks on the badminton court, watching anime like Demon Slayer, or analyzing market charts for swing trades. What else would you like to explore?",
+        text: '[[card:hobbies]]Off the clock, Ashin plays competitive badminton, watches anime, and swing-trades the markets.',
         choices: 'menu',
         tracksHeard: true,
     },
     resume: {
         id: 'resume',
-        text: "Here's Ashin's resume summary! You can download the full PDF directly, or open his full interactive About Ashin profile.",
+        text: "Grab Ashin's resume PDF or open his full profile.",
         choices: [
-            { id: 'download_pdf', label: 'Download Resume PDF ↗', link: './files/AshinShanly_RESUME.pdf' },
-            { id: 'open_about', label: 'Open About Ashin App', appId: 'about-ashin' },
-            { id: 'something_else', label: '↩ Something else', to: 'menu_return' },
+            { id: 'download_pdf', label: 'Resume PDF ↗', link: './files/AshinShanly_RESUME.pdf' },
+            { id: 'open_about', label: 'About Ashin', appId: 'about-ashin' },
+            { id: 'something_else', label: '↩ Back', to: 'menu_return' },
         ],
         tracksHeard: true,
     },
     contact: {
         id: 'contact',
-        text: "Want to get in touch with Ashin? You can open his Contact Me app right here, connect on LinkedIn, or email him directly at ashinkoottala@gmail.com.",
+        text: 'Reach out via the Contact app, LinkedIn, or email.',
         choices: [
-            { id: 'open_gedit', label: 'Open Contact Me App', appId: 'gedit' },
+            { id: 'open_gedit', label: 'Contact App', appId: 'gedit' },
             { id: 'linkedin', label: 'LinkedIn ↗', link: 'https://www.linkedin.com/in/ashinshanly/' },
-            { id: 'email', label: 'Email Ashin ↗', link: 'mailto:ashinkoottala@gmail.com' },
-            { id: 'something_else', label: '↩ Something else', to: 'menu_return' },
+            { id: 'email', label: 'Email ↗', link: 'mailto:ashinkoottala@gmail.com' },
+            { id: 'something_else', label: '↩ Back', to: 'menu_return' },
         ],
         tracksHeard: true,
     },
@@ -148,128 +143,108 @@ const ASH_DIALOGUE_GRAPH = {
 
 const CHOICE_SETS = {
     menu: [
-        { id: 'projects', label: 'Projects & Research', to: 'projects_ask' },
-        { id: 'experience', label: 'Work & Education', to: 'roles_ask' },
-        { id: 'hobbies', label: 'Hobbies & Interests', to: 'hobbies' },
-        { id: 'resume', label: 'Resume / CV', to: 'resume' },
-        { id: 'contact', label: 'Contact Ashin', to: 'contact' },
+        { id: 'projects', label: 'Projects', to: 'projects_ask' },
+        { id: 'experience', label: 'Experience', to: 'roles_ask' },
+        { id: 'hobbies', label: 'Hobbies', to: 'hobbies' },
+        { id: 'resume', label: 'Resume', to: 'resume' },
+        { id: 'contact', label: 'Contact', to: 'contact' },
     ],
     roles: [
-        { id: 'google', label: 'Google · SWE III', to: 'role_google' },
-        { id: 'oracle', label: 'Oracle · MTS', to: 'role_oracle' },
-        { id: 'tcs', label: 'TCS Research · CV', to: 'role_tcs' },
-        { id: 'iitgn', label: 'IIT Gandhinagar · M.Tech', to: 'role_iitgn' },
+        { id: 'google', label: 'Google', to: 'role_google' },
+        { id: 'oracle', label: 'Oracle', to: 'role_oracle' },
+        { id: 'tcs', label: 'TCS Research', to: 'role_tcs' },
+        { id: 'iitgn', label: 'IIT Gandhinagar', to: 'role_iitgn' },
         { id: 'back_roles', label: '↩ Back', to: 'menu_return' },
     ],
     after_role: [
-        { id: 'another_role', label: '↩ Another role', to: 'roles_again' },
-        { id: 'projects', label: 'Explore Projects', to: 'projects_ask' },
-        { id: 'something_else', label: '↩ Main topics', to: 'menu_return' },
+        { id: 'another_role', label: 'More roles', to: 'roles_again' },
+        { id: 'projects', label: 'Projects', to: 'projects_ask' },
+        { id: 'something_else', label: '↩ Menu', to: 'menu_return' },
     ],
     projects: [
-        { id: 'inr', label: 'Implicit Neural Rep (3D)', to: 'project_inr' },
-        { id: 'sgcn', label: 'Siamese-GCN Captions', to: 'project_sgcn' },
-        { id: 'lumina', label: 'Lumina Cosmic Game', to: 'project_lumina' },
-        { id: 'musicsync', label: 'MusicSync Audio', to: 'project_musicsync' },
-        { id: 'guestbook', label: '64×64 Neon GuestBook', to: 'project_guestbook' },
+        { id: 'lumina', label: 'Lumina', to: 'project_lumina' },
+        { id: 'musicsync', label: 'MusicSync', to: 'project_musicsync' },
+        { id: 'guestbook', label: 'GuestBook', to: 'project_guestbook' },
+        { id: 'inr', label: '3D Neural Nets', to: 'project_inr' },
+        { id: 'sgcn', label: 'S-GCN Paper', to: 'project_sgcn' },
         { id: 'back_projects', label: '↩ Back', to: 'menu_return' },
     ],
     after_project: [
-        { id: 'another_project', label: '↩ Another project', to: 'projects_again' },
-        { id: 'visit_project', label: 'Open / Launch ↗', action: 'visit' },
-        { id: 'something_else', label: '↩ Main topics', to: 'menu_return' },
+        { id: 'visit_project', label: 'Launch ↗', action: 'visit' },
+        { id: 'another_project', label: 'More projects', to: 'projects_again' },
+        { id: 'something_else', label: '↩ Menu', to: 'menu_return' },
     ],
 };
 
 const STORY_CARDS = {
     google: {
-        badge: 'Current Role • Aug 2025 – Present',
-        title: 'Software Engineer III @ Google',
-        subtitle: 'Elastic Fleet & Planetary-Scale Data Intelligence',
-        metric: 'Alphabet Compute Fleet',
-        accent: 'from-blue-500/30 via-cyan-500/20 to-emerald-500/20',
-        border: 'border-cyan-400/40',
+        title: 'Google',
+        tag: 'SWE III',
+        accent: 'from-blue-500/25 via-cyan-500/15 to-emerald-500/15',
+        border: 'border-cyan-400/35',
         icon: '🔵',
     },
     oracle: {
-        badge: 'Aug 2022 – Aug 2025 • 3 Years',
-        title: 'Member of Technical Staff @ Oracle',
-        subtitle: 'Petabyte PySpark ETL, Delta Lake & Enterprise GenAI RAG',
-        metric: '60% Query Automation • +40% Perf',
-        accent: 'from-red-500/30 via-orange-500/20 to-amber-500/20',
-        border: 'border-orange-400/40',
+        title: 'Oracle',
+        tag: 'GenAI & Data',
+        accent: 'from-red-500/25 via-orange-500/15 to-amber-500/15',
+        border: 'border-orange-400/35',
         icon: '🔴',
     },
     tcs: {
-        badge: 'Research Internship • 2021',
-        title: 'Machine Vision Scientist @ TCS Research',
-        subtitle: 'Airborne LiDAR Point Clouds & Hyperspectral Fusion',
-        metric: '+18% Segmentation Accuracy',
-        accent: 'from-sky-500/30 via-blue-500/20 to-indigo-500/20',
-        border: 'border-sky-400/40',
+        title: 'TCS Research',
+        tag: '3D Vision',
+        accent: 'from-sky-500/25 via-blue-500/15 to-indigo-500/15',
+        border: 'border-sky-400/35',
         icon: '🔷',
     },
     iitgn: {
-        badge: 'M.Tech CSE • 2020 – 2022',
         title: 'IIT Gandhinagar',
-        subtitle: "Director's Silver Medal for Academic Excellence",
-        metric: 'CGPA 9.00 / 10.0',
-        accent: 'from-amber-500/30 via-yellow-500/20 to-orange-500/20',
-        border: 'border-amber-400/40',
+        tag: 'Silver Medalist',
+        accent: 'from-amber-500/25 via-yellow-500/15 to-orange-500/15',
+        border: 'border-amber-400/35',
         icon: '🏆',
     },
     inr: {
-        badge: 'Deep Learning & 3D Vision Research',
-        title: 'Accelerated Implicit Neural Representation',
-        subtitle: 'Split Encoder & Multiscale Spatial Partitioning on 3D Scenes',
-        metric: '+21.23% Faster Training',
-        accent: 'from-purple-500/30 via-fuchsia-500/20 to-cyan-500/20',
-        border: 'border-purple-400/40',
+        title: '3D Neural Rep',
+        tag: '+21% Faster',
+        accent: 'from-purple-500/25 via-fuchsia-500/15 to-cyan-500/15',
+        border: 'border-purple-400/35',
         icon: '🧠',
     },
     sgcn: {
-        badge: 'Published @ ACM CODS-COMAD',
-        title: 'Siamese-GCN Image Caption Generator',
-        subtitle: 'Graph Convolutional Networks + Kernel Activation & Attention LSTM',
-        metric: 'ACM Peer-Reviewed Publication',
-        accent: 'from-emerald-500/30 via-teal-500/20 to-cyan-500/20',
-        border: 'border-emerald-400/40',
+        title: 'Siamese-GCN',
+        tag: 'ACM Paper',
+        accent: 'from-emerald-500/25 via-teal-500/15 to-cyan-500/15',
+        border: 'border-emerald-400/35',
         icon: '📄',
     },
     lumina: {
-        badge: 'Interactive Web Game • Live',
-        title: 'Lumina: Cosmic Sequence Memory',
-        subtitle: '60fps Starfield, Web Audio Harmonics & Global Leaderboard',
-        metric: 'Play Live @ /lumina',
-        accent: 'from-cyan-500/30 via-blue-500/20 to-indigo-500/20',
-        border: 'border-cyan-400/40',
+        title: 'Lumina',
+        tag: 'Cosmic Memory',
+        accent: 'from-cyan-500/25 via-blue-500/15 to-indigo-500/15',
+        border: 'border-cyan-400/35',
         icon: '✨',
     },
     musicsync: {
-        badge: 'Real-Time Web Audio • Live',
-        title: 'MusicSync Multi-Device Audio',
-        subtitle: 'Millisecond-Accurate Distributed Audio Playback',
-        metric: 'Play Live @ /musicsync',
-        accent: 'from-pink-500/30 via-rose-500/20 to-purple-500/20',
-        border: 'border-pink-400/40',
+        title: 'MusicSync',
+        tag: 'Live Audio',
+        accent: 'from-pink-500/25 via-rose-500/15 to-purple-500/15',
+        border: 'border-pink-400/35',
         icon: '🎵',
     },
     guestbook: {
-        badge: 'Collaborative 64×64 Matrix • Firebase RTDB',
-        title: 'PixelHUD Neon GuestBook',
-        subtitle: 'Real-Time Multi-User Canvas + Pentatonic C-Minor Synth',
-        metric: '4,096 Live Interactive Cells',
-        accent: 'from-cyan-500/30 via-fuchsia-500/20 to-emerald-500/20',
-        border: 'border-cyan-400/40',
+        title: 'GuestBook',
+        tag: '64×64 Matrix',
+        accent: 'from-cyan-500/25 via-fuchsia-500/15 to-emerald-500/15',
+        border: 'border-cyan-400/35',
         icon: '🎨',
     },
     hobbies: {
-        badge: 'Beyond Engineering',
-        title: 'Badminton, Anime & Swing Trading',
-        subtitle: 'High-tempo court rallies, Demon Slayer & market technicals',
-        metric: 'Always Exploring',
-        accent: 'from-violet-500/30 via-indigo-500/20 to-cyan-500/20',
-        border: 'border-violet-400/40',
+        title: 'Beyond Code',
+        tag: 'Badminton · Anime',
+        accent: 'from-violet-500/25 via-indigo-500/15 to-cyan-500/15',
+        border: 'border-violet-400/35',
         icon: '🏸',
     },
 };
@@ -287,6 +262,51 @@ function parseDialogueText(raw) {
     }
     clean += raw.slice(lastIdx);
     return { text: clean, cues };
+}
+
+/**
+ * Selects the smoothest, most natural modern female English voice available across
+ * Chrome, Safari/macOS, Edge, and Android.
+ */
+function selectModernFemaleVoice(voices) {
+    if (!voices || !voices.length) return null;
+    const enVoices = voices.filter((v) => /^en([-_]|$)/i.test(v.lang));
+    const pool = enVoices.length ? enVoices : voices;
+
+    const scoreVoice = (v) => {
+        const name = v.name || '';
+        // Exclude known male voices
+        if (/(Alex|Daniel|Fred|Aaron|Arthur|Oliver|Rishi|Tom|David|Mark|Guy|Christopher|Eric|Steffan|Roger|Brian|George|\bMale\b)/i.test(name)) {
+            return -100;
+        }
+        let s = 0;
+        // Tier 1: Ultra-smooth Neural / Natural / Cloud female voices
+        if (/(Ava|Aria|Jenny|Sonia|Emma|Michelle|Libby).*(Natural|Online|Neural)/i.test(name)) s += 130;
+        if (/Google UK English Female/i.test(name)) s += 125;
+        if (/Google US English/i.test(name)) s += 118;
+        if (/(Ava|Zoe|Allison|Serena|Samantha|Karen|Moira).*(Premium|Enhanced)/i.test(name)) s += 115;
+        if (/(Natural|Neural|Premium|Enhanced)/i.test(name)) s += 45;
+
+        // Tier 2: Warm, modern female voice names
+        if (/\b(Ava|Zoe|Allison|Serena)\b/i.test(name)) s += 75;
+        if (/\b(Samantha|Moira|Karen|Tessa|Victoria|Martha|Nicky|Aria|Jenny|Sonia)\b/i.test(name)) s += 65;
+        if (/Female/i.test(name)) s += 40;
+
+        // Prefer US / UK / AU / IE natural accents
+        if (/en[-_](US|GB|AU|IE)/i.test(v.lang)) s += 15;
+        return s;
+    };
+
+    let best = null;
+    let bestScore = -999;
+    for (const v of pool) {
+        const sc = scoreVoice(v);
+        if (sc > bestScore) {
+            bestScore = sc;
+            best = v;
+        }
+    }
+    return best;
 }
 
 export function TalkToAsh({ openApp }) {
@@ -307,6 +327,7 @@ export function TalkToAsh({ openApp }) {
     const typeTimerRef = useRef(null);
     const animFrameRef = useRef(null);
     const blinkRef = useRef({ nextBlink: 2.2, blinkEnd: 0 });
+    const preferredVoiceRef = useRef(null);
 
     const currentNode = ASH_DIALOGUE_GRAPH[nodeId] || ASH_DIALOGUE_GRAPH.greet;
     const parsed = parseDialogueText(currentNode.text);
@@ -334,6 +355,23 @@ export function TalkToAsh({ openApp }) {
         };
     }, []);
 
+    // Preload and lock onto the smoothest modern female voice
+    useEffect(() => {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+        const updateVoice = () => {
+            const voices = window.speechSynthesis.getVoices();
+            const chosen = selectModernFemaleVoice(voices);
+            if (chosen) {
+                preferredVoiceRef.current = chosen;
+            }
+        };
+        updateVoice();
+        window.speechSynthesis.addEventListener?.('voiceschanged', updateVoice);
+        return () => {
+            window.speechSynthesis.removeEventListener?.('voiceschanged', updateVoice);
+        };
+    }, []);
+
     // Resolve choices for current node
     const resolveChoices = useCallback((node) => {
         if (!node) return [];
@@ -344,7 +382,7 @@ export function TalkToAsh({ openApp }) {
         });
     }, []);
 
-    // Speak text via Web Speech API
+    // Speak text with smooth, modern female voice prosody
     const speakText = useCallback(
         (cleanText) => {
             if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -353,17 +391,21 @@ export function TalkToAsh({ openApp }) {
                 if (!soundOn) return;
 
                 const utter = new SpeechSynthesisUtterance(cleanText);
-                utter.rate = 1.04;
-                utter.pitch = 1.05;
-                utter.volume = 0.95;
-
                 const voices = window.speechSynthesis.getVoices();
-                const preferred = voices.find(
-                    (v) =>
-                        /en[-_]/i.test(v.lang) &&
-                        /(Samantha|Google US English|Alex|Daniel|Karen|Natural|Neural)/i.test(v.name)
-                );
-                if (preferred) utter.voice = preferred;
+                const voice = preferredVoiceRef.current || selectModernFemaleVoice(voices);
+                if (voice) {
+                    preferredVoiceRef.current = voice;
+                    utter.voice = voice;
+                    utter.lang = voice.lang || 'en-US';
+                } else {
+                    utter.lang = 'en-US';
+                }
+
+                // Smooth, warm, unrushed female cadence
+                const isGoogleVoice = voice && /Google/i.test(voice.name);
+                utter.rate = isGoogleVoice ? 0.98 : 0.95;
+                utter.pitch = 1.03;
+                utter.volume = 0.95;
 
                 utter.onboundary = () => {
                     voiceLevelRef.current = 0.65 + Math.random() * 0.35;
@@ -383,7 +425,7 @@ export function TalkToAsh({ openApp }) {
         [soundOn]
     );
 
-    // Cleanup all timers & speech on unmount (when Ubuntu window or Android app closes)
+    // Cleanup all timers & speech on unmount
     useEffect(() => {
         return () => {
             if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -436,7 +478,7 @@ export function TalkToAsh({ openApp }) {
                 voiceLevelRef.current = 0;
                 setPhase('choosing');
             }
-        }, 24);
+        }, 26);
 
         return () => {
             if (typeTimerRef.current) {
@@ -675,8 +717,6 @@ export function TalkToAsh({ openApp }) {
                 const ex = cx + dir * eyeSpacing + lookX;
                 ctx.save();
                 ctx.fillStyle = '#0f172a';
-                ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
-                ctx.shadowBlur = 6;
                 ctx.beginPath();
                 const rx = eyeW / 2;
                 const ry = Math.max(2, eyeH / 2);
@@ -710,7 +750,7 @@ export function TalkToAsh({ openApp }) {
     const isWideStage = containerSize.width >= 720 && containerSize.height >= 460;
     const isCompactHeight = containerSize.height < 540;
 
-    const renderChoicePill = (choice, idx, compact = false) => {
+    const renderChoicePill = (choice, compact = false) => {
         const isHeard = choice.to && heardNodes.includes(choice.to);
         return (
             <button
@@ -725,16 +765,13 @@ export function TalkToAsh({ openApp }) {
                 onMouseLeave={() => {
                     lookTargetRef.current = null;
                 }}
-                className={`group relative pointer-events-auto rounded-full bg-white/[0.09] hover:bg-white/[0.18] active:scale-95 border border-white/20 hover:border-cyan-300/60 backdrop-blur-2xl text-white font-medium shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-                    compact ? 'px-3 py-2 text-xs w-full' : 'px-4 py-2.5 text-xs lg:text-sm'
+                className={`group relative pointer-events-auto rounded-full bg-white/[0.08] hover:bg-white/[0.16] active:scale-95 border border-white/15 hover:border-cyan-300/60 backdrop-blur-2xl text-white font-medium shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.25)] transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                    compact ? 'px-3.5 py-2 text-xs w-full' : 'px-4 py-2 text-xs lg:text-sm'
                 }`}
             >
-                {!compact && (
-                    <span className="text-[10px] font-mono text-cyan-300/80 flex-shrink-0">{idx + 1}</span>
-                )}
                 <span className="truncate">{choice.label}</span>
                 {isHeard && (
-                    <span className="text-emerald-300 text-xs font-bold flex-shrink-0" title="Already heard">
+                    <span className="text-emerald-300 text-[11px] font-bold flex-shrink-0" title="Heard">
                         ✓
                     </span>
                 )}
@@ -768,25 +805,22 @@ export function TalkToAsh({ openApp }) {
                 <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full bg-indigo-500/15 blur-[95px]" />
             </div>
 
-            {/* Top Identity & Quick-Jump Bar */}
-            <header className="relative z-10 flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10 flex-shrink-0">
-                <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse flex-shrink-0" />
-                    <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-300 tracking-wide flex-shrink-0">
-                        Ash · Voice AI
-                    </span>
-                    <span className="text-xs text-white/75 font-medium truncate hidden sm:inline">
-                        Ashin Shanly&apos;s Interactive Guide
-                    </span>
-                </div>
+            {/* Minimal Top Header */}
+            <header className="relative z-10 flex items-center justify-between gap-2 pb-2 flex-shrink-0">
+                <button
+                    type="button"
+                    onClick={() => setNodeId('greet')}
+                    className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 hover:border-cyan-400/40 transition cursor-pointer"
+                >
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
+                    <span className="text-xs font-bold text-cyan-300 tracking-wide">Ash</span>
+                </button>
 
                 <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide max-w-full">
                     {[
                         { label: 'Intro', to: 'greet' },
-                        { label: 'Bio', to: 'intro_full' },
-                        { label: 'Experience', to: 'roles_ask' },
+                        { label: 'Work', to: 'roles_ask' },
                         { label: 'Projects', to: 'projects_ask' },
-                        { label: 'Hobbies', to: 'hobbies' },
                         { label: 'Resume', to: 'resume' },
                         { label: 'Contact', to: 'contact', highlight: true },
                     ].map((item) => (
@@ -796,10 +830,10 @@ export function TalkToAsh({ openApp }) {
                             onClick={() => setNodeId(item.to)}
                             className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition cursor-pointer ${
                                 item.highlight
-                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-sm'
+                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold'
                                     : nodeId === item.to
                                     ? 'bg-white/15 text-cyan-300 border border-cyan-400/30'
-                                    : 'text-white/75 hover:text-white hover:bg-white/10'
+                                    : 'text-white/65 hover:text-white hover:bg-white/10'
                             }`}
                         >
                             {item.label}
@@ -808,34 +842,26 @@ export function TalkToAsh({ openApp }) {
                 </nav>
             </header>
 
-            {/* Center Stage: Story Card + Orb + Flanking/Stacked Choices + Subtitle */}
-            <div className="relative z-10 my-auto py-2 sm:py-3 flex flex-col items-center justify-center w-full">
-                {/* Active Story Card (pops up when [[card:...]] cue triggers) */}
+            {/* Center Stage: Minimal Story Pill + Orb + Choices + Concise Subtitle */}
+            <div className="relative z-10 my-auto py-2 flex flex-col items-center justify-center w-full">
+                {/* Minimal Floating Story Badge */}
                 {activeCard && (
                     <div
-                        className={`mb-2.5 max-w-md w-full rounded-2xl p-2.5 sm:p-3 bg-gradient-to-br ${activeCard.accent} border ${activeCard.border} backdrop-blur-2xl shadow-xl flex items-center gap-3 transition-all duration-300`}
+                        className={`mb-2.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r ${activeCard.accent} border ${activeCard.border} backdrop-blur-xl shadow-lg inline-flex items-center gap-2 transition-all duration-300`}
                     >
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/40 border border-white/15 flex items-center justify-center text-lg sm:text-xl flex-shrink-0">
-                            {activeCard.icon}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                            <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-cyan-300 truncate">
-                                {activeCard.badge}
-                            </div>
-                            <div className="text-xs sm:text-sm font-bold text-white truncate">{activeCard.title}</div>
-                            <div className="text-[11px] text-white/75 truncate">{activeCard.subtitle}</div>
-                        </div>
-                        <div className="hidden sm:block px-2 py-0.5 rounded-full bg-black/40 border border-white/10 text-[10px] font-semibold text-cyan-300 whitespace-nowrap">
-                            {activeCard.metric}
-                        </div>
+                        <span className="text-sm">{activeCard.icon}</span>
+                        <span className="text-xs font-bold text-white">{activeCard.title}</span>
+                        <span className="text-[10px] font-semibold text-cyan-300 px-2 py-0.5 rounded-full bg-black/35 border border-white/10">
+                            {activeCard.tag}
+                        </span>
                     </div>
                 )}
 
                 {isWideStage ? (
                     /* Wide Container Stage: Left Choice Pills + Center Orb + Right Choice Pills */
-                    <div className="w-full max-w-4xl grid grid-cols-12 items-center gap-3">
-                        <div className="col-span-4 flex flex-col items-end justify-center gap-2.5 pr-1">
-                            {leftChoices.map((c, idx) => renderChoicePill(c, idx * 2, false))}
+                    <div className="w-full max-w-3xl grid grid-cols-12 items-center gap-3">
+                        <div className="col-span-4 flex flex-col items-end justify-center gap-2 pr-1">
+                            {leftChoices.map((c) => renderChoicePill(c, false))}
                         </div>
 
                         <div className="col-span-4 flex flex-col items-center justify-center">
@@ -845,7 +871,7 @@ export function TalkToAsh({ openApp }) {
                                     if (phase === 'speaking') skipTyping();
                                     else speakText(parsed.text);
                                 }}
-                                title="Click Ash to poke or replay voice"
+                                title="Tap Ash"
                                 className={`relative ${orbSizeClass} cursor-pointer flex items-center justify-center`}
                             >
                                 <canvas
@@ -853,16 +879,11 @@ export function TalkToAsh({ openApp }) {
                                     data-testid="orb-canvas"
                                     className="w-full h-full block"
                                 />
-                                {phase === 'speaking' && (
-                                    <span className="absolute bottom-1 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[9px] text-cyan-300 font-mono tracking-wider uppercase">
-                                        Speaking • Tap to skip
-                                    </span>
-                                )}
                             </div>
                         </div>
 
-                        <div className="col-span-4 flex flex-col items-start justify-center gap-2.5 pl-1">
-                            {rightChoices.map((c, idx) => renderChoicePill(c, idx * 2 + 1, false))}
+                        <div className="col-span-4 flex flex-col items-start justify-center gap-2 pl-1">
+                            {rightChoices.map((c) => renderChoicePill(c, false))}
                         </div>
                     </div>
                 ) : (
@@ -874,7 +895,7 @@ export function TalkToAsh({ openApp }) {
                                 if (phase === 'speaking') skipTyping();
                                 else speakText(parsed.text);
                             }}
-                            title="Tap Ash to poke or replay voice"
+                            title="Tap Ash"
                             className={`relative ${orbSizeClass} cursor-pointer flex items-center justify-center`}
                         >
                             <canvas
@@ -882,20 +903,15 @@ export function TalkToAsh({ openApp }) {
                                 data-testid="orb-canvas"
                                 className="w-full h-full block"
                             />
-                            {phase === 'speaking' && (
-                                <span className="absolute bottom-0.5 px-2 py-0.5 rounded-full bg-white/10 border border-white/15 text-[9px] text-cyan-300 font-mono tracking-wider uppercase">
-                                    Speaking • Tap to skip
-                                </span>
-                            )}
                         </div>
                     </div>
                 )}
 
-                {/* Synchronized Typewriter Subtitle */}
+                {/* Concise Synchronized Typewriter Subtitle */}
                 <p
                     data-testid="orby-line"
                     onClick={skipTyping}
-                    className="mt-2 max-w-2xl text-center text-xs sm:text-sm md:text-base font-medium leading-relaxed px-2 sm:px-4 cursor-pointer select-none"
+                    className="mt-2 max-w-lg text-center text-xs sm:text-sm font-medium leading-relaxed px-3 cursor-pointer select-none"
                 >
                     <span className="text-white">{parsed.text.slice(0, typedCount)}</span>
                     <span className="text-white/25">{parsed.text.slice(typedCount)}</span>
@@ -905,52 +921,46 @@ export function TalkToAsh({ openApp }) {
                 {!isWideStage && (
                     <div
                         data-testid="orby-choices-compact"
-                        className="mt-3 grid grid-cols-2 gap-2 w-full max-w-md px-1"
+                        className="mt-3 grid grid-cols-2 gap-2 w-full max-w-sm px-1"
                     >
-                        {choices.map((c, idx) => renderChoicePill(c, idx, true))}
+                        {choices.map((c) => renderChoicePill(c, true))}
                     </div>
                 )}
             </div>
 
-            {/* Bottom Controls: Sound Toggle + Replay */}
-            <footer className="relative z-10 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-shrink-0">
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        data-testid="sound-toggle"
-                        onClick={() => {
-                            const next = !soundOn;
-                            setSoundOn(next);
-                            if (!next && typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                                window.speechSynthesis.cancel();
-                            }
-                        }}
-                        className={`px-3 py-1.5 rounded-full text-[11px] font-semibold border backdrop-blur-xl flex items-center gap-1.5 transition cursor-pointer ${
-                            soundOn
-                                ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300'
-                                : 'bg-white/10 border-white/15 text-white/60'
-                        }`}
-                    >
-                        <span>{soundOn ? '🔊 Sound on' : '🔇 Sound off'}</span>
-                    </button>
+            {/* Minimal Bottom Controls */}
+            <footer className="relative z-10 pt-2 flex items-center justify-center gap-2 flex-shrink-0">
+                <button
+                    type="button"
+                    data-testid="sound-toggle"
+                    onClick={() => {
+                        const next = !soundOn;
+                        setSoundOn(next);
+                        if (!next && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                            window.speechSynthesis.cancel();
+                        }
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-[11px] font-semibold border backdrop-blur-xl flex items-center gap-1.5 transition cursor-pointer ${
+                        soundOn
+                            ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300'
+                            : 'bg-white/10 border-white/15 text-white/60'
+                    }`}
+                >
+                    <span>{soundOn ? '🔊 Sound' : '🔇 Muted'}</span>
+                </button>
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                            const { text } = parseDialogueText(currentNode.text);
-                            setTypedCount(0);
-                            setPhase('speaking');
-                            speakText(text);
-                        }}
-                        className="px-3 py-1.5 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/15 border border-white/15 text-white/85 transition cursor-pointer"
-                    >
-                        ↻ Replay
-                    </button>
-                </div>
-
-                <span className="text-[11px] text-white/40 hidden sm:inline font-mono">
-                    Space to skip • 1–6 to choose
-                </span>
+                <button
+                    type="button"
+                    onClick={() => {
+                        const { text } = parseDialogueText(currentNode.text);
+                        setTypedCount(0);
+                        setPhase('speaking');
+                        speakText(text);
+                    }}
+                    className="px-3 py-1.5 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/15 border border-white/15 text-white/85 transition cursor-pointer"
+                >
+                    ↻ Replay
+                </button>
             </footer>
         </div>
     );
