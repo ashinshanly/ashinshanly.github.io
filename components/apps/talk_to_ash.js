@@ -296,9 +296,6 @@ export function TalkToAsh({ openApp }) {
     const [soundOn, setSoundOn] = useState(true);
     const [heardNodes, setHeardNodes] = useState([]);
     const [activeCard, setActiveCard] = useState(null);
-    const [isListeningMic, setIsListeningMic] = useState(false);
-    const [micTranscript, setMicTranscript] = useState('');
-    const [textPrompt, setTextPrompt] = useState('');
     const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
 
     const containerRef = useRef(null);
@@ -310,7 +307,6 @@ export function TalkToAsh({ openApp }) {
     const typeTimerRef = useRef(null);
     const animFrameRef = useRef(null);
     const blinkRef = useRef({ nextBlink: 2.2, blinkEnd: 0 });
-    const recognitionRef = useRef(null);
 
     const currentNode = ASH_DIALOGUE_GRAPH[nodeId] || ASH_DIALOGUE_GRAPH.greet;
     const parsed = parseDialogueText(currentNode.text);
@@ -395,11 +391,6 @@ export function TalkToAsh({ openApp }) {
             }
             if (typeTimerRef.current) clearInterval(typeTimerRef.current);
             if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-            if (recognitionRef.current) {
-                try {
-                    recognitionRef.current.abort();
-                } catch {}
-            }
         };
     }, []);
 
@@ -517,86 +508,6 @@ export function TalkToAsh({ openApp }) {
         }
         if (choice.to && ASH_DIALOGUE_GRAPH[choice.to]) {
             setNodeId(choice.to);
-        }
-    };
-
-    // Route natural language voice/text queries to the best Ash dialogue node
-    const routeNaturalLanguageQuery = (rawQuery) => {
-        const q = (rawQuery || '').toLowerCase().trim();
-        if (!q) return;
-        if (q.includes('google') || q.includes('current') || q.includes('swe')) {
-            setNodeId('role_google');
-        } else if (q.includes('oracle') || q.includes('spark') || q.includes('rag') || q.includes('delta')) {
-            setNodeId('role_oracle');
-        } else if (q.includes('tcs') || q.includes('lidar') || q.includes('intern')) {
-            setNodeId('role_tcs');
-        } else if (q.includes('iit') || q.includes('education') || q.includes('college') || q.includes('medal') || q.includes('degree')) {
-            setNodeId('role_iitgn');
-        } else if (q.includes('lumina') || q.includes('game')) {
-            setNodeId('project_lumina');
-        } else if (q.includes('music') || q.includes('sync')) {
-            setNodeId('project_musicsync');
-        } else if (q.includes('guest') || q.includes('pixel') || q.includes('matrix')) {
-            setNodeId('project_guestbook');
-        } else if (q.includes('caption') || q.includes('gcn') || q.includes('acm')) {
-            setNodeId('project_sgcn');
-        } else if (q.includes('implicit') || q.includes('neural') || q.includes('3d') || q.includes('thesis')) {
-            setNodeId('project_inr');
-        } else if (q.includes('project') || q.includes('build') || q.includes('paper')) {
-            setNodeId('projects_ask');
-        } else if (q.includes('experience') || q.includes('work') || q.includes('career') || q.includes('job')) {
-            setNodeId('roles_ask');
-        } else if (q.includes('hobby') || q.includes('hobbies') || q.includes('badminton') || q.includes('anime') || q.includes('fun')) {
-            setNodeId('hobbies');
-        } else if (q.includes('resume') || q.includes('cv')) {
-            setNodeId('resume');
-        } else if (q.includes('contact') || q.includes('email') || q.includes('hire') || q.includes('reach')) {
-            setNodeId('contact');
-        } else if (q.includes('full') || q.includes('story')) {
-            setNodeId('intro_full');
-        } else {
-            setNodeId('intro_quick');
-        }
-    };
-
-    // Live Microphone SpeechRecognition ("Ask by Voice")
-    const toggleMic = () => {
-        if (typeof window === 'undefined') return;
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) {
-            setMicTranscript('Voice input not supported in this browser — type a question below!');
-            return;
-        }
-        if (isListeningMic && recognitionRef.current) {
-            recognitionRef.current.stop();
-            setIsListeningMic(false);
-            return;
-        }
-        try {
-            const rec = new SpeechRec();
-            rec.lang = 'en-US';
-            rec.interimResults = false;
-            rec.maxAlternatives = 1;
-            recognitionRef.current = rec;
-            setIsListeningMic(true);
-            setMicTranscript('Listening… Ask about Google, Oracle, IIT, Projects, Hobbies, or Contact!');
-
-            rec.onresult = (event) => {
-                const spoken = event.results?.[0]?.[0]?.transcript || '';
-                setMicTranscript(`Heard: "${spoken}"`);
-                setIsListeningMic(false);
-                routeNaturalLanguageQuery(spoken);
-            };
-            rec.onerror = () => {
-                setIsListeningMic(false);
-                setMicTranscript('Could not hear clearly — try again or click a topic pill!');
-            };
-            rec.onend = () => {
-                setIsListeningMic(false);
-            };
-            rec.start();
-        } catch {
-            setIsListeningMic(false);
         }
     };
 
@@ -1001,9 +912,9 @@ export function TalkToAsh({ openApp }) {
                 )}
             </div>
 
-            {/* Bottom Controls: Sound Toggle + Replay + Live Voice Mic + Natural Language Input */}
-            <footer className="relative z-10 pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
-                <div className="flex items-center justify-center gap-1.5 flex-wrap w-full sm:w-auto">
+            {/* Bottom Controls: Sound Toggle + Replay */}
+            <footer className="relative z-10 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2">
                     <button
                         type="button"
                         data-testid="sound-toggle"
@@ -1035,45 +946,11 @@ export function TalkToAsh({ openApp }) {
                     >
                         ↻ Replay
                     </button>
-
-                    <button
-                        type="button"
-                        onClick={toggleMic}
-                        className={`px-3 py-1.5 rounded-full text-[11px] font-semibold border flex items-center gap-1 transition cursor-pointer ${
-                            isListeningMic
-                                ? 'bg-rose-500/30 border-rose-400 text-rose-200 animate-pulse'
-                                : 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-400/40 text-purple-200'
-                        }`}
-                    >
-                        <span>🎙️ {isListeningMic ? 'Listening…' : 'Ask by Voice'}</span>
-                    </button>
                 </div>
 
-                {/* Natural Language Question Input */}
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!textPrompt.trim()) return;
-                        routeNaturalLanguageQuery(textPrompt);
-                        setMicTranscript(`Asked: "${textPrompt.trim()}"`);
-                        setTextPrompt('');
-                    }}
-                    className="flex items-center gap-1.5 w-full sm:w-auto sm:flex-1 sm:max-w-xs"
-                >
-                    <input
-                        type="text"
-                        value={textPrompt}
-                        onChange={(e) => setTextPrompt(e.target.value)}
-                        placeholder={micTranscript || 'Ask Ash anything (e.g. "Google", "Lumina")...'}
-                        className="flex-1 min-w-0 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder-white/45 outline-none focus:border-cyan-400"
-                    />
-                    <button
-                        type="submit"
-                        className="px-3 py-1.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition cursor-pointer flex-shrink-0"
-                    >
-                        Ask
-                    </button>
-                </form>
+                <span className="text-[11px] text-white/40 hidden sm:inline font-mono">
+                    Space to skip • 1–6 to choose
+                </span>
             </footer>
         </div>
     );

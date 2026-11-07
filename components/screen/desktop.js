@@ -47,6 +47,17 @@ export class Desktop extends Component {
         this.checkForNewFolders();
     }
 
+    componentDidUpdate() {
+        const hasUnsyncedApp = apps.some(
+            (app) =>
+                (app.desktop_shortcut && !this.state.desktop_apps.includes(app.id)) ||
+                this.state.closed_windows[app.id] === undefined
+        );
+        if (hasUnsyncedApp && Object.keys(this.state.closed_windows).length > 0) {
+            this.updateAppsData();
+        }
+    }
+
     componentWillUnmount() {
         this.removeContextListeners();
     }
@@ -265,7 +276,7 @@ export class Desktop extends Component {
         if (Object.keys(this.state.closed_windows).length === 0) return;
         let appsJsx = [];
         apps.forEach((app, index) => {
-            if (this.state.desktop_apps.includes(app.id)) {
+            if (this.state.desktop_apps.includes(app.id) || (app.desktop_shortcut && !app.disabled)) {
 
                 const props = {
                     name: app.title,
@@ -276,7 +287,7 @@ export class Desktop extends Component {
                 }
 
                 appsJsx.push(
-                    <UbuntuApp key={index} {...props} />
+                    <UbuntuApp key={app.id || index} {...props} />
                 );
             }
         });

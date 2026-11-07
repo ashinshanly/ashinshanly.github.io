@@ -18,7 +18,7 @@ export class UbuntuApp extends Component {
                     <this.props.custom_icon />
                 ) : (
                     <>
-                        <img width="32px" height="32px" className="mb-px w-8" src={this.props.icon} alt={"Ubuntu " + this.props.name} />
+                        <img width="32px" height="32px" className="mb-1 w-8 h-8 object-contain" src={this.props.icon} alt={"Ubuntu " + this.props.name} />
                         {this.props.name}
                     </>
                 )}
