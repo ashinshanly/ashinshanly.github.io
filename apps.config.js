@@ -115,6 +115,16 @@ const apps = [
         screen: displayCamera,
     },
     {
+        id: "lumina",
+        title: "Lumina",
+        icon: './themes/Yaru/apps/lumina.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        type: "external",
+        url: "https://ashinshanly.github.io/lumina/",
+    },
+    {
         id: "musicsync",
         title: "MusicSync",
         icon: './images/logos/apple-touch-icon.png',

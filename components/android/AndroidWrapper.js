@@ -51,12 +51,41 @@ export default function AndroidWrapper() {
 
                 presenceRef = ref(db, `site_stats/live_viewers/${sessionId}`);
 
+                const detectBrowser = (ua) => {
+                    if (!ua) return 'Browser';
+                    if (ua.includes('Edg/')) return 'Edge';
+                    if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
+                    if (ua.includes('Chrome/') && !ua.includes('Edg/')) return 'Chrome';
+                    if (ua.includes('Firefox/')) return 'Firefox';
+                    if (ua.includes('Safari/') && !ua.includes('Chrome/')) return 'Safari';
+                    return 'Web Client';
+                };
+
+                const detectOS = (ua, platform) => {
+                    const str = `${ua || ''} ${platform || ''}`;
+                    if (/Android/i.test(str)) return 'Android';
+                    if (/iPhone|iPad|iPod/i.test(str)) return 'iOS';
+                    if (/Mac/i.test(str)) return 'macOS';
+                    if (/Win/i.test(str)) return 'Windows';
+                    if (/Linux/i.test(str)) return 'Linux';
+                    return platform || 'Desktop';
+                };
+
                 const updatePresence = () => {
+                    const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+                    const plat = typeof navigator !== 'undefined' ? navigator.platform : '';
+                    const tz =
+                        typeof Intl !== 'undefined'
+                            ? Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+                            : 'UTC';
                     const sessionData = {
                         timestamp: Date.now(),
-                        browser: navigator.userAgent.split(' ')[0],
-                        platform: navigator.platform,
-                        joinedAt: new Date().toLocaleTimeString(),
+                        browser: detectBrowser(ua),
+                        platform: detectOS(ua, plat),
+                        shell: window.innerWidth < MOBILE_BREAKPOINT ? 'Android 14 UI' : 'Ubuntu 24.04 UI',
+                        timezone: tz,
+                        screen: `${window.innerWidth}×${window.innerHeight}`,
+                        joinedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                         isLive: true
                     };
 

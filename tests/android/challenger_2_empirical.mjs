@@ -12,11 +12,11 @@ import { loadAppsConfig } from './helpers/app_loader.mjs';
 describe('Vector 1: Authoritative App Inventory & Partitioning Invariants', () => {
     const apps = loadAppsConfig();
 
-    it('V1.1: Exactly 17 active apps are present in apps.config.js with zero duplicates', () => {
-        expect(apps.length).toBe(17);
+    it('V1.1: Exactly 18 active apps are present in apps.config.js with zero duplicates', () => {
+        expect(apps.length).toBe(18);
         const ids = apps.map(a => a.id);
         const uniqueIds = new Set(ids);
-        expect(uniqueIds.size).toBe(17);
+        expect(uniqueIds.size).toBe(18);
     });
 
     it('V1.2: Every app has required structural properties (id, title, icon/custom_icon)', () => {
@@ -57,8 +57,8 @@ describe('Vector 1: Authoritative App Inventory & Partitioning Invariants', () =
         // 1. Length invariants
         expect(homeApps.length).toBe(8);
         expect(dockApps.length).toBe(4);
-        expect(screen3Apps.length).toBe(5);
-        expect(homeApps.length + dockApps.length + screen3Apps.length).toBe(17);
+        expect(screen3Apps.length).toBe(6);
+        expect(homeApps.length + dockApps.length + screen3Apps.length).toBe(18);
 
         // 2. Disjoint sets (Zero overlap / duplicates)
         const homeSet = new Set(homeApps.map(a => a.id));
@@ -80,7 +80,7 @@ describe('Vector 1: Authoritative App Inventory & Partitioning Invariants', () =
 
         // 3. Union covers 100% of apps (Zero omissions)
         const unionSet = new Set([...homeSet, ...dockSet, ...screen3Set]);
-        expect(unionSet.size).toBe(17);
+        expect(unionSet.size).toBe(18);
         for (const app of apps) {
             expect(unionSet.has(app.id)).toBe(true);
         }
@@ -92,6 +92,7 @@ describe('Vector 1: Authoritative App Inventory & Partitioning Invariants', () =
         // 5. Screen 3 apps match expected extended roster
         const screen3Ids = screen3Apps.map(a => a.id);
         expect(screen3Ids).toContain('calc');
+        expect(screen3Ids).toContain('lumina');
         expect(screen3Ids).toContain('chainreaction');
         expect(screen3Ids).toContain('secretmaze');
         expect(screen3Ids).toContain('prism-flow');
@@ -321,16 +322,16 @@ describe('Vector 5: Dynamic Uninstall & Screen 3 Grid Rebalancing', () => {
 
         let grids = computeGrids();
         expect(grids.s1.length).toBe(8);
-        expect(grids.s3.length).toBe(5);
-        expect(grids.total).toBe(17);
+        expect(grids.s3.length).toBe(6);
+        expect(grids.total).toBe(18);
 
         // Uninstall chess
         hiddenApps.push('chess');
         grids = computeGrids();
         expect(grids.s1.length).toBe(7);
-        expect(grids.s3.length).toBe(5); // Screen 3 completely unaffected
+        expect(grids.s3.length).toBe(6); // Screen 3 completely unaffected
         expect(grids.s1.map(a => a.id)).not.toContain('chess');
-        expect(grids.total).toBe(16);
+        expect(grids.total).toBe(17);
     });
 
     it('V5.2: Uninstalling Screen 3 app removes it and cleanly rebalances Screen 3', () => {
@@ -347,9 +348,9 @@ describe('Vector 5: Dynamic Uninstall & Screen 3 Grid Rebalancing', () => {
         hiddenApps.push('calc', 'secretmaze');
         let grids = computeGrids();
         expect(grids.s1.length).toBe(7);
-        expect(grids.s3.length).toBe(3);
-        expect(grids.s3.map(a => a.id)).toEqual(['chainreaction', 'prism-flow', 'trash']);
-        expect(grids.total).toBe(14);
+        expect(grids.s3.length).toBe(4);
+        expect(grids.s3.map(a => a.id)).toEqual(['lumina', 'chainreaction', 'prism-flow', 'trash']);
+        expect(grids.total).toBe(15);
     });
 
     it('V5.3: Systematic uninstall fuzzing down to 0 apps never produces errors or duplicates', () => {
@@ -364,7 +365,7 @@ describe('Vector 5: Dynamic Uninstall & Screen 3 Grid Rebalancing', () => {
             const s3 = active.filter(a => !SCREEN_1_APP_IDS.includes(a.id) && !DOCK_APP_IDS.includes(a.id));
 
             expect(s1.length + dock.length + s3.length).toBe(active.length);
-            expect(active.length).toBe(17 - hiddenApps.length);
+            expect(active.length).toBe(18 - hiddenApps.length);
 
             // Verify no undefined items
             for (const app of [...s1, ...dock, ...s3]) {

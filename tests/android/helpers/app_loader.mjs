@@ -58,7 +58,7 @@ export function loadAppsConfig() {
 export const PORTFOLIO_APPS = loadAppsConfig();
 
 // Verify expected baseline
-export const EXPECTED_TOTAL_APPS = 17;
+export const EXPECTED_TOTAL_APPS = 18;
 export const DOCK_APP_IDS = ['chrome', 'terminal', 'vscode', 'gedit'];
 export const PAGE_0_APP_IDS = ['pixel-hud', 'about-ashin', 'visitor-stats', 'spotify', 'chess', 'musicsync', 'camera', 'settings'];
-export const EXTENDED_APP_IDS = ['calc', 'chainreaction', 'secretmaze', 'prism-flow', 'trash'];
+export const EXTENDED_APP_IDS = ['calc', 'lumina', 'chainreaction', 'secretmaze', 'prism-flow', 'trash'];

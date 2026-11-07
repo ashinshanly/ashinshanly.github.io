@@ -294,9 +294,10 @@ describe("Tier 1: Feature Isolation Test Suite", () => {
   describe("Feature 8: Screen 3 (Page 2) Layout & Extended Apps Grid", () => {
     it("F8.1: Screen 3 dynamically holds all extended apps not on Screen 1 or Dock", () => {
       const page2Apps = harness.getPage2Apps();
-      expect(page2Apps.length).toBe(5);
+      expect(page2Apps.length).toBe(6);
       const ids = page2Apps.map(a => a.id);
       expect(ids).toContain("calc");
+      expect(ids).toContain("lumina");
       expect(ids).toContain("chainreaction");
       expect(ids).toContain("secretmaze");
       expect(ids).toContain("prism-flow");
@@ -324,14 +325,14 @@ describe("Tier 1: Feature Isolation Test Suite", () => {
 
   // Feature 9: 100% App Ecosystem Visibility
   describe("Feature 9: 100% App Ecosystem Visibility", () => {
-    it("F9.1: Sum of Dock, Screen 1, and Screen 3 equals total 17 active apps", () => {
+    it("F9.1: Sum of Dock, Screen 1, and Screen 3 equals total 18 active apps", () => {
       const dock = harness.getDockApps();
       const page0 = harness.getPage0Apps();
       const page2 = harness.getPage2Apps();
 
       expect(dock.length).toBe(4);
       expect(page0.length).toBe(8);
-      expect(page2.length).toBe(5);
+      expect(page2.length).toBe(6);
       expect(dock.length + page0.length + page2.length).toBe(EXPECTED_TOTAL_APPS);
     });
 
@@ -459,10 +460,10 @@ describe("Tier 1: Feature Isolation Test Suite", () => {
     });
 
     it("F13.2: Uninstalling an app adds it to hiddenApps and dynamically rebalances grids", () => {
-      expect(harness.getPage2Apps().length).toBe(5);
+      expect(harness.getPage2Apps().length).toBe(6);
       harness.uninstallApp("calc");
       expect(harness.hiddenApps).toContain("calc");
-      expect(harness.getPage2Apps().length).toBe(4);
+      expect(harness.getPage2Apps().length).toBe(5);
       expect(harness.getAllVisibleAppIds()).not.toContain("calc");
     });
 
