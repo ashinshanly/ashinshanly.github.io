@@ -63,6 +63,7 @@ const ALL_COMMANDS = [
     'date',
     'uptime',
     'theme',
+    'ash',
     'orby',
     'voice',
     'matrix',
@@ -432,7 +433,7 @@ export class Terminal extends Component {
                             <div><span class="text-cyan-400 font-mono font-bold">education</span> — IIT Gandhinagar &amp; GEC Thrissur</div>
                             <div><span class="text-cyan-400 font-mono font-bold">skills</span> — Technical proficiency matrix</div>
                             <div><span class="text-cyan-400 font-mono font-bold">projects</span> — Research papers &amp; live web apps</div>
-                            <div><span class="text-cyan-400 font-mono font-bold">orby / voice</span> — Launch Orby AI Voice Assistant</div>
+                            <div><span class="text-cyan-400 font-mono font-bold">ash / voice</span> — Launch Ash AI Voice Assistant</div>
                             <div><span class="text-cyan-400 font-mono font-bold">ls / cd / pwd / tree</span> — Browse file system</div>
                             <div><span class="text-cyan-400 font-mono font-bold">cat &lt;file&gt;</span> — Read file (e.g. <span class="text-purple-300">cat about.md</span>)</div>
                             <div><span class="text-cyan-400 font-mono font-bold">top / weather / calc</span> — System &amp; utilities</div>
@@ -577,7 +578,7 @@ export class Terminal extends Component {
                 result = `<pre class="text-emerald-300 font-mono text-xs leading-snug">PID   USER     PR  CPU%  MEM%   COMMAND
 1042  ashin    20   4.2   8.1   google-fleet-telemetry-engine --workers=64
 1108  ashin    20   2.8   6.4   pyspark-delta-lake-pipeline --mode=streaming
-1290  ashin    20   1.9   5.2   orby-voice-assistant-daemon --shader=60fps
+1290  ashin    20   1.9   5.2   ash-voice-assistant-daemon --shader=60fps
 1412  ashin    20   0.7   2.1   ubuntu-24.04-gnome-compositor</pre>`;
                 break;
 
@@ -650,12 +651,13 @@ export class Terminal extends Component {
                 break;
             }
 
+            case 'ash':
             case 'orby':
             case 'voice':
                 if (typeof window !== 'undefined') {
                     window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
                 }
-                result = `<span class="text-cyan-300">🎙️ Launching Orby Interactive Voice Assistant...</span>`;
+                result = `<span class="text-cyan-300">🎙️ Launching Ash Interactive Voice Assistant...</span>`;
                 break;
 
             case 'cd':
@@ -876,7 +878,7 @@ export class Terminal extends Component {
             'skills',
             'projects',
             'tree',
-            'orby',
+            'ash',
             'fortune',
             'matrix',
             'clear',
@@ -941,7 +943,7 @@ export class Terminal extends Component {
                 <div className="px-3 pt-2.5 pb-1 text-xs font-mono text-slate-400 border-b border-white/5 select-none flex-shrink-0">
                     <span className="text-cyan-400 font-bold">Ashin-OS 24.04 LTS</span> — Type{' '}
                     <span className="text-cyan-300">help</span>, <span className="text-cyan-300">neofetch</span>, or{' '}
-                    <span className="text-purple-300">orby</span> (or tap any chip above).
+                    <span className="text-purple-300">ash</span> (or tap any chip above).
                 </div>
 
                 {/* Interactive Terminal Rows Viewport */}

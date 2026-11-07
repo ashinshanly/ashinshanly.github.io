@@ -159,7 +159,7 @@ export class AboutAshin extends Component {
                             </span>
                             <div className="min-w-0 flex-1">
                                 <div className="text-xs font-bold text-cyan-200 group-hover:text-white truncate">
-                                    Ask Orby AI
+                                    Ask Ash AI
                                 </div>
                                 <div className="text-[10px] text-slate-400 truncate">Interactive Voice Guide</div>
                             </div>
@@ -191,7 +191,7 @@ export class AboutAshin extends Component {
                         onClick={this.openOrbyVoice}
                         className="ml-auto px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gradient-to-r from-cyan-500/30 to-purple-500/30 border border-cyan-400/40 text-cyan-200 flex items-center gap-1 flex-shrink-0"
                     >
-                        <span>🎙️ Orby</span>
+                        <span>🎙️ Ash</span>
                     </button>
                 </div>
 
@@ -340,7 +340,7 @@ function About({ onNavigate }) {
                             }}
                             className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition cursor-pointer"
                         >
-                            <span>🎙️ Talk to Orby AI</span>
+                            <span>🎙️ Talk to Ash AI</span>
                         </button>
 
                         <button

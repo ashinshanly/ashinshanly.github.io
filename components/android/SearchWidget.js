@@ -135,7 +135,7 @@ export default function SearchWidget({ apps = [], onOpenApp, onOpenOrby }) {
                                 }
                             }}
                             aria-label="Voice search hint"
-                            title="Talk to Orby — Voice AI Assistant"
+                            title="Talk to Ash — Voice AI Assistant"
                             className="w-6 h-6 flex items-center justify-center text-[#A8C7FA] hover:opacity-80 transition-opacity"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
- * Orby — Ashin Shanly's Interactive Voice Assistant
+ * Ash — Ashin Shanly's Interactive Voice Assistant
  * Inspired by valentinhervouet.com:
  * - Interactive 60fps Canvas Orb with cursor-tracking blinking eyes, voice-reactive liquid caustics, and poke physics
  * - Left & Right flanking frosted choice pills with "✓" heard tracking
@@ -13,7 +13,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 const ORBY_DIALOGUE_GRAPH = {
     greet: {
         id: 'greet',
-        text: "Hey there, and welcome to Ashin's portfolio! I'm Orby, his personal AI voice guide. Want the quick 30-second intro, or the full story?",
+        text: "Hey there, and welcome to Ashin's portfolio! I'm Ash, his personal AI voice guide. Want the quick 30-second intro, or the full story?",
         choices: [
             { id: 'quick', label: 'Quick · 30s', to: 'intro_quick' },
             { id: 'full', label: 'Full story · 2 min', to: 'intro_full' },
@@ -814,10 +814,13 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
             <header className="relative z-10 flex items-center justify-between gap-3 pb-2 border-b border-white/10">
                 <div className="flex items-center gap-3 min-w-0">
                     <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse flex-shrink-0" />
-                    <div className="truncate">
+                    <div className="truncate flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-300 tracking-wide">
+                            Ash · Voice AI
+                        </span>
                         <span className="font-bold text-sm md:text-base tracking-tight text-white">Ashin Shanly</span>
-                        <span className="hidden sm:inline text-xs text-white/60 ml-2.5">
-                            SWE III @ Google • M.Tech IIT Gandhinagar
+                        <span className="hidden sm:inline text-xs text-white/60">
+                            • SWE III @ Google • M.Tech IIT Gandhinagar
                         </span>
                     </div>
                 </div>
@@ -907,7 +910,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                                 if (phase === 'speaking') skipTyping();
                                 else speakText(parsed.text);
                             }}
-                            title="Click Orby to poke or replay voice"
+                            title="Click Ash to poke or replay voice"
                             className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 cursor-pointer flex items-center justify-center"
                         >
                             <canvas
@@ -1011,7 +1014,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                         type="text"
                         value={textPrompt}
                         onChange={(e) => setTextPrompt(e.target.value)}
-                        placeholder={micTranscript || 'Ask Orby anything (e.g. "Google", "Lumina", "IIT")...'}
+                        placeholder={micTranscript || 'Ask Ash anything (e.g. "Google", "Lumina", "IIT")...'}
                         className="flex-1 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder-white/45 outline-none focus:border-cyan-400"
                     />
                     <button
@@ -1029,17 +1032,17 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
 /**
  * Floating Mini-Orb Trigger Button for Ubuntu Desktop & Android Home Screen
  */
-export function OrbyFloatingLauncher({ onClick, label = 'Ask Orby AI' }) {
+export function OrbyFloatingLauncher({ onClick, label = 'Ask Ash AI' }) {
     return (
         <button
             type="button"
             id="orby-floating-launcher"
             onClick={onClick}
-            title="Talk to Orby — Ashin's Interactive Voice Assistant"
+            title="Talk to Ash — Ashin's Interactive Voice Assistant"
             className="group flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-[#0F172A]/85 hover:bg-[#1E293B]/95 border border-cyan-400/40 hover:border-cyan-300 shadow-[0_8px_30px_rgba(6,182,212,0.3)] backdrop-blur-2xl text-white transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
             <span className="relative w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-600 via-cyan-400 to-white flex items-center justify-center shadow-[0_0_12px_rgba(34,211,238,0.8)]">
-                {/* Mini Orby Eyes */}
+                {/* Mini Ash Eyes */}
                 <span className="flex items-center gap-1">
                     <span className="w-1 h-2 rounded-full bg-slate-950" />
                     <span className="w-1 h-2 rounded-full bg-slate-950" />

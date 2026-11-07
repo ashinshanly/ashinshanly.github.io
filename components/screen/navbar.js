@@ -245,8 +245,8 @@ export default class Navbar extends Component {
 					<button
 						type="button"
 						id="navbar-orby-pill"
-						aria-label="Launch Orby Voice AI"
-						title="Talk to Orby — Ashin's Interactive Voice Assistant"
+						aria-label="Launch Ash Voice AI"
+						title="Talk to Ash — Ashin's Interactive Voice Assistant"
 						onClick={() => {
 							if (typeof window !== 'undefined') {
 								window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
@@ -255,7 +255,7 @@ export default class Navbar extends Component {
 						className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/35 hover:to-indigo-500/35 border border-cyan-400/30 text-[11px] font-semibold text-cyan-200 transition-all cursor-pointer"
 					>
 						<span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_rgba(34,211,238,0.9)]" />
-						<span>Orby AI</span>
+						<span>Ash AI</span>
 					</button>
 				</div>
 

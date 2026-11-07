@@ -390,7 +390,7 @@ export default function AndroidHome() {
                 <div className="flex justify-center mb-3 px-4">
                     <OrbyFloatingLauncher
                         onClick={() => setOrbyOpen(true)}
-                        label="Talk to Orby — Ashin's Voice AI"
+                        label="Talk to Ash — Ashin's Voice AI"
                     />
                 </div>
 

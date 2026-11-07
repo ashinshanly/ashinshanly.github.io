@@ -564,11 +564,11 @@ export class Desktop extends Component {
                 {/* At a Glance Widget */}
                 <AtAGlanceWidget />
 
-                {/* Floating Orby Voice Assistant Launcher */}
+                {/* Floating Ash Voice Assistant Launcher */}
                 <div className="fixed bottom-4 right-5 z-30">
                     <OrbyFloatingLauncher
                         onClick={this.openOrby}
-                        label="Talk to Orby — Voice AI"
+                        label="Talk to Ash — Voice AI"
                     />
                 </div>
 
