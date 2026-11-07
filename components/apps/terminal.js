@@ -94,6 +94,7 @@ export class Terminal extends Component {
         super();
         this.cursor = '';
         this.terminal_rows = 1;
+        this.sessionGeneration = 0;
         this.current_directory = '~';
         this.curr_dir_name = 'root';
         this.prev_commands = [];
@@ -161,24 +162,34 @@ export class Terminal extends Component {
 
     reStartTerminal = () => {
         clearInterval(this.cursor);
-        $('#terminal-body').empty();
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        if (matrixCanvas) {
+            matrixCanvas.remove();
+        }
+        this.sessionGeneration = (this.sessionGeneration || 0) + 1;
         this.terminal_rows = 1;
-        this.setState({ terminal: [] }, () => {
-            this.appendTerminalRow();
+        const firstRowId = this.terminal_rows;
+        this.terminal_rows += 2;
+        this.setState({
+            terminal: [this.terminalRow(firstRowId, this.sessionGeneration)],
+            currentDirDisplay: this.current_directory,
         });
     };
 
     appendTerminalRow = () => {
-        let terminal = [...this.state.terminal];
-        terminal.push(this.terminalRow(this.terminal_rows));
-        this.setState({ terminal, currentDirDisplay: this.current_directory });
+        const rowId = this.terminal_rows;
+        const gen = this.sessionGeneration;
         this.terminal_rows += 2;
+        this.setState((prevState) => ({
+            terminal: [...prevState.terminal, this.terminalRow(rowId, gen)],
+            currentDirDisplay: this.current_directory,
+        }));
     };
 
-    terminalRow = (id) => {
+    terminalRow = (id, gen = this.sessionGeneration) => {
         const theme = TERMINAL_THEMES[this.state.themeKey] || TERMINAL_THEMES.cyber;
         return (
-            <React.Fragment key={id}>
+            <React.Fragment key={`gen-${gen}-row-${id}`}>
                 <div className="flex w-full min-h-[22px] items-center font-mono text-xs md:text-sm">
                     <div className="flex items-center flex-shrink-0 select-none">
                         <span className={`font-bold ${theme.promptUser}`}>ashin@ubuntu</span>
@@ -257,6 +268,12 @@ export class Terminal extends Component {
     };
 
     runQuickCommand = (cmdText) => {
+        if (cmdText === 'clear') {
+            this.prev_commands.push(cmdText);
+            this.commands_index = this.prev_commands.length - 1;
+            this.reStartTerminal();
+            return;
+        }
         const activeRowId = this.terminal_rows - 2;
         const inputEl = $(`input#terminal-input-${activeRowId}`);
         if (inputEl.length > 0) {
