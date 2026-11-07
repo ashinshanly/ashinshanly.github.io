@@ -6,62 +6,124 @@ export function PixelHudIcon(props = {}) {
     const isHeader = props?.size === 'header';
     const isAndroid = props?.size === 'android';
 
+    const renderGuestBookSvg = (className, suffix = 'main') => (
+        <svg
+            viewBox="0 0 64 64"
+            className={className}
+            style={{ display: 'block', borderRadius: 'inherit' }}
+            fill="none"
+        >
+            <defs>
+                <linearGradient id={`guestBookBg-${suffix}`} x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#1A103C" />
+                    <stop offset="52%" stopColor="#0E0B20" />
+                    <stop offset="100%" stopColor="#070510" />
+                </linearGradient>
+                <linearGradient id={`guestBookRim-${suffix}`} x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#00F0FF" stopOpacity="0.75" />
+                    <stop offset="50%" stopColor="#F43F5E" stopOpacity="0.55" />
+                    <stop offset="100%" stopColor="#FDE047" stopOpacity="0.65" />
+                </linearGradient>
+                <linearGradient id={`pageGrad-${suffix}`} x1="11" y1="11" x2="49" y2="51" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#1E1B3A" />
+                    <stop offset="100%" stopColor="#121026" />
+                </linearGradient>
+                <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#38bdf8" />
+                    <stop offset="100%" stopColor="#00f0ff" />
+                </linearGradient>
+                <linearGradient id="pinkGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f43f5e" />
+                    <stop offset="100%" stopColor="#ff007f" />
+                </linearGradient>
+                <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#34d399" />
+                    <stop offset="100%" stopColor="#00ff66" />
+                </linearGradient>
+                <linearGradient id="yellowGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fde047" />
+                    <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+                <linearGradient id={`penBody-${suffix}`} x1="36" y1="36" x2="54" y2="18" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#38BDF8" />
+                    <stop offset="55%" stopColor="#818CF8" />
+                    <stop offset="100%" stopColor="#F43F5E" />
+                </linearGradient>
+            </defs>
+
+            {/* Squircle Tile */}
+            <rect x="2" y="2" width="60" height="60" rx="15" fill={`url(#guestBookBg-${suffix})`} />
+            <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="14.25" stroke={`url(#guestBookRim-${suffix})`} strokeWidth="1.5" />
+
+            {/* Book Cover & Binding Rings */}
+            <rect x="11" y="11" width="38" height="41" rx="5.5" fill={`url(#pageGrad-${suffix})`} stroke="#38BDF8" strokeOpacity="0.38" strokeWidth="1.1" />
+            <g fill="#38BDF8">
+                <rect x="8.5" y="16.5" width="4.8" height="2" rx="1" />
+                <rect x="8.5" y="25.5" width="4.8" height="2" rx="1" />
+                <rect x="8.5" y="34.5" width="4.8" height="2" rx="1" />
+                <rect x="8.5" y="43.5" width="4.8" height="2" rx="1" />
+            </g>
+
+            {/* Pixel Art Heart / Mural Mosaic Inside GuestBook */}
+            <g>
+                {/* Row 1 */}
+                <rect x="19" y="17" width="4.6" height="4.6" rx="1.1" fill="url(#pinkGlow)" />
+                <rect x="24.4" y="17" width="4.6" height="4.6" rx="1.1" fill="url(#pinkGlow)" />
+                <rect x="31.8" y="17" width="4.6" height="4.6" rx="1.1" fill="url(#cyanGlow)" />
+                <rect x="37.2" y="17" width="4.6" height="4.6" rx="1.1" fill="url(#cyanGlow)" />
+
+                {/* Row 2 */}
+                <rect x="16.3" y="22.4" width="4.6" height="4.6" rx="1.1" fill="url(#pinkGlow)" />
+                <rect x="21.7" y="22.4" width="4.6" height="4.6" rx="1.1" fill="url(#yellowGlow)" />
+                <rect x="27.1" y="22.4" width="4.6" height="4.6" rx="1.1" fill="#FFFFFF" />
+                <rect x="32.5" y="22.4" width="4.6" height="4.6" rx="1.1" fill="url(#greenGlow)" />
+                <rect x="37.9" y="22.4" width="4.6" height="4.6" rx="1.1" fill="url(#cyanGlow)" />
+
+                {/* Row 3 */}
+                <rect x="19" y="27.8" width="4.6" height="4.6" rx="1.1" fill="url(#yellowGlow)" />
+                <rect x="24.4" y="27.8" width="4.6" height="4.6" rx="1.1" fill="url(#pinkGlow)" />
+                <rect x="29.8" y="27.8" width="4.6" height="4.6" rx="1.1" fill="url(#cyanGlow)" />
+                <rect x="35.2" y="27.8" width="4.6" height="4.6" rx="1.1" fill="url(#greenGlow)" />
+
+                {/* Row 4 */}
+                <rect x="24.4" y="33.2" width="4.6" height="4.6" rx="1.1" fill="url(#greenGlow)" />
+                <rect x="29.8" y="33.2" width="4.6" height="4.6" rx="1.1" fill="url(#yellowGlow)" />
+
+                {/* Row 5 */}
+                <rect x="27.1" y="38.6" width="4.6" height="4.6" rx="1.1" fill="url(#cyanGlow)" />
+            </g>
+
+            {/* Signature Wave Line */}
+            <path
+                d="M16.5 46.8 Q 21 44.5, 25.5 46.8 T 34.5 46.5"
+                stroke="#67E8F9"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                opacity="0.85"
+            />
+
+            {/* Glowing Neon Stylus Writing on the GuestBook */}
+            <g transform="rotate(42 34.5 46.5)">
+                <rect x="31.9" y="22" width="5.2" height="19.8" rx="2" fill={`url(#penBody-${suffix})`} stroke="#FFFFFF" strokeOpacity="0.65" strokeWidth="0.6" />
+                <polygon points="31.9,41.2 37.1,41.2 34.5,46.5" fill="#FDE047" />
+                <circle cx="34.5" cy="46.5" r="0.9" fill="#FFFFFF" />
+            </g>
+        </svg>
+    );
+
     // Desktop workspace launcher: 32px icon + title below matching standard Ubuntu app icons
     if (!props?.size || props?.size === 'desktop') {
         return (
-            <div className="relative w-full h-full flex flex-col items-center justify-start select-none">
+            <div className="relative w-full h-full flex flex-col items-center justify-start select-none group">
                 <div className="w-8 h-8 mb-1 flex items-center justify-center">
-                    <svg
-                        viewBox="0 0 52 52"
-                        className="w-8 h-8 rounded-[9px] overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.4),0_0_8px_rgba(0,240,255,0.25)]"
-                        style={{ display: 'block' }}
-                    >
-                        <defs>
-                            <linearGradient id="guestBookBgDesk" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#0d1527" />
-                                <stop offset="50%" stopColor="#080d1a" />
-                                <stop offset="100%" stopColor="#030712" />
-                            </linearGradient>
-                            <linearGradient id="cyanGlowDesk" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#38bdf8" />
-                                <stop offset="100%" stopColor="#00f0ff" />
-                            </linearGradient>
-                            <linearGradient id="pinkGlowDesk" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#f43f5e" />
-                                <stop offset="100%" stopColor="#ff007f" />
-                            </linearGradient>
-                            <linearGradient id="greenGlowDesk" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#34d399" />
-                                <stop offset="100%" stopColor="#00ff66" />
-                            </linearGradient>
-                            <linearGradient id="yellowGlowDesk" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#fde047" />
-                                <stop offset="100%" stopColor="#ffe600" />
-                            </linearGradient>
-                            <filter id="neonBlurDesk" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="1" result="glow" />
-                                <feComposite in="SourceGraphic" in2="glow" operator="over" />
-                            </filter>
-                        </defs>
-
-                        {/* Background Tile */}
-                        <rect width="52" height="52" rx="16" fill="url(#guestBookBgDesk)" />
-                        <rect x="0.75" y="0.75" width="50.5" height="50.5" rx="15.25" fill="none" stroke="rgba(0, 240, 255, 0.45)" strokeWidth="1.5" />
-
-                        {/* Matrix Crosshair Grid */}
-                        <path d="M7 26 H45 M26 7 V45" stroke="rgba(0, 240, 255, 0.15)" strokeWidth="1" strokeDasharray="2 2" />
-
-                        {/* 4-Sector Mural */}
-                        <rect x="9.5" y="9.5" width="14" height="14" rx="3.5" fill="url(#cyanGlowDesk)" filter="url(#neonBlurDesk)" />
-                        <rect x="28.5" y="9.5" width="14" height="14" rx="3.5" fill="url(#pinkGlowDesk)" filter="url(#neonBlurDesk)" />
-                        <rect x="9.5" y="28.5" width="14" height="14" rx="3.5" fill="url(#greenGlowDesk)" filter="url(#neonBlurDesk)" />
-                        <rect x="28.5" y="28.5" width="14" height="14" rx="3.5" fill="url(#yellowGlowDesk)" filter="url(#neonBlurDesk)" />
-
-                        {/* Core */}
-                        <rect x="23.5" y="23.5" width="5" height="5" rx="1.5" fill="#ffffff" filter="url(#neonBlurDesk)" />
-                    </svg>
+                    {renderGuestBookSvg(
+                        'w-8 h-8 rounded-[9px] overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.4),0_0_8px_rgba(0,240,255,0.25)] transition-transform duration-300 group-hover:scale-105',
+                        'desk'
+                    )}
                 </div>
-                <span className="text-white text-xs font-normal tracking-tight text-center truncate max-w-full">GuestBook</span>
+                <span className="text-white text-xs font-normal tracking-tight text-center truncate max-w-full">
+                    GuestBook
+                </span>
             </div>
         );
     }
@@ -81,59 +143,10 @@ export function PixelHudIcon(props = {}) {
             className={`relative ${sizeClass} flex items-center justify-center select-none`}
             style={props.style || {}}
         >
-            <svg
-                viewBox="0 0 52 52"
-                className="w-full h-full overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.35),0_0_12px_rgba(0,240,255,0.2)]"
-                style={{ display: 'block', borderRadius: 'inherit' }}
-            >
-                <defs>
-                    <linearGradient id="guestBookBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#0d1527" />
-                        <stop offset="50%" stopColor="#080d1a" />
-                        <stop offset="100%" stopColor="#030712" />
-                    </linearGradient>
-                    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#38bdf8" />
-                        <stop offset="100%" stopColor="#00f0ff" />
-                    </linearGradient>
-                    <linearGradient id="pinkGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#f43f5e" />
-                        <stop offset="100%" stopColor="#ff007f" />
-                    </linearGradient>
-                    <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#34d399" />
-                        <stop offset="100%" stopColor="#00ff66" />
-                    </linearGradient>
-                    <linearGradient id="yellowGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#fde047" />
-                        <stop offset="100%" stopColor="#ffe600" />
-                    </linearGradient>
-                    <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="1" result="glow" />
-                        <feComposite in="SourceGraphic" in2="glow" operator="over" />
-                    </filter>
-                </defs>
-
-                {/* Background Tile */}
-                <rect width="52" height="52" rx="16" fill="url(#guestBookBg)" />
-                <rect x="0.75" y="0.75" width="50.5" height="50.5" rx="15.25" fill="none" stroke="rgba(0, 240, 255, 0.45)" strokeWidth="1.5" />
-
-                {/* Subtle Matrix Crosshair Grid */}
-                <path d="M7 26 H45 M26 7 V45" stroke="rgba(0, 240, 255, 0.15)" strokeWidth="1" strokeDasharray="2 2" />
-
-                {/* 4-Sector Vibrant Glowing Pixel Mural */}
-                {/* Sector Alpha: Cyan */}
-                <rect x="9.5" y="9.5" width="14" height="14" rx="3.5" fill="url(#cyanGlow)" filter="url(#neonBlur)" />
-                {/* Sector Beta: Neon Pink */}
-                <rect x="28.5" y="9.5" width="14" height="14" rx="3.5" fill="url(#pinkGlow)" filter="url(#neonBlur)" />
-                {/* Sector Gamma: Neon Green */}
-                <rect x="9.5" y="28.5" width="14" height="14" rx="3.5" fill="url(#greenGlow)" filter="url(#neonBlur)" />
-                {/* Sector Delta: Electric Yellow */}
-                <rect x="28.5" y="28.5" width="14" height="14" rx="3.5" fill="url(#yellowGlow)" filter="url(#neonBlur)" />
-
-                {/* Center Core Accent */}
-                <rect x="23.5" y="23.5" width="5" height="5" rx="1.5" fill="#ffffff" filter="url(#neonBlur)" />
-            </svg>
+            {renderGuestBookSvg(
+                'w-full h-full overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.35),0_0_12px_rgba(0,240,255,0.2)]',
+                props.size || 'icon'
+            )}
         </div>
     );
 }

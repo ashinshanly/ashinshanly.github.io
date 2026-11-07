@@ -34,7 +34,6 @@ export function VisitorStats() {
         total: BASE_VISITOR_COUNT
     });
     const [recentViewers, setRecentViewers] = useState([]);
-    const [sessionSeconds, setSessionSeconds] = useState(0);
     const [activeTab, setActiveTab] = useState('overview');
     const [lastSync, setLastSync] = useState('Just now');
     const [clientInfo, setClientInfo] = useState({
@@ -72,11 +71,6 @@ export function VisitorStats() {
             screen: `${window.innerWidth}×${window.innerHeight}`,
             sessionId
         });
-
-        const timer = setInterval(() => {
-            setSessionSeconds((s) => s + 1);
-        }, 1000);
-        return () => clearInterval(timer);
     }, []);
 
     // Subscribe to Firebase Realtime Database
@@ -141,12 +135,6 @@ export function VisitorStats() {
             if (typeof unsubTotal === 'function') unsubTotal();
         };
     }, []);
-
-    const formatDuration = (secs) => {
-        const mins = Math.floor(secs / 60);
-        const rem = secs % 60;
-        return `${String(mins).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
-    };
 
     // Build 7-day traffic trend chart data anchored to real total visitor count
     const weeklyTrend = useMemo(() => {
@@ -261,8 +249,8 @@ export function VisitorStats() {
                     </div>
                 </div>
 
-                {/* 4 Primary KPI Cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-4">
+                {/* 3 Primary KPI Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 md:gap-4">
                     {/* Card 1: Live Viewers */}
                     <div className="p-4 md:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-slate-900/90 to-slate-900 border border-emerald-500/25 shadow-lg flex flex-col justify-between">
                         <div className="flex items-center justify-between">
@@ -308,28 +296,7 @@ export function VisitorStats() {
                         </div>
                     </div>
 
-                    {/* Card 3: Active Session Duration */}
-                    <div className="p-4 md:p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 via-slate-900/90 to-slate-900 border border-purple-500/25 shadow-lg flex flex-col justify-between">
-                        <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300/90">
-                                Your Uptime
-                            </span>
-                            <span className="w-7 h-7 rounded-lg bg-purple-500/15 flex items-center justify-center text-sm">
-                                ⏱️
-                            </span>
-                        </div>
-                        <div className="my-2 flex items-baseline gap-2">
-                            <span className="text-3xl md:text-4xl font-extrabold font-mono tabular-nums text-white">
-                                {formatDuration(sessionSeconds)}
-                            </span>
-                        </div>
-                        <div className="text-[11px] text-slate-400 flex items-center justify-between pt-2 border-t border-white/5">
-                            <span>Heartbeat</span>
-                            <span className="font-mono font-semibold text-purple-300">60s interval</span>
-                        </div>
-                    </div>
-
-                    {/* Card 4: OS Shell Split */}
+                    {/* Card 3: OS Shell Split */}
                     <div className="p-4 md:p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-900/90 to-slate-900 border border-amber-500/25 shadow-lg flex flex-col justify-between">
                         <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300/90">

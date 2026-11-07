@@ -24,7 +24,7 @@ const apps = [
     {
         id: "pixel-hud",
         title: "GuestBook",
-        icon: './themes/Yaru/apps/illuminati.png',
+        icon: './themes/Yaru/apps/guestbook.png',
         custom_icon: PixelHudIcon,
         disabled: false,
         favourite: true,
@@ -71,7 +71,7 @@ const apps = [
     {
         id: "visitor-stats",
         title: "Visitor Stats",
-        icon: './themes/Yaru/apps/illuminati.png',
+        icon: './themes/Yaru/apps/visitor-stats.png',
         custom_icon: VisitorIcon,
         disabled: false,
         favourite: true,

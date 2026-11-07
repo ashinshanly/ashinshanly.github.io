@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <defs>
+    <linearGradient id="vsBg" x1="40" y1="24" x2="472" y2="488" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F1C36" />
+      <stop offset="52%" stop-color="#091224" />
+      <stop offset="100%" stop-color="#050913" />
+    </linearGradient>
+    <linearGradient id="vsRim" x1="36" y1="36" x2="476" y2="476" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.7" />
+      <stop offset="50%" stop-color="#34D399" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#818CF8" stop-opacity="0.6" />
+    </linearGradient>
+    <radialGradient id="vsGlow" cx="72%" cy="26%" r="55%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.32" />
+      <stop offset="55%" stop-color="#0EA5E9" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#050913" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="bar1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A5B4FC" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <linearGradient id="bar2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#67E8F9" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="bar3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6EE7B7" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="bar4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="35%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#0D9488" />
+    </linearGradient>
+    <linearGradient id="pulseLine" x1="96" y1="300" x2="412" y2="136" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#34D399" />
+    </linearGradient>
+    <filter id="softGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="28" y="28" width="456" height="456" rx="112" fill="url(#vsBg)" />
+  <rect x="28" y="28" width="456" height="456" rx="112" fill="url(#vsGlow)" />
+  <rect x="31" y="31" width="450" height="450" rx="109" stroke="url(#vsRim)" stroke-width="6" />
+
+  <!-- Subtle Telemetry Radar Grid -->
+  <g opacity="0.18" stroke="#38BDF8" stroke-width="2">
+    <line x1="88" y1="148" x2="424" y2="148" stroke-dasharray="6 8" />
+    <line x1="88" y1="236" x2="424" y2="236" stroke-dasharray="6 8" />
+    <line x1="88" y1="324" x2="424" y2="324" stroke-dasharray="6 8" />
+    <line x1="88" y1="404" x2="424" y2="404" />
+  </g>
+
+  <!-- Top Live Status Pill -->
+  <rect x="88" y="82" width="136" height="36" rx="18" fill="#0F292A" stroke="#10B981" stroke-opacity="0.5" stroke-width="2" />
+  <circle cx="112" cy="100" r="7" fill="#34D399" />
+  <circle cx="112" cy="100" r="13" stroke="#34D399" stroke-opacity="0.45" stroke-width="2.5" />
+  <rect x="132" y="94" width="72" height="12" rx="6" fill="#A7F3D0" fill-opacity="0.85" />
+
+  <!-- 4 Ascending Telemetry Bars -->
+  <rect x="96" y="310" width="56" height="94" rx="16" fill="url(#bar1)" />
+  <rect x="178" y="256" width="56" height="148" rx="16" fill="url(#bar2)" />
+  <rect x="260" y="204" width="56" height="200" rx="16" fill="url(#bar3)" />
+  <rect x="342" y="146" width="56" height="258" rx="16" fill="url(#bar4)" filter="url(#softGlow)" />
+
+  <!-- Glowing Telemetry Spline Curve -->
+  <path
+    d="M124 278 C 160 272, 182 224, 206 218 C 236 210, 262 178, 288 166 C 318 152, 344 122, 370 112"
+    stroke="url(#pulseLine)"
+    stroke-width="12"
+    stroke-linecap="round"
+    fill="none"
+    filter="url(#softGlow)"
+  />
+
+  <!-- Data Nodes on Curve -->
+  <circle cx="124" cy="278" r="10" fill="#091224" stroke="#A5B4FC" stroke-width="6" />
+  <circle cx="206" cy="218" r="10" fill="#091224" stroke="#67E8F9" stroke-width="6" />
+  <circle cx="288" cy="166" r="10" fill="#091224" stroke="#6EE7B7" stroke-width="6" />
+
+  <!-- Peak Live Beacon -->
+  <circle cx="370" cy="112" r="24" fill="#10B981" fill-opacity="0.28" />
+  <circle cx="370" cy="112" r="13" fill="#ffffff" stroke="#34D399" stroke-width="6" />
+</svg>
