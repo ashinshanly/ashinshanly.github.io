@@ -10,7 +10,7 @@ const PORTFOLIO_SHORTCUTS = [
     { id: 'gedit', label: 'Contact Ashin', subtitle: 'Send a direct message', badge: 'Contact' },
 ];
 
-export default function SearchWidget({ apps = [], onOpenApp, onOpenOrby }) {
+export default function SearchWidget({ apps = [], onOpenApp }) {
     const [query, setQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
@@ -122,20 +122,11 @@ export default function SearchWidget({ apps = [], onOpenApp, onOpenOrby }) {
                     </button>
                 ) : (
                     <div className="flex items-center gap-2.5 flex-shrink-0">
-                        {/* Pixel Voice Search Icon (Launches Orby Voice AI) */}
+                        {/* Pixel Voice Search Icon */}
                         <button
                             type="button"
-                            onClick={() => {
-                                if (onOpenOrby) {
-                                    onOpenOrby();
-                                } else if (typeof window !== 'undefined') {
-                                    window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
-                                } else {
-                                    showToast('Try typing "Projects", "Chess", or "Terminal"');
-                                }
-                            }}
+                            onClick={() => showToast('Try typing "Projects", "Chess", or "Terminal"')}
                             aria-label="Voice search hint"
-                            title="Talk to Ash — Voice AI Assistant"
                             className="w-6 h-6 flex items-center justify-center text-[#A8C7FA] hover:opacity-80 transition-opacity"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

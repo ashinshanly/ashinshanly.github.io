@@ -236,7 +236,7 @@ describe("Tier 2: Boundary Value Analysis (BVA) Suite", () => {
       const bigHarness = new AndroidHarness({ apps: bigApps });
       expect(bigHarness.getDockApps().length).toBe(4);
       expect(bigHarness.getPage0Apps().length).toBe(8);
-      expect(bigHarness.getPage2Apps().length).toBe(6 + 40); // 46 extended apps
+      expect(bigHarness.getPage2Apps().length).toBe(7 + 40); // 47 extended apps
       expect(bigHarness.getRenderedAppsCount()).toBe(bigApps.length);
     });
 

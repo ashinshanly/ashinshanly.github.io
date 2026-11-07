@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
- * Ash — Ashin Shanly's Interactive Voice Assistant
+ * Talk to Ash — Ashin Shanly's Interactive Voice AI App
+ * Compatible with both Ubuntu 24.04 Windowed UI (any window size) and Android 14 Mobile UI (all screen sizes).
  * Inspired by valentinhervouet.com:
- * - Interactive 60fps Canvas Orb with cursor-tracking blinking eyes, voice-reactive liquid caustics, and poke physics
- * - Left & Right flanking frosted choice pills with "✓" heard tracking
- * - Live synchronized typewriter subtitle (click or Space to skip)
- * - Web Speech API voice synthesis + Web Speech Recognition ("Ask with your voice")
- * - Timed Story Cards triggered by [[card:...]] cues in the dialogue script
+ * - Interactive 60fps Canvas Orb with cursor-tracking blinking pill-shaped eyes, voice-reactive liquid caustics, and poke physics
+ * - Container-aware responsive layout (3-column flanking choice pills on wide containers, stacked grid on compact/mobile containers)
+ * - Synchronized typewriter subtitles (click or Space to skip) + timed [[card:...]] Story Cards
+ * - Web Speech API voice synthesis + Web Speech Recognition ("Ask by Voice") + natural language prompt input
  */
 
-const ORBY_DIALOGUE_GRAPH = {
+const ASH_DIALOGUE_GRAPH = {
     greet: {
         id: 'greet',
         text: "Hey there, and welcome to Ashin's portfolio! I'm Ash, his personal AI voice guide. Want the quick 30-second intro, or the full story?",
@@ -125,7 +125,7 @@ const ORBY_DIALOGUE_GRAPH = {
     },
     resume: {
         id: 'resume',
-        text: "Here's Ashin's resume summary! You can download the full PDF directly, or open his full interactive profile window.",
+        text: "Here's Ashin's resume summary! You can download the full PDF directly, or open his full interactive About Ashin profile.",
         choices: [
             { id: 'download_pdf', label: 'Download Resume PDF ↗', link: './files/AshinShanly_RESUME.pdf' },
             { id: 'open_about', label: 'Open About Ashin App', appId: 'about-ashin' },
@@ -289,7 +289,7 @@ function parseDialogueText(raw) {
     return { text: clean, cues };
 }
 
-export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
+export function TalkToAsh({ openApp }) {
     const [nodeId, setNodeId] = useState('greet');
     const [phase, setPhase] = useState('speaking'); // 'speaking' | 'choosing'
     const [typedCount, setTypedCount] = useState(0);
@@ -299,102 +299,144 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
     const [isListeningMic, setIsListeningMic] = useState(false);
     const [micTranscript, setMicTranscript] = useState('');
     const [textPrompt, setTextPrompt] = useState('');
+    const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
 
+    const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const pointerRef = useRef({ x: 0, y: 0, active: false });
     const lookTargetRef = useRef(null);
+    const pokeRef = useRef({ x: 0, y: 0, t: 999 });
     const voiceLevelRef = useRef(0);
-    const pokeRef = useRef({ t: 100, x: 0, y: 0 });
-    const blinkRef = useRef({ nextBlink: 2.5, blinkEnd: 0 });
-    const animFrameRef = useRef(null);
     const typeTimerRef = useRef(null);
+    const animFrameRef = useRef(null);
+    const blinkRef = useRef({ nextBlink: 2.2, blinkEnd: 0 });
     const recognitionRef = useRef(null);
 
-    const currentNode = ORBY_DIALOGUE_GRAPH[nodeId] || ORBY_DIALOGUE_GRAPH.greet;
+    const currentNode = ASH_DIALOGUE_GRAPH[nodeId] || ASH_DIALOGUE_GRAPH.greet;
     const parsed = parseDialogueText(currentNode.text);
 
+    // Measure actual app container size so layout adapts cleanly in both resized Ubuntu windows & Android screens
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const updateDims = () => {
+            const rect = el.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                setContainerSize({ width: rect.width, height: rect.height });
+            }
+        };
+        updateDims();
+        let ro = null;
+        if (typeof ResizeObserver !== 'undefined') {
+            ro = new ResizeObserver(updateDims);
+            ro.observe(el);
+        }
+        window.addEventListener('resize', updateDims);
+        return () => {
+            if (ro) ro.disconnect();
+            window.removeEventListener('resize', updateDims);
+        };
+    }, []);
+
+    // Resolve choices for current node
     const resolveChoices = useCallback((node) => {
         if (!node) return [];
-        const rawChoices = Array.isArray(node.choices)
-            ? node.choices
-            : CHOICE_SETS[node.choices] || CHOICE_SETS.menu;
-        return rawChoices.filter((c) => {
+        const raw = typeof node.choices === 'string' ? CHOICE_SETS[node.choices] || [] : node.choices || [];
+        return raw.filter((c) => {
             if (c.action === 'visit' && !node.projectUrl && !node.appId) return false;
             return true;
         });
     }, []);
 
+    // Speak text via Web Speech API
     const speakText = useCallback(
         (cleanText) => {
             if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
             try {
                 window.speechSynthesis.cancel();
                 if (!soundOn) return;
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.rate = 1.04;
-                utterance.pitch = 1.05;
+
+                const utter = new SpeechSynthesisUtterance(cleanText);
+                utter.rate = 1.04;
+                utter.pitch = 1.05;
+                utter.volume = 0.95;
+
                 const voices = window.speechSynthesis.getVoices();
-                const preferred =
-                    voices.find(
-                        (v) =>
-                            /en/i.test(v.lang) &&
-                            /(Samantha|Google US English|Natural|Daniel|Karen|Moira|Alex)/i.test(v.name)
-                    ) || voices.find((v) => /en/i.test(v.lang));
-                if (preferred) utterance.voice = preferred;
-                window.speechSynthesis.speak(utterance);
-            } catch (e) {
-                // Ignore speech synthesis errors on restricted browsers
+                const preferred = voices.find(
+                    (v) =>
+                        /en[-_]/i.test(v.lang) &&
+                        /(Samantha|Google US English|Alex|Daniel|Karen|Natural|Neural)/i.test(v.name)
+                );
+                if (preferred) utter.voice = preferred;
+
+                utter.onboundary = () => {
+                    voiceLevelRef.current = 0.65 + Math.random() * 0.35;
+                };
+                utter.onend = () => {
+                    voiceLevelRef.current = 0;
+                };
+                utter.onerror = () => {
+                    voiceLevelRef.current = 0;
+                };
+
+                window.speechSynthesis.speak(utter);
+            } catch {
+                // Ignore browser autoplay restrictions
             }
         },
         [soundOn]
     );
 
-    // Start typing + speaking whenever nodeId changes while open
+    // Cleanup all timers & speech on unmount (when Ubuntu window or Android app closes)
     useEffect(() => {
-        if (!isOpen) {
+        return () => {
             if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
-            return;
-        }
+            if (typeTimerRef.current) clearInterval(typeTimerRef.current);
+            if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+            if (recognitionRef.current) {
+                try {
+                    recognitionRef.current.abort();
+                } catch {}
+            }
+        };
+    }, []);
 
-        const { text, cues } = parseDialogueText(currentNode.text);
+    // Start typing + speech whenever nodeId changes
+    useEffect(() => {
+        const node = ASH_DIALOGUE_GRAPH[nodeId] || ASH_DIALOGUE_GRAPH.greet;
+        const { text, cues } = parseDialogueText(node.text);
+
         setPhase('speaking');
         setTypedCount(0);
 
-        if (cues.length > 0 && cues[0].charIndex === 0) {
-            setActiveCard(STORY_CARDS[cues[0].cardId] || null);
+        if (cues.length > 0 && cues[0].charIndex <= 4 && STORY_CARDS[cues[0].cardId]) {
+            setActiveCard(STORY_CARDS[cues[0].cardId]);
         } else if (cues.length === 0) {
             setActiveCard(null);
         }
 
-        if (currentNode.tracksHeard) {
-            setHeardNodes((prev) => (prev.includes(nodeId) ? prev : [...prev, nodeId]));
+        if (node.tracksHeard) {
+            setHeardNodes((prev) => (prev.includes(node.id) ? prev : [...prev, node.id]));
         }
 
         speakText(text);
 
-        let idx = 0;
         if (typeTimerRef.current) clearInterval(typeTimerRef.current);
-
+        let idx = 0;
         typeTimerRef.current = setInterval(() => {
             idx += 1;
             setTypedCount(idx);
+            voiceLevelRef.current = Math.max(
+                voiceLevelRef.current * 0.85,
+                0.35 + Math.sin(idx * 0.6) * 0.25 + Math.random() * 0.2
+            );
 
             for (const cue of cues) {
                 if (idx >= cue.charIndex && STORY_CARDS[cue.cardId]) {
                     setActiveCard(STORY_CARDS[cue.cardId]);
                 }
-            }
-
-            // Simulate natural syllable envelope for the 3D/Canvas Orb
-            const ch = text[idx - 1] || ' ';
-            if (/[aeiouyAEIOUY]/.test(ch)) {
-                voiceLevelRef.current = 0.85;
-            } else if (/[a-zA-Z0-9]/.test(ch)) {
-                voiceLevelRef.current = 0.45;
-            } else {
-                voiceLevelRef.current = 0.1;
             }
 
             if (idx >= text.length) {
@@ -403,7 +445,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                 voiceLevelRef.current = 0;
                 setPhase('choosing');
             }
-        }, 32);
+        }, 24);
 
         return () => {
             if (typeTimerRef.current) {
@@ -411,107 +453,118 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                 typeTimerRef.current = null;
             }
         };
-    }, [nodeId, isOpen, currentNode.text, currentNode.tracksHeard, speakText]);
+    }, [nodeId, speakText]);
 
-    const skipTyping = () => {
+    // Skip typewriter animation on click or Spacebar
+    const skipTyping = useCallback(() => {
         if (phase !== 'speaking') return;
+        const { text, cues } = parseDialogueText(currentNode.text);
         if (typeTimerRef.current) {
             clearInterval(typeTimerRef.current);
             typeTimerRef.current = null;
         }
-        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-        const { text, cues } = parseDialogueText(currentNode.text);
         if (cues.length > 0) {
             const lastCue = cues[cues.length - 1];
             if (STORY_CARDS[lastCue.cardId]) setActiveCard(STORY_CARDS[lastCue.cardId]);
         }
-        voiceLevelRef.current = 0;
         setTypedCount(text.length);
+        voiceLevelRef.current = 0;
         setPhase('choosing');
-    };
+    }, [phase, currentNode]);
+
+    // Keyboard shortcuts (Space to skip, 1-6 to pick choices)
+    useEffect(() => {
+        const handleKey = (e) => {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+            if (e.code === 'Space' && phase === 'speaking') {
+                e.preventDefault();
+                skipTyping();
+            } else if (/^[1-6]$/.test(e.key)) {
+                const idx = parseInt(e.key, 10) - 1;
+                const choices = resolveChoices(currentNode);
+                if (choices[idx]) {
+                    handleChoice(choices[idx]);
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    });
 
     const triggerPoke = (clientX, clientY) => {
-        pokeRef.current = { t: 0, x: clientX || 0, y: clientY || 0 };
+        pokeRef.current = { x: clientX || 0, y: clientY || 0, t: 0 };
+        voiceLevelRef.current = 0.75;
     };
 
     const handleChoice = (choice, e) => {
-        if (e) {
-            triggerPoke(e.clientX, e.clientY);
-        }
+        if (e) triggerPoke(e.clientX, e.clientY);
+
         if (choice.link) {
             window.open(choice.link, '_blank', 'noopener,noreferrer');
             return;
         }
-        if (choice.appId && onOpenApp) {
-            onOpenApp(choice.appId);
-            onClose();
+        if (choice.appId && typeof openApp === 'function') {
+            openApp(choice.appId);
             return;
         }
         if (choice.action === 'visit') {
-            if (currentNode.appId && onOpenApp) {
-                onOpenApp(currentNode.appId);
-                onClose();
-            } else if (currentNode.projectUrl) {
+            if (currentNode.projectUrl) {
                 window.open(currentNode.projectUrl, '_blank', 'noopener,noreferrer');
+            } else if (currentNode.appId && typeof openApp === 'function') {
+                openApp(currentNode.appId);
             }
             return;
         }
-        if (choice.to && ORBY_DIALOGUE_GRAPH[choice.to]) {
+        if (choice.to && ASH_DIALOGUE_GRAPH[choice.to]) {
             setNodeId(choice.to);
         }
     };
 
-    const routeNaturalLanguageQuery = useCallback(
-        (rawQuery) => {
-            const q = (rawQuery || '').toLowerCase().trim();
-            if (!q) return;
-            if (q.includes('google') || q.includes('current') || q.includes('alphabet')) {
-                setNodeId('role_google');
-            } else if (q.includes('oracle') || q.includes('spark') || q.includes('rag') || q.includes('delta')) {
-                setNodeId('role_oracle');
-            } else if (q.includes('tcs') || q.includes('lidar') || q.includes('intern')) {
-                setNodeId('role_tcs');
-            } else if (q.includes('iit') || q.includes('education') || q.includes('college') || q.includes('degree') || q.includes('study') || q.includes('medal')) {
-                setNodeId('role_iitgn');
-            } else if (q.includes('lumina') || q.includes('game')) {
-                setNodeId('project_lumina');
-            } else if (q.includes('music') || q.includes('sync')) {
-                setNodeId('project_musicsync');
-            } else if (q.includes('guestbook') || q.includes('pixel') || q.includes('matrix')) {
-                setNodeId('project_guestbook');
-            } else if (q.includes('caption') || q.includes('siamese') || q.includes('gcn') || q.includes('paper') || q.includes('publication')) {
-                setNodeId('project_sgcn');
-            } else if (q.includes('neural') || q.includes('inr') || q.includes('3d') || q.includes('thesis')) {
-                setNodeId('project_inr');
-            } else if (q.includes('project') || q.includes('built') || q.includes('build')) {
-                setNodeId('projects_ask');
-            } else if (q.includes('work') || q.includes('experience') || q.includes('job') || q.includes('career')) {
-                setNodeId('roles_ask');
-            } else if (q.includes('hobby') || q.includes('hobbies') || q.includes('badminton') || q.includes('anime') || q.includes('free time')) {
-                setNodeId('hobbies');
-            } else if (q.includes('resume') || q.includes('cv')) {
-                setNodeId('resume');
-            } else if (q.includes('contact') || q.includes('email') || q.includes('hire') || q.includes('reach')) {
-                setNodeId('contact');
-            } else if (q.includes('terminal') && onOpenApp) {
-                onOpenApp('terminal');
-                onClose();
-            } else if (q.includes('full') || q.includes('story') || q.includes('who is')) {
-                setNodeId('intro_full');
-            } else {
-                setNodeId('intro_quick');
-            }
-        },
-        [onOpenApp, onClose]
-    );
+    // Route natural language voice/text queries to the best Ash dialogue node
+    const routeNaturalLanguageQuery = (rawQuery) => {
+        const q = (rawQuery || '').toLowerCase().trim();
+        if (!q) return;
+        if (q.includes('google') || q.includes('current') || q.includes('swe')) {
+            setNodeId('role_google');
+        } else if (q.includes('oracle') || q.includes('spark') || q.includes('rag') || q.includes('delta')) {
+            setNodeId('role_oracle');
+        } else if (q.includes('tcs') || q.includes('lidar') || q.includes('intern')) {
+            setNodeId('role_tcs');
+        } else if (q.includes('iit') || q.includes('education') || q.includes('college') || q.includes('medal') || q.includes('degree')) {
+            setNodeId('role_iitgn');
+        } else if (q.includes('lumina') || q.includes('game')) {
+            setNodeId('project_lumina');
+        } else if (q.includes('music') || q.includes('sync')) {
+            setNodeId('project_musicsync');
+        } else if (q.includes('guest') || q.includes('pixel') || q.includes('matrix')) {
+            setNodeId('project_guestbook');
+        } else if (q.includes('caption') || q.includes('gcn') || q.includes('acm')) {
+            setNodeId('project_sgcn');
+        } else if (q.includes('implicit') || q.includes('neural') || q.includes('3d') || q.includes('thesis')) {
+            setNodeId('project_inr');
+        } else if (q.includes('project') || q.includes('build') || q.includes('paper')) {
+            setNodeId('projects_ask');
+        } else if (q.includes('experience') || q.includes('work') || q.includes('career') || q.includes('job')) {
+            setNodeId('roles_ask');
+        } else if (q.includes('hobby') || q.includes('hobbies') || q.includes('badminton') || q.includes('anime') || q.includes('fun')) {
+            setNodeId('hobbies');
+        } else if (q.includes('resume') || q.includes('cv')) {
+            setNodeId('resume');
+        } else if (q.includes('contact') || q.includes('email') || q.includes('hire') || q.includes('reach')) {
+            setNodeId('contact');
+        } else if (q.includes('full') || q.includes('story')) {
+            setNodeId('intro_full');
+        } else {
+            setNodeId('intro_quick');
+        }
+    };
 
+    // Live Microphone SpeechRecognition ("Ask by Voice")
     const toggleMic = () => {
         if (typeof window === 'undefined') return;
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRec) {
-            setMicTranscript('Voice recognition is not supported in this browser — type a question below!');
+            setMicTranscript('Voice input not supported in this browser — type a question below!');
             return;
         }
         if (isListeningMic && recognitionRef.current) {
@@ -526,11 +579,11 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
             rec.maxAlternatives = 1;
             recognitionRef.current = rec;
             setIsListeningMic(true);
-            setMicTranscript('Listening… ask anything about Ashin!');
+            setMicTranscript('Listening… Ask about Google, Oracle, IIT, Projects, Hobbies, or Contact!');
 
             rec.onresult = (event) => {
                 const spoken = event.results?.[0]?.[0]?.transcript || '';
-                setMicTranscript(`"${spoken}"`);
+                setMicTranscript(`Heard: "${spoken}"`);
                 setIsListeningMic(false);
                 routeNaturalLanguageQuery(spoken);
             };
@@ -542,61 +595,41 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                 setIsListeningMic(false);
             };
             rec.start();
-        } catch (err) {
+        } catch {
             setIsListeningMic(false);
         }
     };
 
-    // Keyboard shortcuts (1-6 for choices, Space to skip, Esc to close)
+    // 60fps Canvas Interactive Orb Renderer (Liquid Iridescent Sphere + Eye Tracking + Blinking + Voice Waves)
     useEffect(() => {
-        if (!isOpen) return;
-        const onKeyDown = (e) => {
-            if (e.target && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-            if (e.key === 'Escape') {
-                onClose();
-            } else if (e.code === 'Space' && phase === 'speaking') {
-                e.preventDefault();
-                skipTyping();
-            } else if (phase === 'choosing' && /^[1-6]$/.test(e.key)) {
-                const idx = parseInt(e.key, 10) - 1;
-                const choices = resolveChoices(currentNode);
-                if (choices[idx]) {
-                    handleChoice(choices[idx]);
-                }
-            }
-        };
-        window.addEventListener('keydown', onKeyDown);
-        return () => window.removeEventListener('keydown', onKeyDown);
-    }, [isOpen, phase, currentNode, resolveChoices]);
-
-    // 60fps Interactive Liquid-Glass Orb & Blinking Eyes Renderer
-    useEffect(() => {
-        if (!isOpen || !canvasRef.current) return;
         const canvas = canvasRef.current;
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        const startTime = performance.now();
-        let smoothedVoice = 0;
+        if (!ctx) return;
+
+        let startTime = performance.now();
         let lookX = 0;
         let lookY = 0;
+        let smoothedVoice = 0;
 
         const renderFrame = (now) => {
             const t = (now - startTime) / 1000;
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
             const rect = canvas.getBoundingClientRect();
-            if (canvas.width !== Math.floor(rect.width * dpr) || canvas.height !== Math.floor(rect.height * dpr)) {
-                canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-                canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+            const W = rect.width || 200;
+            const H = rect.height || 200;
+
+            if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+                canvas.width = Math.round(W * dpr);
+                canvas.height = Math.round(H * dpr);
             }
 
             ctx.save();
             ctx.scale(dpr, dpr);
-            const W = rect.width;
-            const H = rect.height;
             ctx.clearRect(0, 0, W, H);
 
             // Smooth voice level
-            const targetVoice = phase === 'speaking' ? voiceLevelRef.current : 0;
-            smoothedVoice += (targetVoice - smoothedVoice) * 0.18;
+            smoothedVoice += (voiceLevelRef.current - smoothedVoice) * 0.18;
             if (phase === 'speaking' && voiceLevelRef.current > 0.1) {
                 voiceLevelRef.current *= 0.92;
             }
@@ -609,7 +642,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                     : 0;
 
             const cx = W / 2;
-            const floatY = Math.sin(t * 1.6) * 6;
+            const floatY = Math.sin(t * 1.6) * 5;
             const cy = H / 2 + floatY;
             const baseR = Math.min(W, H) * 0.34;
             const R = baseR * (1 + smoothedVoice * 0.09) + pokeEnvelope;
@@ -643,8 +676,8 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
             const steps = 72;
             for (let i = 0; i <= steps; i++) {
                 const angle = (i / steps) * Math.PI * 2;
-                const wave1 = Math.sin(angle * 3 + t * 2.4) * (1.5 + smoothedVoice * 5.5);
-                const wave2 = Math.cos(angle * 5 - t * 3.1) * (0.8 + smoothedVoice * 3.2);
+                const wave1 = Math.sin(angle * 3 + t * 2.4) * (1.4 + smoothedVoice * 5.0);
+                const wave2 = Math.cos(angle * 5 - t * 3.1) * (0.7 + smoothedVoice * 3.0);
                 const r = R + wave1 + wave2;
                 const px = cx + Math.cos(angle) * r;
                 const py = cy + Math.sin(angle) * r;
@@ -653,7 +686,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
             }
             ctx.closePath();
 
-            // Iridescent pearl/cyan/violet sphere fill (inspired by Valentin's Orby shader)
+            // Iridescent pearl/cyan/violet sphere fill
             const sphereGrad = ctx.createRadialGradient(
                 cx - R * 0.32,
                 cy - R * 0.35,
@@ -721,10 +754,10 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
             const isBlinking = t < blinkRef.current.blinkEnd;
             const eyeScaleY = (isBlinking ? 0.12 : 1) * (1 - smoothedVoice * 0.18);
 
-            // Draw Orby's two expressive pill-shaped eyes
+            // Draw Ash's two expressive pill-shaped eyes
             const eyeSpacing = R * 0.34;
-            const eyeW = Math.max(7, R * 0.14);
-            const eyeH = Math.max(12, R * 0.24) * eyeScaleY;
+            const eyeW = Math.max(6, R * 0.14);
+            const eyeH = Math.max(11, R * 0.24) * eyeScaleY;
             const eyeY = cy - R * 0.04 + lookY;
 
             [-1, 1].forEach((dir) => {
@@ -739,7 +772,6 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                 ctx.roundRect(ex - rx, eyeY - ry, eyeW, Math.max(4, eyeH), rx);
                 ctx.fill();
 
-                // Tiny eye catchlight when open
                 if (!isBlinking && eyeH > 6) {
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
                     ctx.beginPath();
@@ -757,15 +789,17 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
         return () => {
             if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
         };
-    }, [isOpen, phase]);
-
-    if (!isOpen) return null;
+    }, [phase]);
 
     const choices = resolveChoices(currentNode);
     const leftChoices = choices.filter((_, i) => i % 2 === 0);
     const rightChoices = choices.filter((_, i) => i % 2 === 1);
 
-    const renderChoicePill = (choice, idx) => {
+    // Container-aware breakpoint: use 3-column flanking layout when container is wide enough (>= 720px) and tall enough (>= 460px)
+    const isWideStage = containerSize.width >= 720 && containerSize.height >= 460;
+    const isCompactHeight = containerSize.height < 540;
+
+    const renderChoicePill = (choice, idx, compact = false) => {
         const isHeard = choice.to && heardNodes.includes(choice.to);
         return (
             <button
@@ -780,12 +814,16 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                 onMouseLeave={() => {
                     lookTargetRef.current = null;
                 }}
-                className="group relative pointer-events-auto px-5 py-3 rounded-full bg-white/[0.1] hover:bg-white/[0.2] active:scale-95 border border-white/25 hover:border-cyan-300/60 backdrop-blur-2xl text-white text-xs md:text-sm font-medium shadow-[0_12px_28px_-10px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.35)] transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                className={`group relative pointer-events-auto rounded-full bg-white/[0.09] hover:bg-white/[0.18] active:scale-95 border border-white/20 hover:border-cyan-300/60 backdrop-blur-2xl text-white font-medium shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                    compact ? 'px-3 py-2 text-xs w-full' : 'px-4 py-2.5 text-xs lg:text-sm'
+                }`}
             >
-                <span className="text-[10px] font-mono text-cyan-300/80 hidden md:inline">{idx + 1}</span>
-                <span>{choice.label}</span>
+                {!compact && (
+                    <span className="text-[10px] font-mono text-cyan-300/80 flex-shrink-0">{idx + 1}</span>
+                )}
+                <span className="truncate">{choice.label}</span>
                 {isHeard && (
-                    <span className="text-emerald-300 text-xs font-bold ml-0.5" title="Already heard">
+                    <span className="text-emerald-300 text-xs font-bold flex-shrink-0" title="Already heard">
                         ✓
                     </span>
                 )}
@@ -793,125 +831,140 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
         );
     };
 
+    const orbSizeClass = isWideStage
+        ? isCompactHeight
+            ? 'w-40 h-40'
+            : 'w-52 h-52 lg:w-60 lg:h-60'
+        : isCompactHeight
+        ? 'w-32 h-32'
+        : 'w-40 h-40 sm:w-44 sm:h-44';
+
     return (
         <div
-            id="orby-voice-assistant-stage"
+            ref={containerRef}
+            id="talk-to-ash-app"
             onMouseMove={(e) => {
                 pointerRef.current = { x: e.clientX, y: e.clientY, active: true };
             }}
             onMouseLeave={() => {
                 pointerRef.current.active = false;
             }}
-            className="fixed inset-0 z-[300] bg-[#070B14]/90 backdrop-blur-3xl text-white flex flex-col justify-between p-4 md:p-8 select-none overflow-y-auto animate-fade-in"
+            className="relative w-full h-full min-h-full bg-[#070B14] text-white flex flex-col justify-between p-3 sm:p-5 md:p-6 select-none overflow-y-auto overflow-x-hidden"
         >
             {/* Ambient background glow */}
-            <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyan-500/15 blur-[110px]" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-indigo-500/15 blur-[110px]" />
+            <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+                <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-cyan-500/15 blur-[95px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full bg-indigo-500/15 blur-[95px]" />
             </div>
 
-            {/* Top Identity & Quick-Jump Bar (Valentin Hervouet Header Style) */}
-            <header className="relative z-10 flex items-center justify-between gap-3 pb-2 border-b border-white/10">
-                <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse flex-shrink-0" />
-                    <div className="truncate flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-300 tracking-wide">
-                            Ash · Voice AI
-                        </span>
-                        <span className="font-bold text-sm md:text-base tracking-tight text-white">Ashin Shanly</span>
-                        <span className="hidden sm:inline text-xs text-white/60">
-                            • SWE III @ Google • M.Tech IIT Gandhinagar
-                        </span>
-                    </div>
+            {/* Top Identity & Quick-Jump Bar */}
+            <header className="relative z-10 flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10 flex-shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse flex-shrink-0" />
+                    <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-300 tracking-wide flex-shrink-0">
+                        Ash · Voice AI
+                    </span>
+                    <span className="text-xs text-white/75 font-medium truncate hidden sm:inline">
+                        Ashin Shanly&apos;s Interactive Guide
+                    </span>
                 </div>
 
-                <nav className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-                    <button
-                        type="button"
-                        onClick={() => setNodeId('intro_full')}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer"
-                    >
-                        Bio
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setNodeId('roles_ask')}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer"
-                    >
-                        Experience
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setNodeId('projects_ask')}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer"
-                    >
-                        Projects
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setNodeId('resume')}
-                        className="hidden sm:inline-flex px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 border border-white/15 transition cursor-pointer"
-                    >
-                        Resume
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setNodeId('contact')}
-                        className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/20 transition cursor-pointer"
-                    >
-                        Contact
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        aria-label="Close voice assistant"
-                        className="ml-1 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-center text-white/80 hover:text-white transition cursor-pointer"
-                    >
-                        ✕
-                    </button>
+                <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide max-w-full">
+                    {[
+                        { label: 'Intro', to: 'greet' },
+                        { label: 'Bio', to: 'intro_full' },
+                        { label: 'Experience', to: 'roles_ask' },
+                        { label: 'Projects', to: 'projects_ask' },
+                        { label: 'Hobbies', to: 'hobbies' },
+                        { label: 'Resume', to: 'resume' },
+                        { label: 'Contact', to: 'contact', highlight: true },
+                    ].map((item) => (
+                        <button
+                            key={item.to}
+                            type="button"
+                            onClick={() => setNodeId(item.to)}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition cursor-pointer ${
+                                item.highlight
+                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-sm'
+                                    : nodeId === item.to
+                                    ? 'bg-white/15 text-cyan-300 border border-cyan-400/30'
+                                    : 'text-white/75 hover:text-white hover:bg-white/10'
+                            }`}
+                        >
+                            {item.label}
+                        </button>
+                    ))}
                 </nav>
             </header>
 
-            {/* Center Stage: Left Choices + Interactive Orb + Right Choices + Story Card */}
-            <div className="relative z-10 my-auto py-4 flex flex-col items-center justify-center">
+            {/* Center Stage: Story Card + Orb + Flanking/Stacked Choices + Subtitle */}
+            <div className="relative z-10 my-auto py-2 sm:py-3 flex flex-col items-center justify-center w-full">
                 {/* Active Story Card (pops up when [[card:...]] cue triggers) */}
                 {activeCard && (
                     <div
-                        className={`mb-4 max-w-md w-full rounded-2xl p-3.5 bg-gradient-to-br ${activeCard.accent} border ${activeCard.border} backdrop-blur-2xl shadow-2xl flex items-center gap-3.5 transition-all duration-300`}
+                        className={`mb-2.5 max-w-md w-full rounded-2xl p-2.5 sm:p-3 bg-gradient-to-br ${activeCard.accent} border ${activeCard.border} backdrop-blur-2xl shadow-xl flex items-center gap-3 transition-all duration-300`}
                     >
-                        <div className="w-11 h-11 rounded-xl bg-black/40 border border-white/15 flex items-center justify-center text-2xl flex-shrink-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/40 border border-white/15 flex items-center justify-center text-lg sm:text-xl flex-shrink-0">
                             {activeCard.icon}
                         </div>
                         <div className="min-w-0 flex-1">
-                            <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-300">
+                            <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-cyan-300 truncate">
                                 {activeCard.badge}
                             </div>
-                            <div className="text-sm font-bold text-white truncate">{activeCard.title}</div>
-                            <div className="text-xs text-white/75 truncate">{activeCard.subtitle}</div>
+                            <div className="text-xs sm:text-sm font-bold text-white truncate">{activeCard.title}</div>
+                            <div className="text-[11px] text-white/75 truncate">{activeCard.subtitle}</div>
                         </div>
-                        <div className="hidden sm:block px-2.5 py-1 rounded-full bg-black/40 border border-white/10 text-[10px] font-semibold text-cyan-300 whitespace-nowrap">
+                        <div className="hidden sm:block px-2 py-0.5 rounded-full bg-black/40 border border-white/10 text-[10px] font-semibold text-cyan-300 whitespace-nowrap">
                             {activeCard.metric}
                         </div>
                     </div>
                 )}
 
-                {/* 3-Column Stage on Desktop, Stacked on Mobile */}
-                <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 items-center gap-4">
-                    {/* Left Choice Pills (Desktop) */}
-                    <div className="hidden md:flex md:col-span-4 flex-col items-end justify-center gap-3 pr-2">
-                        {leftChoices.map((c, idx) => renderChoicePill(c, idx * 2))}
-                    </div>
+                {isWideStage ? (
+                    /* Wide Container Stage: Left Choice Pills + Center Orb + Right Choice Pills */
+                    <div className="w-full max-w-4xl grid grid-cols-12 items-center gap-3">
+                        <div className="col-span-4 flex flex-col items-end justify-center gap-2.5 pr-1">
+                            {leftChoices.map((c, idx) => renderChoicePill(c, idx * 2, false))}
+                        </div>
 
-                    {/* Center Animated Orb */}
-                    <div className="md:col-span-4 flex flex-col items-center justify-center">
+                        <div className="col-span-4 flex flex-col items-center justify-center">
+                            <div
+                                onClick={(e) => {
+                                    triggerPoke(e.clientX, e.clientY);
+                                    if (phase === 'speaking') skipTyping();
+                                    else speakText(parsed.text);
+                                }}
+                                title="Click Ash to poke or replay voice"
+                                className={`relative ${orbSizeClass} cursor-pointer flex items-center justify-center`}
+                            >
+                                <canvas
+                                    ref={canvasRef}
+                                    data-testid="orb-canvas"
+                                    className="w-full h-full block"
+                                />
+                                {phase === 'speaking' && (
+                                    <span className="absolute bottom-1 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[9px] text-cyan-300 font-mono tracking-wider uppercase">
+                                        Speaking • Tap to skip
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="col-span-4 flex flex-col items-start justify-center gap-2.5 pl-1">
+                            {rightChoices.map((c, idx) => renderChoicePill(c, idx * 2 + 1, false))}
+                        </div>
+                    </div>
+                ) : (
+                    /* Compact / Mobile Container Stage: Centered Orb */
+                    <div className="flex flex-col items-center justify-center">
                         <div
                             onClick={(e) => {
                                 triggerPoke(e.clientX, e.clientY);
                                 if (phase === 'speaking') skipTyping();
                                 else speakText(parsed.text);
                             }}
-                            title="Click Ash to poke or replay voice"
-                            className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 cursor-pointer flex items-center justify-center"
+                            title="Tap Ash to poke or replay voice"
+                            className={`relative ${orbSizeClass} cursor-pointer flex items-center justify-center`}
                         >
                             <canvas
                                 ref={canvasRef}
@@ -919,41 +972,38 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                                 className="w-full h-full block"
                             />
                             {phase === 'speaking' && (
-                                <span className="absolute bottom-2 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[10px] text-cyan-300 font-mono tracking-wider uppercase">
+                                <span className="absolute bottom-0.5 px-2 py-0.5 rounded-full bg-white/10 border border-white/15 text-[9px] text-cyan-300 font-mono tracking-wider uppercase">
                                     Speaking • Tap to skip
                                 </span>
                             )}
                         </div>
                     </div>
+                )}
 
-                    {/* Right Choice Pills (Desktop) */}
-                    <div className="hidden md:flex md:col-span-4 flex-col items-start justify-center gap-3 pl-2">
-                        {rightChoices.map((c, idx) => renderChoicePill(c, idx * 2 + 1))}
-                    </div>
-                </div>
-
-                {/* Synchronized Typewriter Subtitle (data-testid="orby-line") */}
+                {/* Synchronized Typewriter Subtitle */}
                 <p
                     data-testid="orby-line"
                     onClick={skipTyping}
-                    className="mt-3 max-w-2xl text-center text-sm sm:text-base md:text-lg font-medium leading-relaxed px-4 cursor-pointer select-none"
+                    className="mt-2 max-w-2xl text-center text-xs sm:text-sm md:text-base font-medium leading-relaxed px-2 sm:px-4 cursor-pointer select-none"
                 >
                     <span className="text-white">{parsed.text.slice(0, typedCount)}</span>
                     <span className="text-white/25">{parsed.text.slice(typedCount)}</span>
                 </p>
 
-                {/* Mobile Choice Pills Grid */}
-                <div
-                    data-testid="orby-choices-mobile"
-                    className="mt-4 grid grid-cols-2 gap-2.5 w-full max-w-md md:hidden px-2"
-                >
-                    {choices.map((c, idx) => renderChoicePill(c, idx))}
-                </div>
+                {/* Choice Pills Grid for Compact Ubuntu Windows & Android Screens */}
+                {!isWideStage && (
+                    <div
+                        data-testid="orby-choices-compact"
+                        className="mt-3 grid grid-cols-2 gap-2 w-full max-w-md px-1"
+                    >
+                        {choices.map((c, idx) => renderChoicePill(c, idx, true))}
+                    </div>
+                )}
             </div>
 
-            {/* Bottom Controls: Sound Toggle + Live Voice Mic + Natural Language Input */}
-            <footer className="relative z-10 pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
+            {/* Bottom Controls: Sound Toggle + Replay + Live Voice Mic + Natural Language Input */}
+            <footer className="relative z-10 pt-2.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
+                <div className="flex items-center justify-center gap-1.5 flex-wrap w-full sm:w-auto">
                     <button
                         type="button"
                         data-testid="sound-toggle"
@@ -964,7 +1014,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                                 window.speechSynthesis.cancel();
                             }
                         }}
-                        className={`px-3.5 py-2 rounded-full text-xs font-semibold border backdrop-blur-xl flex items-center gap-2 transition cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-full text-[11px] font-semibold border backdrop-blur-xl flex items-center gap-1.5 transition cursor-pointer ${
                             soundOn
                                 ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300'
                                 : 'bg-white/10 border-white/15 text-white/60'
@@ -981,7 +1031,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                             setPhase('speaking');
                             speakText(text);
                         }}
-                        className="px-3.5 py-2 rounded-full text-xs font-medium bg-white/10 hover:bg-white/15 border border-white/15 text-white/85 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/15 border border-white/15 text-white/85 transition cursor-pointer"
                     >
                         ↻ Replay
                     </button>
@@ -989,7 +1039,7 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                     <button
                         type="button"
                         onClick={toggleMic}
-                        className={`px-3.5 py-2 rounded-full text-xs font-semibold border flex items-center gap-1.5 transition cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-full text-[11px] font-semibold border flex items-center gap-1 transition cursor-pointer ${
                             isListeningMic
                                 ? 'bg-rose-500/30 border-rose-400 text-rose-200 animate-pulse'
                                 : 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-400/40 text-purple-200'
@@ -1008,18 +1058,18 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
                         setMicTranscript(`Asked: "${textPrompt.trim()}"`);
                         setTextPrompt('');
                     }}
-                    className="flex items-center gap-2 w-full sm:w-auto sm:min-w-[290px]"
+                    className="flex items-center gap-1.5 w-full sm:w-auto sm:flex-1 sm:max-w-xs"
                 >
                     <input
                         type="text"
                         value={textPrompt}
                         onChange={(e) => setTextPrompt(e.target.value)}
-                        placeholder={micTranscript || 'Ask Ash anything (e.g. "Google", "Lumina", "IIT")...'}
-                        className="flex-1 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder-white/45 outline-none focus:border-cyan-400"
+                        placeholder={micTranscript || 'Ask Ash anything (e.g. "Google", "Lumina")...'}
+                        className="flex-1 min-w-0 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-white placeholder-white/45 outline-none focus:border-cyan-400"
                     />
                     <button
                         type="submit"
-                        className="px-3.5 py-1.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition cursor-pointer flex-shrink-0"
                     >
                         Ask
                     </button>
@@ -1029,31 +1079,11 @@ export default function OrbyAssistant({ isOpen, onClose, onOpenApp }) {
     );
 }
 
-/**
- * Floating Mini-Orb Trigger Button for Ubuntu Desktop & Android Home Screen
- */
-export function OrbyFloatingLauncher({ onClick, label = 'Ask Ash AI' }) {
-    return (
-        <button
-            type="button"
-            id="orby-floating-launcher"
-            onClick={onClick}
-            title="Talk to Ash — Ashin's Interactive Voice Assistant"
-            className="group flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-[#0F172A]/85 hover:bg-[#1E293B]/95 border border-cyan-400/40 hover:border-cyan-300 shadow-[0_8px_30px_rgba(6,182,212,0.3)] backdrop-blur-2xl text-white transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
-        >
-            <span className="relative w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-600 via-cyan-400 to-white flex items-center justify-center shadow-[0_0_12px_rgba(34,211,238,0.8)]">
-                {/* Mini Ash Eyes */}
-                <span className="flex items-center gap-1">
-                    <span className="w-1 h-2 rounded-full bg-slate-950" />
-                    <span className="w-1 h-2 rounded-full bg-slate-950" />
-                </span>
-            </span>
-            <span className="text-xs font-semibold tracking-wide text-cyan-100 group-hover:text-white">
-                {label}
-            </span>
-            <span className="px-1.5 py-0.5 rounded-full bg-cyan-400/20 text-[9px] font-mono text-cyan-300 uppercase">
-                Voice
-            </span>
-        </button>
-    );
-}
+export default TalkToAsh;
+
+export const displayTalkToAsh = (propsOrAddFolder, openAppProp) => {
+    if (propsOrAddFolder && typeof propsOrAddFolder === 'object' && typeof propsOrAddFolder !== 'function') {
+        return <TalkToAsh {...propsOrAddFolder} />;
+    }
+    return <TalkToAsh openApp={openAppProp} />;
+};

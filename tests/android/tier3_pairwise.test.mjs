@@ -109,19 +109,19 @@ describe("Tier 3: Pairwise Combinatorial Integration Suite", () => {
   it("P6: App Uninstall + Dynamic Grid Partitioning Workflow", () => {
     // 1. Check initial counts
     expect(harness.getPage0Apps().length).toBe(8);
-    expect(harness.getPage2Apps().length).toBe(6);
+    expect(harness.getPage2Apps().length).toBe(7);
 
     // 2. Uninstall an app from Page 0 (e.g., "chess")
     harness.uninstallApp("chess");
     expect(harness.getPage0Apps().length).toBe(7);
-    expect(harness.getPage2Apps().length).toBe(6); // Page 2 unaffected
+    expect(harness.getPage2Apps().length).toBe(7); // Page 2 unaffected
 
     // 3. Uninstall an app from Page 2 (e.g., "calc")
     harness.uninstallApp("calc");
-    expect(harness.getPage2Apps().length).toBe(5);
+    expect(harness.getPage2Apps().length).toBe(6);
 
     // 4. Verify total rendered app counts match exactly
-    expect(harness.getRenderedAppsCount()).toBe(4 + 7 + 5); // 16 active
+    expect(harness.getRenderedAppsCount()).toBe(4 + 7 + 6); // 17 active
   });
 
   // Scenario P7: Lock Screen Unlock + Direct Dot Navigation

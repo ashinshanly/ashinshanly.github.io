@@ -18,6 +18,7 @@ import { displayPixelHud } from './components/apps/pixel_hud';
 import { VisitorStats } from './components/apps/visitor_stats';
 import { VisitorIcon } from './components/util components/visitor_icon';
 import { PixelHudIcon } from './components/util components/pixel_hud_icon';
+import { displayTalkToAsh } from './components/apps/talk_to_ash';
 
 
 const apps = [
@@ -86,6 +87,15 @@ const apps = [
         favourite: true,
         desktop_shortcut: true,
         screen: displayAboutAshin,
+    },
+    {
+        id: "talk-to-ash",
+        title: "Talk to Ash",
+        icon: './themes/Yaru/apps/talk-to-ash.png',
+        disabled: false,
+        favourite: true,
+        desktop_shortcut: true,
+        screen: displayTalkToAsh,
     },
     {
         id: "spotify",

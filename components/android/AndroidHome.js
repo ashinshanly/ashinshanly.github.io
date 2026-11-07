@@ -13,7 +13,6 @@ import WeatherWidget from './WeatherWidget';
 import AndroidToast, { showToast } from './AndroidToast';
 import LockScreen from './LockScreen';
 import useWeather from '../util components/useWeather';
-import OrbyAssistant, { OrbyFloatingLauncher } from '../util components/orby_assistant';
 
 const MATERIAL_THEMES = [
     { id: 'blue', name: 'Pixel Blue', primary: '#A8C7FA', wall: 'wall-2' },
@@ -44,7 +43,6 @@ export default function AndroidHome() {
     const [btOn, setBtOn] = useState(true);
     const [dndOn, setDndOn] = useState(false);
     const [notificationCount, setNotificationCount] = useState(3);
-    const [orbyOpen, setOrbyOpen] = useState(false);
     const { weather } = useWeather();
 
     const touchStartY = useRef(0);
@@ -52,15 +50,10 @@ export default function AndroidHome() {
     const longPressTimer = useRef(null);
     const homeRef = useRef(null);
 
-    // Update time every minute + listen for global Orby voice assistant open events
+    // Update time every minute
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-        const handleOpenOrby = () => setOrbyOpen(true);
-        window.addEventListener('portfolio-open-orby', handleOpenOrby);
-        return () => {
-            clearInterval(timer);
-            window.removeEventListener('portfolio-open-orby', handleOpenOrby);
-        };
+        return () => clearInterval(timer);
     }, []);
 
     // Gyroscope Parallax Logic
@@ -381,18 +374,7 @@ export default function AndroidHome() {
                     <div className="at-a-glance-time">{formatTime()}</div>
                 </div>
 
-                <SearchWidget
-                    apps={activeApps}
-                    onOpenApp={handleOpenApp}
-                    onOpenOrby={() => setOrbyOpen(true)}
-                />
-
-                <div className="flex justify-center mb-3 px-4">
-                    <OrbyFloatingLauncher
-                        onClick={() => setOrbyOpen(true)}
-                        label="Talk to Ash — Ashin's Voice AI"
-                    />
-                </div>
+                <SearchWidget apps={activeApps} onOpenApp={handleOpenApp} />
 
                 <div className="android-app-grid">
                     {homeApps.map((app, index) => renderAppIcon(app, index))}
@@ -740,12 +722,6 @@ export default function AndroidHome() {
                     currBgImgName={bgImage}
                 />
             )}
-
-            <OrbyAssistant
-                isOpen={orbyOpen}
-                onClose={() => setOrbyOpen(false)}
-                onOpenApp={handleOpenApp}
-            />
         </div>
     );
 }

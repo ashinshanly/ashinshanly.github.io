@@ -224,7 +224,7 @@ export default class Navbar extends Component {
 	render() {
 		return (
 			<div className="main-navbar-vp fixed top-0 left-0 right-0 h-8 w-screen flex flex-nowrap justify-between items-center text-white text-xs select-none z-50 px-3 transition-all duration-300">
-				{/* Left Side: GNOME 46 Activities Pill + Live Count + Orby AI */}
+				{/* Left Side: GNOME 46 Activities Pill + Live Count */}
 				<div className="flex items-center space-x-2.5">
 					<button
 						type="button"
@@ -242,21 +242,6 @@ export default class Navbar extends Component {
 						<span className="w-1.5 h-1.5 rounded-full bg-white/40" />
 					</button>
 					<LiveCount />
-					<button
-						type="button"
-						id="navbar-orby-pill"
-						aria-label="Launch Ash Voice AI"
-						title="Talk to Ash — Ashin's Interactive Voice Assistant"
-						onClick={() => {
-							if (typeof window !== 'undefined') {
-								window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
-							}
-						}}
-						className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/35 hover:to-indigo-500/35 border border-cyan-400/30 text-[11px] font-semibold text-cyan-200 transition-all cursor-pointer"
-					>
-						<span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_rgba(34,211,238,0.9)]" />
-						<span>Ash AI</span>
-					</button>
 				</div>
 
 				{/* Center: Clickable Clock + GNOME Calendar & Notification Center */}

@@ -64,7 +64,7 @@ const ALL_COMMANDS = [
     'uptime',
     'theme',
     'ash',
-    'orby',
+    'talk-to-ash',
     'voice',
     'matrix',
     'code',
@@ -652,12 +652,13 @@ export class Terminal extends Component {
             }
 
             case 'ash':
+            case 'talk-to-ash':
             case 'orby':
             case 'voice':
-                if (typeof window !== 'undefined') {
-                    window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
+                if (typeof this.props.openApp === 'function') {
+                    this.props.openApp('talk-to-ash');
                 }
-                result = `<span class="text-cyan-300">🎙️ Launching Ash Interactive Voice Assistant...</span>`;
+                result = `<span class="text-cyan-300">🎙️ Opening Talk to Ash App...</span>`;
                 break;
 
             case 'cd':
