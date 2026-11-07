@@ -1,115 +1,205 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { CardContainer, CardBody, CardItem } from '../util components/3d-card';
 import { HoverGlare } from '../util components/hover-glare';
 
 export class AboutAshin extends Component {
-
     constructor() {
         super();
         this.screens = {};
         this.state = {
-            screen: () => { },
-            active_screen: "about", // by default 'about' screen is active
+            screen: () => {},
+            active_screen: 'about',
             navbar: false,
-        }
+        };
     }
 
     componentDidMount() {
         this.screens = {
-            "about": <About />,
-            "experience": <Experience />,
-            "education": <Education />,
-            "skills": <Skills />,
-            "projects": <Projects />,
-            "resume": <Resume />,
+            about: <About onNavigate={this.navigateById} />,
+            experience: <Experience />,
+            education: <Education />,
+            skills: <Skills />,
+            projects: <Projects />,
+            resume: <Resume />,
+        };
+
+        let lastVisitedScreen = localStorage.getItem('about-section');
+        if (lastVisitedScreen === null || lastVisitedScreen === undefined || !this.screens[lastVisitedScreen]) {
+            lastVisitedScreen = 'about';
         }
 
-        let lastVisitedScreen = localStorage.getItem("about-section");
-        if (lastVisitedScreen === null || lastVisitedScreen === undefined) {
-            lastVisitedScreen = "about";
-        }
-
-        // focus last visited screen
-        this.changeScreen(document.getElementById(lastVisitedScreen));
+        this.changeScreen(document.getElementById(lastVisitedScreen) || { id: lastVisitedScreen });
     }
+
+    navigateById = (screenId) => {
+        if (!screenId || !this.screens[screenId]) return;
+        this.changeScreen({ id: screenId });
+    };
 
     changeScreen = (e) => {
         if (!e) return;
         const screen = e.id || e.currentTarget?.id || e.target?.id;
         if (!screen || !this.screens[screen]) return;
 
-        // store this state
-        localStorage.setItem("about-section", screen);
-
-        // google analytics
-        ReactGA.send({ hitType: "pageview", page: `/${screen}`, title: "Custom Title" });
-
+        localStorage.setItem('about-section', screen);
+        ReactGA.send({ hitType: 'pageview', page: `/${screen}`, title: 'Custom Title' });
 
         this.setState({
             screen: this.screens[screen],
             active_screen: screen,
-            navbar: false, // auto-close mobile menu after selection
+            navbar: false,
         });
-    }
+    };
 
     showNavBar = () => {
         this.setState({ navbar: !this.state.navbar });
-    }
+    };
+
+    openOrbyVoice = () => {
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
+        }
+    };
 
     renderNavLinks = () => {
+        const navItems = [
+            { id: 'about', label: 'About Me', badge: 'Bio', icon: './themes/Yaru/status/about.svg' },
+            { id: 'experience', label: 'Experience', badge: '3 Roles', icon: './themes/Yaru/status/experience.svg' },
+            { id: 'education', label: 'Education', badge: 'IIT-GN', icon: './themes/Yaru/status/education.svg' },
+            { id: 'skills', label: 'Skills', badge: 'Stack', icon: './themes/Yaru/status/skills.svg' },
+            { id: 'projects', label: 'Projects', badge: '8 Built', icon: './themes/Yaru/status/projects.svg' },
+            { id: 'resume', label: 'Resume', badge: 'PDF', icon: './themes/Yaru/status/download.svg' },
+        ];
+
         return (
             <>
-                <div id="about" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "about" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="about ashin" src="./themes/Yaru/status/about.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">About Me</span>
-                </div>
-
-                <div id="experience" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "experience" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's experience" src="./themes/Yaru/status/experience.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Experience</span>
-                </div>
-
-                <div id="education" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "education" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's education" src="./themes/Yaru/status/education.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Education</span>
-                </div>
-
-                <div id="skills" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "skills" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's skills" src="./themes/Yaru/status/skills.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Skills</span>
-                </div>
-
-                <div id="projects" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "projects" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's projects" src="./themes/Yaru/status/projects.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Projects</span>
-                </div>
-
-                <div id="resume" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="ashin's resume" src="./themes/Yaru/status/download.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
-                </div>
+                {navItems.map((item) => {
+                    const active = this.state.active_screen === item.id;
+                    return (
+                        <div
+                            key={item.id}
+                            id={item.id}
+                            tabIndex="0"
+                            onFocus={this.changeScreen}
+                            onClick={this.changeScreen}
+                            className={
+                                (active
+                                    ? 'bg-gradient-to-r from-cyan-500/25 via-blue-500/20 to-purple-500/15 border-l-2 border-cyan-400 text-white shadow-[0_4px_20px_rgba(6,182,212,0.15)]'
+                                    : 'text-slate-300 hover:bg-white/[0.05] hover:text-white border-l-2 border-transparent') +
+                                ' w-44 md:w-full rounded-r-xl cursor-pointer outline-none py-2.5 px-3 my-0.5 flex justify-between items-center transition-all duration-150'
+                            }
+                        >
+                            <div className="flex items-center min-w-0">
+                                <img className="w-4 h-4 opacity-90 flex-shrink-0" alt={item.label} src={item.icon} />
+                                <span className="ml-2.5 text-xs md:text-sm font-medium truncate">{item.label}</span>
+                            </div>
+                            <span
+                                className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                                    active
+                                        ? 'bg-cyan-400/20 text-cyan-300 border border-cyan-400/30'
+                                        : 'bg-white/5 text-slate-400'
+                                }`}
+                            >
+                                {item.badge}
+                            </span>
+                        </div>
+                    );
+                })}
             </>
         );
-    }
+    };
 
     render() {
+        const mobileTabs = [
+            { id: 'about', label: 'About' },
+            { id: 'experience', label: 'Experience' },
+            { id: 'education', label: 'Education' },
+            { id: 'skills', label: 'Skills' },
+            { id: 'projects', label: 'Projects' },
+            { id: 'resume', label: 'Resume' },
+        ];
+
         return (
-            <div className="w-full h-full flex bg-ub-cool-grey text-white select-none relative">
-                <div className="md:flex hidden flex-col w-1/4 md:w-1/5 text-sm overflow-y-auto windowMainScreen border-r border-black">
-                    {this.renderNavLinks()}
-                </div>
-                <div className="md:hidden absolute top-1 left-1 z-50">
-                    <div onClick={this.showNavBar} className="flex flex-col items-center justify-center bg-ub-cool-grey rounded cursor-pointer w-10 h-10">
-                        <div className=" w-5 border-t-2 border-white"></div>
-                        <div className=" w-5 border-t-2 border-white" style={{ marginTop: "3pt", marginBottom: "3pt" }}></div>
-                        <div className=" w-5 border-t-2 border-white"></div>
-                    </div>
-                    <div onClick={(e) => e.stopPropagation()} className={"md:hidden text-sm absolute bg-ub-cool-grey py-1 px-1.5 rounded-sm top-full mt-1 left-0 shadow-lg border-black border border-opacity-20 transition-all duration-200 ease-out origin-top-left " + (this.state.navbar ? "opacity-100 scale-100 translate-y-0 pointer-events-auto z-50" : "opacity-0 scale-95 -translate-y-1 pointer-events-none")}>
+            <div className="w-full h-full flex flex-col md:flex-row bg-[#080C14] text-white select-none relative overflow-hidden">
+                {/* Desktop Left Glassmorphic Navigation Rail */}
+                <div className="hidden md:flex flex-col justify-between w-56 lg:w-60 text-sm overflow-y-auto windowMainScreen border-r border-white/10 bg-[#0B111E]/90 backdrop-blur-xl p-3 flex-shrink-0">
+                    <div>
+                        {/* Mini Sidebar Profile Card */}
+                        <div className="p-3 mb-3 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-3">
+                            <img
+                                src="./images/logos/headshot.jpg"
+                                alt="Ashin Shanly"
+                                className="w-10 h-10 rounded-full object-cover ring-2 ring-cyan-400/50 flex-shrink-0"
+                            />
+                            <div className="min-w-0">
+                                <div className="text-xs font-bold text-white truncate">Ashin Shanly</div>
+                                <div className="text-[11px] text-cyan-400 font-medium truncate">SWE III @ Google</div>
+                            </div>
+                        </div>
+
+                        <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400 px-2 mb-1.5">
+                            Sections
+                        </div>
                         {this.renderNavLinks()}
                     </div>
+
+                    {/* Sidebar Bottom Voice Assistant Trigger */}
+                    <div className="pt-3 mt-3 border-t border-white/10">
+                        <button
+                            type="button"
+                            onClick={this.openOrbyVoice}
+                            className="w-full p-2.5 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 border border-cyan-400/30 flex items-center gap-2.5 text-left transition cursor-pointer group"
+                        >
+                            <span className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 via-cyan-400 to-white flex items-center justify-center shadow-[0_0_12px_rgba(34,211,238,0.6)] flex-shrink-0">
+                                <span className="flex items-center gap-0.5">
+                                    <span className="w-1 h-1.5 rounded-full bg-slate-950" />
+                                    <span className="w-1 h-1.5 rounded-full bg-slate-950" />
+                                </span>
+                            </span>
+                            <div className="min-w-0 flex-1">
+                                <div className="text-xs font-bold text-cyan-200 group-hover:text-white truncate">
+                                    Ask Orby AI
+                                </div>
+                                <div className="text-[10px] text-slate-400 truncate">Interactive Voice Guide</div>
+                            </div>
+                        </button>
+                    </div>
                 </div>
-                <div id="about-screen" className="flex flex-col w-full md:w-4/5 justify-start items-center flex-grow bg-ub-grey overflow-y-auto windowMainScreen">
+
+                {/* Mobile Top Navigation Strip + Hamburger Drawer */}
+                <div className="md:hidden flex items-center gap-1.5 px-2.5 py-2 bg-[#0B111E]/95 border-b border-white/10 overflow-x-auto scrollbar-hide flex-shrink-0 z-30">
+                    {mobileTabs.map((tab) => {
+                        const active = this.state.active_screen === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                type="button"
+                                onClick={() => this.navigateById(tab.id)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                                    active
+                                        ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                                        : 'bg-white/[0.06] text-slate-300 hover:bg-white/10'
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        );
+                    })}
+                    <button
+                        type="button"
+                        onClick={this.openOrbyVoice}
+                        className="ml-auto px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gradient-to-r from-cyan-500/30 to-purple-500/30 border border-cyan-400/40 text-cyan-200 flex items-center gap-1 flex-shrink-0"
+                    >
+                        <span>🎙️ Orby</span>
+                    </button>
+                </div>
+
+                {/* Main Content Viewport */}
+                <div
+                    id="about-screen"
+                    className="flex flex-col w-full md:w-4/5 justify-start items-center flex-grow bg-[#080C14] overflow-y-auto windowMainScreen relative"
+                >
                     {this.state.screen}
                 </div>
             </div>
@@ -121,91 +211,246 @@ export default AboutAshin;
 
 export const displayAboutAshin = () => {
     return <AboutAshin />;
-}
+};
 
+function About({ onNavigate }) {
+    const [copied, setCopied] = useState(false);
+    const [speakingBio, setSpeakingBio] = useState(false);
 
-function About() {
+    const handleCopyEmail = () => {
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+            navigator.clipboard.writeText('ashinkoottala@gmail.com').catch(() => {});
+        }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2200);
+    };
+
+    const toggleAudioBio = () => {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+        if (speakingBio) {
+            window.speechSynthesis.cancel();
+            setSpeakingBio(false);
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(
+            "Hi! I'm Ashin Shanly, a Software Engineer 3 at Google and Computer Science Master's silver medalist from IIT Gandhinagar. I specialize in distributed computing, petabyte-scale data engineering, and deep neural networks."
+        );
+        utter.rate = 1.03;
+        utter.onend = () => setSpeakingBio(false);
+        utter.onerror = () => setSpeakingBio(false);
+        setSpeakingBio(true);
+        window.speechSynthesis.speak(utter);
+    };
+
+    const stats = [
+        { label: 'Current Role', value: 'Google', sub: 'Software Engineer III', color: 'text-cyan-400' },
+        { label: 'M.Tech CSE', value: '9.00 CGPA', sub: 'IIT-GN Silver Medalist', color: 'text-amber-400' },
+        { label: 'Research', value: '2× ACM', sub: 'CODS-COMAD Papers', color: 'text-purple-400' },
+        { label: 'Scale Built', value: 'Petabyte+', sub: 'Spark, Delta & RAG AI', color: 'text-emerald-400' },
+    ];
+
+    const pillars = [
+        {
+            icon: '⚡',
+            title: 'Distributed Systems & Fleet Scale',
+            desc: 'Building high-throughput telemetry and elastic fleet optimization platforms at Google & Oracle.',
+            tag: 'Google • OCI • Spark',
+        },
+        {
+            icon: '🧠',
+            title: 'Deep Learning & 3D Vision',
+            desc: 'Published researcher in Implicit Neural Representations (+21% faster) & Siamese-GCN captioning.',
+            tag: 'PyTorch • TensorFlow • LiDAR',
+        },
+        {
+            icon: '🤖',
+            title: 'Enterprise GenAI & Vector RAG',
+            desc: 'Architected production LLM RAG pipelines that automated 60% of support queries with +30% accuracy.',
+            tag: 'LLMs • Vector DB • RAG',
+        },
+        {
+            icon: '🌌',
+            title: 'Interactive Web & Audio Engines',
+            desc: 'Creator of Lumina, MusicSync, and the 64×64 real-time collaborative GuestBook synth matrix.',
+            tag: 'React • Next.js • WebAudio',
+        },
+    ];
+
     return (
-        <div className="relative w-full h-full flex flex-col items-center p-6 overflow-y-auto overflow-x-hidden">
-            {/* Background Futuristic Glows */}
-            <div className="absolute top-10 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="absolute bottom-10 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="relative w-full flex flex-col items-center p-5 md:p-8 overflow-x-hidden">
+            {/* Ambient Glows */}
+            <div className="absolute top-6 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-[90px] pointer-events-none" />
+            <div className="absolute bottom-10 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-[90px] pointer-events-none" />
 
-            {/* Profile Section */}
-            <div className="relative z-10 mt-6 flex flex-col items-center">
-                <div className="relative group">
-                    {/* Animated ringing borders */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="absolute -inset-2 rounded-full border border-cyan-500/20 animate-[spin_10s_linear_infinite]"></div>
-                    <div className="absolute -inset-4 rounded-full border border-purple-500/20 animate-[spin_15s_linear_infinite_reverse]"></div>
-
-                    <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full p-[2px] bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+            {/* Hero Card */}
+            <div className="relative z-10 w-full max-w-4xl rounded-3xl bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent border border-white/10 p-6 md:p-8 backdrop-blur-2xl shadow-2xl flex flex-col md:flex-row items-center gap-6">
+                <div className="relative group flex-shrink-0">
+                    <div className="absolute -inset-1.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full blur opacity-35 group-hover:opacity-65 transition duration-500" />
+                    <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full p-[2px] bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600">
                         <div className="w-full h-full bg-[#0a0a0c] rounded-full overflow-hidden relative">
-                            <div className="absolute inset-0 bg-white/5 z-10"></div>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 to-purple-500/30 mix-blend-overlay z-10 pointer-events-none rounded-full"></div>
-                            <img className="w-full h-full object-cover relative z-0 brightness-110 contrast-110 saturate-110 transition-transform duration-500 group-hover:scale-105" src="./images/logos/headshot.jpg" alt="Ashin Shanly" />
+                            <img
+                                className="w-full h-full object-cover brightness-105 contrast-105 transition-transform duration-500 group-hover:scale-105"
+                                src="./images/logos/headshot.jpg"
+                                alt="Ashin Shanly"
+                            />
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-8 text-center px-1">
-                    <div className="text-gray-400 font-mono tracking-widest text-xs mb-2 camelcase">Hey, there!</div>
-                    <div className="text-3xl md:text-5xl font-black mb-2 tracking-tight flex items-center justify-center gap-2">
-                        <span className="text-white">My name is</span>
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">Ashin Shanly</span>
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
+                <div className="flex-1 text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-medium mb-3">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
                         </span>
-                        I like to build stuff.
+                        Software Engineer III @ Google • M.Tech CSE @ IIT Gandhinagar
+                    </div>
+
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white mb-2">
+                        Hey, I&apos;m{' '}
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
+                            Ashin Shanly
+                        </span>
+                    </h1>
+
+                    <p className="text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed max-w-2xl">
+                        I engineer <span className="text-cyan-300 font-semibold">planetary-scale distributed data systems</span>,{' '}
+                        <span className="text-purple-300 font-semibold">deep neural networks</span>, and{' '}
+                        <span className="text-blue-300 font-semibold">high-performance interactive applications</span>. When I&apos;m off the terminal, you&apos;ll find me on the badminton court, watching{' '}
+                        <a
+                            href="https://www.imdb.com/title/tt9335498/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-cyan-400 hover:underline"
+                        >
+                            anime
+                        </a>
+                        , or swing trading.
+                    </p>
+
+                    {/* Action Pills */}
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 mt-4">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (typeof window !== 'undefined') {
+                                    window.dispatchEvent(new CustomEvent('portfolio-open-orby'));
+                                }
+                            }}
+                            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition cursor-pointer"
+                        >
+                            <span>🎙️ Talk to Orby AI</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={toggleAudioBio}
+                            className={`px-3.5 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                                speakingBio
+                                    ? 'bg-rose-500/20 border-rose-400/50 text-rose-200 animate-pulse'
+                                    : 'bg-white/5 hover:bg-white/10 border-white/15 text-slate-200'
+                            }`}
+                        >
+                            <span>{speakingBio ? '⏹ Stop Audio Bio' : '🔊 Listen to 20s Bio'}</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleCopyEmail}
+                            className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-medium text-slate-200 transition cursor-pointer"
+                        >
+                            {copied ? '✓ Copied ashinkoottala@gmail.com' : '📋 Copy Email'}
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div className=" mt-8 relative pt-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent w-full max-w-md"></div>
+            {/* 4-Card Bento Telemetry Strip */}
+            <div className="relative z-10 w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                {stats.map((st, idx) => (
+                    <div
+                        key={idx}
+                        className="p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 transition flex flex-col justify-between"
+                    >
+                        <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                            {st.label}
+                        </span>
+                        <span className={`text-xl md:text-2xl font-black mt-1 ${st.color}`}>{st.value}</span>
+                        <span className="text-xs text-slate-300 mt-0.5">{st.sub}</span>
+                    </div>
+                ))}
+            </div>
 
-            {/* Bio List */}
-            <div className="relative z-10 w-full max-w-2xl mt-8">
-                <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl">
-                    <ul className="space-y-5 text-sm md:text-base text-gray-300">
-                        <li className="flex items-start gap-4">
-                            <span className="text-cyan-400 text-lg mt-0.5 shrink-0">❖</span>
-                            <span className="leading-relaxed">
-                                I'm a <span className="text-cyan-400 font-semibold">Software Engineer.</span> I like distributed computing, deep neural networks, data engineering, and creating scalable, high-performance solutions.
-                                <br /><span className="text-gray-500 italic mt-1 block">( Reach out <a className='text-cyan-400 hover:text-cyan-300 transition-colors' href='mailto:ashinkoottala@gmail.com'>@ashinkoottala@gmail.com</a> )</span>
-                            </span>
-                        </li>
-                        <li className="flex items-start gap-4">
-                            <span className="text-purple-400 text-lg mt-0.5 shrink-0">❖</span>
-                            <span className="leading-relaxed">I enjoy building cool things exploring the boundaries of modern technology.</span>
-                        </li>
-                        <li className="flex items-start gap-4">
-                            <span className="text-blue-400 text-lg mt-0.5 shrink-0">❖</span>
-                            <span className="leading-relaxed">When I am not coding my next project, I like to spend my time playing badminton, watching <a href="https://www.imdb.com/title/tt9335498/" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">anime</a>, or swing trading.</span>
-                        </li>
-                        <li className="flex items-start gap-4">
-                            <span className="text-rose-400 text-lg mt-0.5 shrink-0">❖</span>
-                            <span className="leading-relaxed">I’m also really into deep learning and computer vision! Feel free to check out my research publications <a href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en" target="_blank" rel="noreferrer" className="text-rose-400 hover:underline font-medium">HERE</a>.</span>
-                        </li>
-                    </ul>
+            {/* 4 Core Engineering Pillars */}
+            <div className="relative z-10 w-full max-w-4xl mt-6">
+                <div className="flex items-center justify-between mb-3 px-1">
+                    <h2 className="text-xs font-mono uppercase tracking-widest text-slate-400">
+                        What I Build &amp; Research
+                    </h2>
+                    {onNavigate && (
+                        <button
+                            type="button"
+                            onClick={() => onNavigate('projects')}
+                            className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
+                        >
+                            Explore all projects →
+                        </button>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {pillars.map((p, i) => (
+                        <div
+                            key={i}
+                            className="p-4 rounded-2xl bg-white/[0.025] hover:bg-white/[0.05] border border-white/10 transition flex items-start gap-3.5"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-lg flex-shrink-0">
+                                {p.icon}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between gap-2">
+                                    <h3 className="text-sm font-bold text-white">{p.title}</h3>
+                                </div>
+                                <p className="text-xs text-slate-300 leading-relaxed mt-1">{p.desc}</p>
+                                <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-cyan-300 border border-white/10">
+                                    {p.tag}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="relative z-10 flex gap-4 mt-8">
-                <a href="https://www.github.com/ashinshanly" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all hover:scale-105 text-sm font-semibold">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg>
-                    GitHub
+            {/* Social & Research Links */}
+            <div className="relative z-10 flex flex-wrap justify-center gap-3 mt-6 pb-4">
+                <a
+                    href="https://www.github.com/ashinshanly"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all hover:scale-105 text-xs md:text-sm font-semibold"
+                >
+                    <span>GitHub</span>
                 </a>
-                <a href="https://www.linkedin.com/in/ashinshanly/" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 rounded-2xl transition-all hover:scale-105 text-sm font-semibold">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" /></svg>
-                    LinkedIn
+                <a
+                    href="https://www.linkedin.com/in/ashinshanly/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/25 text-blue-300 rounded-2xl transition-all hover:scale-105 text-xs md:text-sm font-semibold"
+                >
+                    <span>LinkedIn</span>
+                </a>
+                <a
+                    href="https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-300 rounded-2xl transition-all hover:scale-105 text-xs md:text-sm font-semibold"
+                >
+                    <span>🎓 Google Scholar Publications</span>
                 </a>
             </div>
         </div>
-    )
+    );
 }
 
 function Experience() {
@@ -213,197 +458,325 @@ function Experience() {
         {
             title: 'Software Engineer III',
             company: 'Google',
+            location: 'India',
             period: 'Aug 2025 - Current',
             color: '#4285F4',
-            logo: '🔵',
+            badge: 'Current Role',
+            metrics: ['Alphabet Elastic Fleet', 'Planetary-Scale Telemetry', 'Trusted Data Insights'],
+            stack: ['Distributed Systems', 'C++', 'Python', 'Borg / GCP', 'BigQuery', 'Data Pipelines'],
             points: [
-                'Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.'
-            ]
+                'Enabling Alphabet to run the most efficient and elastic fleet in the industry by providing trusted data and actionable insights.',
+            ],
         },
         {
             title: 'Member of Technical Staff (IC2)',
             company: 'Oracle India Pvt Ltd',
+            location: 'Bengaluru, India',
             period: 'Aug 2022 - Aug 2025',
             color: '#F80000',
-            logo: '🔴',
+            badge: '3 Years',
+            metrics: ['60% Query Automation', '+40% Query Performance', '-25% Storage Cost'],
+            stack: ['PySpark', 'Delta Lake', 'OCI', 'GenAI RAG', 'Vector DB', 'LLMs', 'SQL'],
             points: [
                 'Architected petabyte-scale ETL pipelines using PySpark on OCI to reduce data processing latency and cost, delivering high-throughput real-time ingestion, transformation, and aggregation of global customer usage data.',
                 'Designed and implemented an enterprise-wide Generative AI RAG chatbot, leveraging a vector database for high-speed document retrieval and fine-tuned LLMs. Automated 60% of manual query handling and enhanced query resolution accuracy by 30%.',
                 'Led a team of 5 developers in redesigning data load processes by migrating from a legacy relational data warehouse to the Delta Lake ecosystem. Boosted query performance by 40%.',
                 'Created an instance and rack decommissioning dashboard that accelerated throughput for decommissioning bare-metal and virtual machine instances, saving thousands of dollars annually.',
-                'Led the design of robust data archival and purging frameworks. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance.'
-            ]
+                'Led the design of robust data archival and purging frameworks. Achieved a 25% reduction in long-term storage costs and enhanced overall database performance.',
+            ],
         },
         {
             title: 'Machine Vision Research Scientist Intern',
             company: 'TCS Research and Innovation Labs',
+            location: 'India',
             period: 'May 2021 - Aug 2021',
             color: '#00AEEF',
-            logo: '🔷',
+            badge: 'Research Lab',
+            metrics: ['+18% Model Accuracy', '3D LiDAR + Hyperspectral Fusion'],
+            stack: ['Computer Vision', 'LiDAR Point Clouds', 'Hyperspectral Imaging', 'Python', 'Signal Processing'],
             points: [
                 'Pioneered advanced research in tree segmentation by leveraging airborne and spaceborne LiDAR technology for geospatial analysis in forestry applications.',
                 'Engineered an innovative tree segmentation model utilizing a hybrid machine learning and signal processing framework, achieving an 18% boost in model accuracy.',
-                'Implemented cutting-edge data fusion techniques, integrating geospatial point cloud data with hyperspectral imagery for enhanced classification models.'
-            ]
-        }
+                'Implemented cutting-edge data fusion techniques, integrating geospatial point cloud data with hyperspectral imagery for enhanced classification models.',
+            ],
+        },
     ];
 
     return (
-        <>
-            <div className="font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
-                Experience
-                <div className="absolute pt-px bg-white mt-px top-full w-full">
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+        <div className="w-full max-w-4xl p-5 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-3 border-b border-white/10">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">Work Experience</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Engineering distributed systems, petabyte data lakes, and applied AI across industry leaders
+                    </p>
                 </div>
+                <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-mono self-start sm:self-auto">
+                    Google • Oracle • TCS Research
+                </span>
             </div>
-            <div className="px-6">
-                <div className="w-11/12 md:w-3/4 mt-4">
-                    {experiences.map((exp, i) => (
-                        <div key={i} className="relative mb-8 last:mb-0">
-                            {/* Timeline connector */}
-                            {i < experiences.length - 1 && (
-                                <div className="absolute left-[7px] top-[24px] bottom-[-16px] w-[2px]" style={{ background: `linear-gradient(to bottom, ${exp.color}40, transparent)` }}></div>
-                            )}
 
-                            {/* Timeline dot */}
-                            <div className="flex items-start gap-4">
-                                <div className="flex-shrink-0 mt-[2px]">
-                                    <div className="w-4 h-4 rounded-full border-2 relative" style={{ borderColor: exp.color }}>
-                                        <div className="absolute inset-[3px] rounded-full" style={{ backgroundColor: exp.color }}></div>
+            <div className="space-y-6">
+                {experiences.map((exp, i) => (
+                    <div key={i} className="relative pl-6 md:pl-8">
+                        {/* Timeline vertical line */}
+                        {i < experiences.length - 1 && (
+                            <div
+                                className="absolute left-[9px] top-6 bottom-[-24px] w-[2px]"
+                                style={{ background: `linear-gradient(to bottom, ${exp.color}, rgba(255,255,255,0.06))` }}
+                            />
+                        )}
+
+                        {/* Timeline glowing node */}
+                        <div
+                            className="absolute left-0 top-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center bg-[#080C14]"
+                            style={{ borderColor: exp.color, boxShadow: `0 0 12px ${exp.color}66` }}
+                        >
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: exp.color }} />
+                        </div>
+
+                        <div
+                            className="rounded-2xl p-4 md:p-6 bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 transition shadow-xl"
+                            style={{ borderLeft: `3px solid ${exp.color}` }}
+                        >
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+                                <div>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <h3 className="text-base md:text-lg font-bold text-white">{exp.title}</h3>
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white/10 text-slate-200">
+                                            {exp.badge}
+                                        </span>
+                                    </div>
+                                    <div className="text-sm font-semibold mt-0.5" style={{ color: exp.color }}>
+                                        {exp.company} <span className="text-slate-500 font-normal">• {exp.location}</span>
                                     </div>
                                 </div>
-
-                                {/* Content card */}
-                                <div className="flex-1 rounded-lg p-3 md:p-4 -mt-1" style={{
-                                    background: 'rgba(255,255,255,0.03)',
-                                    borderLeft: `3px solid ${exp.color}`,
-                                }}>
-                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                                        <div>
-                                            <div className="text-base md:text-lg font-bold text-white leading-tight">{exp.title}</div>
-                                            <div className="text-sm font-medium mt-0.5" style={{ color: exp.color }}>{exp.company}</div>
-                                        </div>
-                                        <div className="text-xs text-gray-400 whitespace-nowrap font-mono tracking-wide">{exp.period}</div>
-                                    </div>
-                                    <ul className="space-y-2 mt-3">
-                                        {exp.points.map((point, j) => (
-                                            <li key={j} className="flex items-start gap-2 text-sm text-gray-300 leading-relaxed">
-                                                <span className="text-gray-500 mt-1.5 flex-shrink-0">▸</span>
-                                                <span>{point}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                <div className="text-xs text-slate-300 font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10 self-start md:self-auto">
+                                    {exp.period}
                                 </div>
                             </div>
+
+                            {/* Impact Metric Pills */}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                                {exp.metrics.map((m, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/10 border border-cyan-400/25 text-cyan-300"
+                                    >
+                                        ✦ {m}
+                                    </span>
+                                ))}
+                            </div>
+
+                            <ul className="space-y-2 mt-2">
+                                {exp.points.map((point, j) => (
+                                    <li key={j} className="flex items-start gap-2.5 text-xs md:text-sm text-slate-300 leading-relaxed">
+                                        <span className="text-cyan-400 mt-1 flex-shrink-0">▸</span>
+                                        <span>{point}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* Tech Stack */}
+                            <div className="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-white/5">
+                                {exp.stack.map((tech, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[11px] font-mono text-slate-300"
+                                    >
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
-        </>
-    )
+        </div>
+    );
 }
 
 function Education() {
     const educationList = [
         {
-            degree: 'Masters in Computer Science and Engineering',
+            degree: 'Masters in Computer Science and Engineering (M.Tech)',
             institution: 'IIT Gandhinagar',
             period: '2020 - 2022',
             achievements: 'Director’s Silver Medal for Academic Excellence  •  CGPA 9.00/10',
-            color: '#F59E0B'
+            color: '#F59E0B',
+            highlights: [
+                'Awarded the Director’s Silver Medal for graduating at the top of the M.Tech Computer Science cohort.',
+                'Master’s Thesis: Accelerated Implicit Neural Representation with Split Encoder and Multiscale Partitioning (+21.23% faster training).',
+                'Published peer-reviewed research in ACM CODS-COMAD on Siamese Graph Convolutional Networks & Deep NLP.',
+            ],
+            courses: ['Deep Learning', 'Computer Vision', 'Distributed Systems', 'Advanced Algorithms', 'Machine Learning'],
         },
         {
-            degree: 'Bachelors in Computer Science and Engineering',
+            degree: 'Bachelors in Computer Science and Engineering (B.Tech)',
             institution: 'Government Engineering College, Thrissur',
             period: '2016 - 2020',
             achievements: 'Dean’s List for Academic Excellence  •  CGPA 9.11/10',
-            color: '#3B82F6'
+            color: '#3B82F6',
+            highlights: [
+                'Graduated on the Dean’s List with First Class with Distinction (9.11 / 10.0 CGPA).',
+                'Led competitive programming, systems clubs, and neural NLP research projects.',
+            ],
+            courses: ['Operating Systems', 'Database Management Systems', 'Computer Networks', 'Data Structures', 'Compilers'],
         },
         {
-            degree: 'Maths, Physics, Chemistry',
-            institution: <>Class 12<sup>th</sup> (CBSE)</>,
+            degree: 'Senior Secondary — Maths, Physics, Chemistry',
+            institution: (
+                <>
+                    Class 12<sup>th</sup> (CBSE)
+                </>
+            ),
             period: '2015 - 2016',
             achievements: 'Percentile 94.8%',
-            color: '#10B981'
-        }
+            color: '#10B981',
+            highlights: ['Distinction across Mathematics, Physics, Chemistry, and Computer Science.'],
+            courses: ['Calculus', 'Physics', 'Chemistry', 'Computer Science'],
+        },
     ];
 
     return (
-        <>
-            <div className="font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
-                Education
-                <div className="absolute pt-px bg-white mt-px top-full w-full">
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+        <div className="w-full max-w-4xl p-5 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-3 border-b border-white/10">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">Education &amp; Academic Honors</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Academic excellence in Computer Science, Deep Learning, and Distributed Computing
+                    </p>
                 </div>
+                <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-mono self-start sm:self-auto">
+                    🏆 Silver Medalist • IIT-GN
+                </span>
             </div>
-            <div className="px-6">
-                <div className="w-11/12 md:w-3/4 mt-4">
-                    {educationList.map((edu, i) => (
-                        <div key={i} className="relative mb-8 last:mb-0">
-                            {/* Timeline connector */}
-                            {i < educationList.length - 1 && (
-                                <div className="absolute left-[7px] top-[24px] bottom-[-16px] w-[2px]" style={{ background: `linear-gradient(to bottom, ${edu.color}40, transparent)` }}></div>
-                            )}
 
-                            {/* Timeline dot */}
-                            <div className="flex items-start gap-4">
-                                <div className="flex-shrink-0 mt-[2px]">
-                                    <div className="w-4 h-4 rounded-full border-2 relative" style={{ borderColor: edu.color }}>
-                                        <div className="absolute inset-[3px] rounded-full" style={{ backgroundColor: edu.color }}></div>
-                                    </div>
-                                </div>
-
-                                {/* Content card */}
-                                <div className="flex-1 rounded-lg p-3 md:p-4 -mt-1" style={{
-                                    background: 'rgba(255,255,255,0.03)',
-                                    borderLeft: `3px solid ${edu.color}`,
-                                }}>
-                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                                        <div>
-                                            <div className="text-base md:text-lg font-bold text-white leading-tight">{edu.institution}</div>
-                                            <div className="text-sm font-medium mt-0.5" style={{ color: edu.color }}>{edu.degree}</div>
-                                        </div>
-                                        <div className="text-xs text-gray-400 whitespace-nowrap font-mono tracking-wide">{edu.period}</div>
-                                    </div>
-                                    <div className="text-sm text-gray-300 mt-3 font-semibold flex items-center gap-2">
-                                        <span className="text-lg">🏆</span>
-                                        {edu.achievements}
-                                    </div>
+            <div className="space-y-6">
+                {educationList.map((edu, i) => (
+                    <div
+                        key={i}
+                        className="rounded-2xl p-5 md:p-6 bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 transition shadow-xl"
+                        style={{ borderLeft: `3px solid ${edu.color}` }}
+                    >
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+                            <div>
+                                <div className="text-base md:text-lg font-bold text-white">{edu.institution}</div>
+                                <div className="text-sm font-semibold mt-0.5" style={{ color: edu.color }}>
+                                    {edu.degree}
                                 </div>
                             </div>
+                            <div className="text-xs text-slate-300 font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10 self-start md:self-auto">
+                                {edu.period}
+                            </div>
                         </div>
+
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-400/25 text-amber-200 text-xs md:text-sm font-semibold mb-3">
+                            <span>🏆</span>
+                            <span>{edu.achievements}</span>
+                        </div>
+
+                        <ul className="space-y-1.5 mt-1">
+                            {edu.highlights.map((h, idx) => (
+                                <li key={idx} className="flex items-start gap-2 text-xs md:text-sm text-slate-300">
+                                    <span className="text-cyan-400 mt-0.5">▸</span>
+                                    <span>{h}</span>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <div className="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-white/5">
+                            {edu.courses.map((c, idx) => (
+                                <span
+                                    key={idx}
+                                    className="px-2.5 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[11px] font-mono text-slate-300"
+                                >
+                                    {c}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function Skills() {
+    const [activeCat, setActiveCat] = useState('all');
+
+    const skillBars = [
+        { name: 'Python & PySpark', level: 98, cat: 'data', tag: 'Core / Petabyte ETL' },
+        { name: 'Distributed Systems & SQL / Delta Lake', level: 95, cat: 'data', tag: 'Google / Oracle' },
+        { name: 'Deep Learning (PyTorch, TensorFlow, CV/NLP)', level: 92, cat: 'ai', tag: '2× ACM Published' },
+        { name: 'GenAI, RAG & Vector Databases', level: 91, cat: 'ai', tag: 'Production LLMs' },
+        { name: 'Cloud & Infra (GCP, OCI, Docker, K8s, Terraform)', level: 90, cat: 'data', tag: 'Cloud Native' },
+        { name: 'C / C++ & Algorithmic Optimization', level: 88, cat: 'lang', tag: 'Systems & Perf' },
+        { name: 'JavaScript, React, Next.js & Tailwind CSS', level: 90, cat: 'web', tag: 'Full-Stack UI' },
+    ];
+
+    const filteredBars = activeCat === 'all' ? skillBars : skillBars.filter((s) => s.cat === activeCat);
+
+    return (
+        <div className="w-full max-w-4xl p-5 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3 border-b border-white/10">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">Technical Skills &amp; Stack</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Expertise in <strong className="text-cyan-400">back-end systems, Python, distributed data &amp; deep learning</strong>
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                    {[
+                        { id: 'all', label: 'All' },
+                        { id: 'data', label: 'Data & Cloud' },
+                        { id: 'ai', label: 'AI & Deep Learning' },
+                        { id: 'web', label: 'Web & Languages' },
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            type="button"
+                            onClick={() => setActiveCat(tab.id)}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                                activeCat === tab.id
+                                    ? 'bg-cyan-500 text-slate-950'
+                                    : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                            }`}
+                        >
+                            {tab.label}
+                        </button>
                     ))}
                 </div>
             </div>
-        </>
-    )
-}
-function Skills() {
-    return (
-        <>
-            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
-                Technical Skills
-                <div className="absolute pt-px bg-white mt-px top-full w-full">
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
-                </div>
+
+            {/* Interactive Proficiency Matrix */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-6">
+                {filteredBars.map((s, idx) => (
+                    <div
+                        key={idx}
+                        className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-2"
+                    >
+                        <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-white">{s.name}</span>
+                            <span className="font-mono text-cyan-400">{s.tag}</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                            <div
+                                className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 transition-all duration-500"
+                                style={{ width: `${s.level}%` }}
+                            />
+                        </div>
+                    </div>
+                ))}
             </div>
-            <ul className=" tracking-tight text-sm md:text-base w-11/12 md:w-10/12 emoji-list px-2 md:px-0">
-                <li className=" list-arrow text-sm md:text-base mt-4 leading-tight tracking-tight">
-                    I've worked on a lot of interesting programming languages & frameworks.
-                </li>
-                <li className=" list-arrow text-sm md:text-base mt-4 leading-tight tracking-tight">
-                    <div> My areas of expertise are <strong className="text-ubt-gedit-orange">back-end development, python & deep learning!</strong></div>
-                </li>
-                <li className=" list-arrow text-sm md:text-base mt-4 leading-tight tracking-tight">
-                    <div>Here are my most frequently used</div>
-                </li>
-            </ul>
-            <div className="w-11/12 md:w-10/12 flex flex-col md:flex-row mt-4 px-2 md:px-0 gap-6 md:gap-0">
-                <div className="w-full md:w-1/2">
-                    <div className="text-sm text-center md:text-base font-bold mb-2">Languages & Tools</div>
+
+            {/* Classic Interactive Badges Grid */}
+            <div className="w-full flex flex-col md:flex-row gap-6">
+                <div className="w-full md:w-1/2 p-4 rounded-2xl bg-white/[0.02] border border-white/10">
+                    <div className="text-xs font-mono uppercase tracking-wider text-cyan-400 text-center mb-3">
+                        Languages &amp; Cloud Tools
+                    </div>
                     <div className="flex flex-wrap justify-center items-start w-full gap-2">
                         <HoverGlare><img src="http://img.shields.io/badge/-Python-3776AB?style=flat&logo=python&logoColor=ffffff" alt="ashin python" /></HoverGlare>
                         <HoverGlare><img src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat&logo=c%2B%2B&logoColor=white" alt="ashin c++" /></HoverGlare>
@@ -416,13 +789,15 @@ function Skills() {
                         <HoverGlare><img src="http://img.shields.io/badge/-Docker-2496ED?style=plastic&logo=docker&logoColor=ffffff" alt="ashin docker" /></HoverGlare>
                         <HoverGlare><img src="http://img.shields.io/badge/-Kubernetes-326CE5?style=plastic&logo=kubernetes&logoColor=ffffff" alt="ashin kubernetes" /></HoverGlare>
                         <HoverGlare><img src="http://img.shields.io/badge/-Android%20Studio-3DDC84?style=plastic&logo=androidstudio&logoColor=ffffff" alt="ashin android studio" /></HoverGlare>
-                        <HoverGlare><img src="http://img.shields.io/badge/-XAMPP-FB7A24?style=plastic&logo=xampp&logoColor=ffffff" alt="ashin android xampp" /></HoverGlare>
-                        <HoverGlare><img src="https://img.shields.io/badge/-Sass-%23CC6699?style=flat&logo=sass&logoColor=ffffff" alt="ashin SASS" /></HoverGlare>
                         <HoverGlare><img src="https://img.shields.io/badge/-Git-%23F05032?style=flat&logo=git&logoColor=%23ffffff" alt="ashin git" /></HoverGlare>
+                        <HoverGlare><img src="http://img.shields.io/badge/-Linux-0078D6?style=plastic&logo=linux&logoColor=ffffff" alt="ashin linux" /></HoverGlare>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2">
-                    <div className="text-sm text-center md:text-base font-bold mb-2">Frameworks & Libraries</div>
+
+                <div className="w-full md:w-1/2 p-4 rounded-2xl bg-white/[0.02] border border-white/10">
+                    <div className="text-xs font-mono uppercase tracking-wider text-purple-400 text-center mb-3">
+                        Frameworks &amp; AI Libraries
+                    </div>
                     <div className="flex flex-wrap justify-center items-start w-full gap-2">
                         <HoverGlare><img src="http://img.shields.io/badge/-Apache%20Spark-E25A1C?style=plastic&logo=apachespark&logoColor=ffffff" alt="ashin spark" /></HoverGlare>
                         <HoverGlare><img src="http://img.shields.io/badge/-Hadoop-66CCFF?style=plastic&logo=apachehadoop&logoColor=ffffff" alt="ashin hadoop" /></HoverGlare>
@@ -435,151 +810,232 @@ function Skills() {
                         <HoverGlare><img src="http://img.shields.io/badge/-Django-092E20?style=plastic&logo=django&logoColor=ffffff" alt="ashin django" /></HoverGlare>
                         <HoverGlare><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="ashin tailwind css" /></HoverGlare>
                         <HoverGlare><img src="https://img.shields.io/badge/-Nodejs-339933?style=flat&logo=Node.js&logoColor=ffffff" alt="ashin node.js" /></HoverGlare>
-                        <HoverGlare><img src="https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white" alt="ashin jquery" /></HoverGlare>
                         <HoverGlare><img src="https://img.shields.io/badge/Redux-593D88?style=flat&logo=redux&logoColor=white" alt="ashin redux" /></HoverGlare>
                     </div>
                 </div>
             </div>
-            <ul className=" tracking-tight text-sm md:text-base w-10/12 emoji-list mt-4">
-                <li className=" list-arrow text-sm md:text-base mt-4 leading-tight tracking-tight">
-                    <span> And of course,</span> <img className=" inline ml-1" src="http://img.shields.io/badge/-Linux-0078D6?style=plastic&logo=linux&logoColor=ffffff" alt="ashin linux" /> <span>!</span>
-                </li>
-            </ul>
-        </>
-    )
+        </div>
+    );
 }
 
 function Projects() {
+    const [filter, setFilter] = useState('all');
+
     const project_list = [
         {
-            name: "Accelerated Implicit Neural Representation with Split Encoder and Multiscale Partitioning",
-            date: "Jul 2022",
-            link: "https://github.com/ashinshanly",
+            name: 'Accelerated Implicit Neural Representation with Split Encoder and Multiscale Partitioning',
+            date: 'Jul 2022 • M.Tech Thesis',
+            category: 'research',
+            badge: '+21.23% Faster Training',
+            link: 'https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en',
             description: [
-                "Implicit Neural Representation (INR) is an emerging signal representation and rendering technique. These representations are continuous, implicit and differentiable. Their primary advantages are memory efficiency with high spatial resolution and the ability to be incorporated into pipelines based on differentiable learning. However, neural scene representations are slow and cannot represent complex scenes. In this work, we aim to speed up the training time for implicit neural representation networks without compromising the quality of the reconstructed signal. We propose an input-split network architecture that flexibly distributes network resources during training based on the intricacy of the input signal at the given locality. We perform experiments on large-scale images and complex Stanford 3D models. We present a detailed comparison of results indicating speedups of up to ∼ 21.23% more than the state-of-the-art approaches.",
+                'Proposed an input-split neural network architecture with multiscale spatial partitioning that dynamically allocates network capacity based on local signal intricacy. Evaluated on large-scale images and complex Stanford 3D models, achieving training speedups of up to 21.23% over state-of-the-art INR baselines without sacrificing reconstruction quality.',
             ],
-            domains: ["Deep Learning", "Computer Vision"]
+            domains: ['Deep Learning', 'Computer Vision', '3D Neural Rendering'],
         },
         {
-            name: "Image Caption Generator using Siamese Graph Convolutional Networks and LSTM",
-            date: "Jun 2021",
-            link: "https://github.com/ashinshanly",
+            name: 'Image Caption Generator using Siamese Graph Convolutional Networks and LSTM',
+            date: 'Jun 2021 • ACM CODS-COMAD',
+            category: 'research',
+            badge: 'ACM Publication',
+            link: 'https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en',
             description: [
-                "Image captions are those crisp descriptions that you see under images. They generally provide the viewer with a brief idea about the image context. To generate an accurate description of the scene, the model requires a semantic and spatial understanding of the contents in the scene. This project proposes a novel approach using Siamese Graph Convolutional Network (S-GCN), making use of a non-parametric Kernel Activation function (KAF) followed by an LSTM with attention to generate natural language captions for the input image. Siamese-GCN captures deep semantic relations and makes the model more robust to class imbalances. We use an extended kernel activation function and regularize with standard lp-norm techniques, improving the overall model performance by a significant margin. Successfully published this work at the 9th ACM Conference on Data Sciences (CODS) and the 27th Conference on Management of Data (COMAD), garnering recognition for its contribution to the field.",
+                'Published at the 9th ACM Conference on Data Sciences (CODS) and 27th Conference on Management of Data (COMAD). Combines Siamese Graph Convolutional Networks (S-GCN) with a non-parametric Kernel Activation Function (KAF) and attention LSTM to capture deep semantic-spatial relations with strong resilience to class imbalance.',
             ],
-            domains: ["Machine Learning", "NLP"]
+            domains: ['Machine Learning', 'NLP', 'Computer Vision'],
         },
         {
-            name: "Reverse Dictionary using an Improved CBOW model",
-            date: "Oct 2020",
-            link: "https://github.com/ashinshanly",
+            name: 'Reverse Dictionary using an Improved CBOW Model',
+            date: 'Oct 2020 • ACM CODS-COMAD',
+            category: 'research',
+            badge: 'ACM Publication',
+            link: 'https://scholar.google.com/citations?user=Grl9bo0AAAAJ&hl=en',
             description: [
-                "A reverse dictionary is a tool that solves the Tip-of-the-Tongue problem by predicting the target word given a meaning or description. This project proposes a modified Continuous Bag-Of-Words (CBOW) model inspired by the Recurrent Neural Network (RNN), to implement a reverse dictionary. The model possesses the merits of both the CBOW model and RNN while stripping away the complexity associated with RNN. We evaluate the model by measuring accuracy based on the top-2 predictions. Built three deep neural network variants among which one of them was published in the ACM Cods Comad conference 2021.",
+                'Solves the Tip-of-the-Tongue problem by predicting target words from free-form descriptions using an RNN-inspired Continuous Bag-Of-Words (CBOW) architecture. Published at ACM CODS-COMAD 2021.',
             ],
-            domains: ["NLP", "Deep Learning"]
-        }
+            domains: ['NLP', 'Deep Learning'],
+        },
+        {
+            name: 'Lumina — Interactive Cosmic Sequence Memory Game',
+            date: '2026 • Live Web App',
+            category: 'apps',
+            badge: 'Play Live ↗',
+            link: 'https://ashinshanly.github.io/lumina/',
+            description: [
+                'A cosmic memory puzzle built with a 60fps multi-layer parallax starfield, Web Audio harmonic chimes, progressive glassmorphic node grids, and a real-time Firebase global leaderboard.',
+            ],
+            domains: ['javascript', 'firebase', 'tailwindcss'],
+        },
+        {
+            name: 'MusicSync — Multi-Device Synchronized Web Audio',
+            date: '2025 • Live Web App',
+            category: 'apps',
+            badge: 'Launch App ↗',
+            link: 'https://ashinshanly.github.io/musicsync/',
+            description: [
+                'Synchronizes audio playback across multiple phones and laptops with millisecond precision over the browser, creating a distributed spatial sound system.',
+            ],
+            domains: ['javascript', 'firebase', 'next.js'],
+        },
+        {
+            name: 'Chain Reaction & Secret Maze — Interactive Strategy Games',
+            date: 'Live Web Games',
+            category: 'apps',
+            badge: 'Play Live ↗',
+            link: 'https://ashinshanly.github.io/chainreaction/',
+            description: [
+                'Real-time multiplayer and algorithmic puzzle games featuring custom canvas physics, spatial audio synthesis, and cloud state synchronization.',
+            ],
+            domains: ['javascript', 'firebase', 'html5'],
+        },
     ];
 
     const tag_styles = {
-        "Deep Learning": "border-cyan-400/60 text-cyan-300 bg-cyan-950/30",
-        "Computer Vision": "border-purple-400/60 text-purple-300 bg-purple-950/30",
-        "Machine Learning": "border-emerald-400/60 text-emerald-300 bg-emerald-950/30",
-        "NLP": "border-amber-400/60 text-amber-300 bg-amber-950/30",
-        "javascript": "border-yellow-300 text-yellow-300",
-        "firebase": "border-red-600 text-red-500",
-        "firestore": "border-red-500 text-red-400",
-        "firebase auth": "border-red-400 text-red-400",
-        "chrome-extension": "border-yellow-400 text-yellow-400",
-        "flutter": "border-blue-400 text-blue-400",
-        "dart": "border-blue-500 text-blue-400",
-        "react-native": "border-purple-500 text-purple-400",
-        "html5": "border-pink-600 text-pink-400",
-        "sass": "border-pink-400 text-pink-400",
-        "tensorflow": "border-yellow-600 text-yellow-400",
-        "django": "border-green-600 text-green-400",
-        "python": "border-green-300 text-green-300",
-        "codeforces-api": "border-gray-300 text-gray-300",
-        "tailwindcss": "border-blue-300 text-blue-300",
-        "next.js": "border-purple-600 text-purple-400"
-    }
+        'Deep Learning': 'border-cyan-400/60 text-cyan-300 bg-cyan-950/30',
+        'Computer Vision': 'border-purple-400/60 text-purple-300 bg-purple-950/30',
+        '3D Neural Rendering': 'border-indigo-400/60 text-indigo-300 bg-indigo-950/30',
+        'Machine Learning': 'border-emerald-400/60 text-emerald-300 bg-emerald-950/30',
+        NLP: 'border-amber-400/60 text-amber-300 bg-amber-950/30',
+        javascript: 'border-yellow-400/60 text-yellow-300 bg-yellow-950/30',
+        firebase: 'border-orange-400/60 text-orange-300 bg-orange-950/30',
+        tailwindcss: 'border-sky-400/60 text-sky-300 bg-sky-950/30',
+        'next.js': 'border-slate-400/60 text-slate-200 bg-slate-900/50',
+        html5: 'border-pink-400/60 text-pink-300 bg-pink-950/30',
+    };
+
+    const visibleProjects =
+        filter === 'all' ? project_list : project_list.filter((p) => p.category === filter);
 
     return (
-        <>
-            <div className=" font-medium relative text-xl md:text-2xl mt-4 md:mt-4 mb-4">
-                Projects
-                <div className="absolute pt-px bg-white mt-px top-full w-full">
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
-                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+        <div className="w-full max-w-4xl p-5 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-white/10">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">Projects &amp; Publications</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                        Peer-reviewed AI research papers and live interactive web applications
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                    {[
+                        { id: 'all', label: 'All (6)' },
+                        { id: 'research', label: 'Research Papers (3)' },
+                        { id: 'apps', label: 'Live Web Apps (3)' },
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            type="button"
+                            onClick={() => setFilter(tab.id)}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                                filter === tab.id
+                                    ? 'bg-cyan-500 text-slate-950'
+                                    : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                            }`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
             </div>
-            <div className="w-11/12 md:w-full flex flex-col">
-                {
-                    project_list.map((project, index) => {
-                        const projectNameFromLink = project.link.split('/');
-                        const projectName = projectNameFromLink[projectNameFromLink.length - 1];
-                        const hasDedicatedRepo = projectName && projectName.toLowerCase() !== "ashinshanly";
-                        return (
-                            <CardContainer key={index} className="flex w-full flex-col px-0 md:px-4 mb-4">
-                                <CardBody className="w-full">
-                                    <CardItem
-                                        as="a"
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        translateZ="50"
-                                        translateY="-10"
-                                        className="w-full py-3 px-3 md:px-4 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer block pointer-events-auto relative z-20"
-                                    >
-                                        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2 md:gap-0">
-                                            <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
-                                                <CardItem translateZ="100" className=" text-base md:text-lg mr-2 font-medium">{project.name}</CardItem>
-                                                {hasDedicatedRepo && (
-                                                    <iframe src={`https://ghbtns.com/github-btn.html?user=ashinshanly&repo=${projectName}&type=star&count=false`} frameBorder="0" scrolling="0" width="100" height="20" title={project.name.toLowerCase() + "-star"} className="mt-1 md:mt-0 pointer-events-none"></iframe>
-                                                )}
-                                            </div>
-                                            <div className="text-gray-400 font-light text-xs md:text-sm whitespace-nowrap">{project.date}</div>
-                                        </div>
-                                        <ul className=" tracking-normal leading-relaxed text-sm font-light mt-3 px-1 md:ml-4">
-                                            {
-                                                project.description.map((desc, index) => {
-                                                    return <li key={index} className="list-disc mt-1 text-gray-200">{desc}</li>;
-                                                })
-                                            }
-                                        </ul>
-                                        <div className="flex flex-wrap items-start justify-start text-xs py-2">
-                                            {
-                                                (project.domains ?
-                                                    project.domains.map((domain, index) => {
-                                                        const domainClasses = tag_styles[domain] || "border-gray-400 text-gray-300";
 
-                                                        return <span key={index} className={`px-2 py-0.5 w-max border ${domainClasses} m-1 rounded-full font-medium`}>{domain}</span>
-                                                    })
+            <div className="w-full flex flex-col">
+                {visibleProjects.map((project, index) => (
+                    <CardContainer key={index} className="flex w-full flex-col mb-4">
+                        <CardBody className="w-full">
+                            <CardItem
+                                as="a"
+                                href={project.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                translateZ="50"
+                                translateY="-6"
+                                className="w-full p-4 md:p-5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-cyan-400/40 cursor-pointer block pointer-events-auto relative z-20 transition shadow-xl"
+                            >
+                                <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <CardItem translateZ="100" className="text-base md:text-lg font-bold text-white">
+                                            {project.name}
+                                        </CardItem>
+                                        {project.badge && (
+                                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">
+                                                {project.badge}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="text-slate-400 font-mono text-xs whitespace-nowrap">
+                                        {project.date}
+                                    </div>
+                                </div>
 
-                                                    : null)
-                                            }
-                                        </div>
-                                    </CardItem>
-                                </CardBody>
-                            </CardContainer>
-                        )
-                    })
-                }
+                                <ul className="tracking-normal leading-relaxed text-xs md:text-sm text-slate-300 mt-3 space-y-1.5">
+                                    {project.description.map((desc, idx) => (
+                                        <li key={idx}>{desc}</li>
+                                    ))}
+                                </ul>
+
+                                <div className="flex flex-wrap items-center justify-start gap-1.5 text-xs pt-3 mt-3 border-t border-white/5">
+                                    {project.domains &&
+                                        project.domains.map((domain, idx) => {
+                                            const domainClasses =
+                                                tag_styles[domain] || 'border-gray-400 text-gray-300';
+                                            return (
+                                                <span
+                                                    key={idx}
+                                                    className={`px-2.5 py-0.5 border ${domainClasses} rounded-full text-[11px] font-medium`}
+                                                >
+                                                    {domain}
+                                                </span>
+                                            );
+                                        })}
+                                </div>
+                            </CardItem>
+                        </CardBody>
+                    </CardContainer>
+                ))}
             </div>
-        </>
-    )
+        </div>
+    );
 }
+
 function Resume() {
     return (
-        <div className="h-full w-full pt-8 md:pt-0">
-            {/* Desktop: native PDF viewer works fine */}
+        <div className="h-full w-full flex flex-col">
+            {/* Top Executive Resume Action Bar */}
+            <div className="w-full px-4 py-2.5 bg-[#0B111E] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white">AshinShanly_RESUME.pdf</span>
+                    <span className="hidden sm:inline text-[11px] text-slate-400 font-mono">
+                        • Google SWE III • IIT Gandhinagar M.Tech
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <a
+                        href="./files/AshinShanly_RESUME.pdf"
+                        download="AshinShanly_RESUME.pdf"
+                        className="px-3 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition"
+                    >
+                        ⬇ Download PDF
+                    </a>
+                    <a
+                        href="./files/AshinShanly_RESUME.pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition"
+                    >
+                        Open in New Tab ↗
+                    </a>
+                </div>
+            </div>
+
+            {/* Desktop: native PDF viewer */}
             <iframe
-                className="h-full w-full hidden md:block"
+                className="flex-grow w-full hidden md:block"
                 src="./files/AshinShanly_RESUME.pdf"
                 title="ashin shanly resume"
                 frameBorder="0"
             />
-            {/* Mobile: use Google Docs Viewer for proper PDF scrolling */}
-            <div className="h-full w-full flex flex-col md:hidden">
+            {/* Mobile: Google Docs Viewer */}
+            <div className="flex-grow w-full flex flex-col md:hidden">
                 <iframe
                     className="flex-grow w-full"
                     src="https://docs.google.com/gview?url=https://ashinshanly.github.io/files/AshinShanly_RESUME.pdf&embedded=true"
@@ -587,17 +1043,7 @@ function Resume() {
                     frameBorder="0"
                     style={{ minHeight: 0 }}
                 />
-                <div className="flex justify-center py-2 shrink-0">
-                    <a
-                        href="./files/AshinShanly_RESUME.pdf"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-sm text-gray-300 hover:text-white underline"
-                    >
-                        Open / Download Resume
-                    </a>
-                </div>
             </div>
         </div>
-    )
+    );
 }

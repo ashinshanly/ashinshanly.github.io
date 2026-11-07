@@ -8,6 +8,7 @@ import AllApplications from '../screen/all-applications'
 import DesktopMenu from '../context menus/desktop-menu';
 import DefaultMenu from '../context menus/default';
 import AtAGlanceWidget from '../util components/AtAGlanceWidget';
+import OrbyAssistant, { OrbyFloatingLauncher } from '../util components/orby_assistant';
 import $ from 'jquery';
 import ReactGA from 'react-ga4';
 
@@ -34,6 +35,7 @@ export class Desktop extends Component {
             showNameBar: false,
             spotlightOpen: false,
             spotlightQuery: '',
+            orbyOpen: false,
         }
     }
 
@@ -87,6 +89,11 @@ export class Desktop extends Component {
         }
         window.addEventListener("keydown", this.handleGlobalKeyDown);
         window.addEventListener("ubuntu-toggle-spotlight", this.toggleSpotlight);
+        window.addEventListener("portfolio-open-orby", this.openOrby);
+    }
+
+    openOrby = () => {
+        this.setState({ orbyOpen: true, spotlightOpen: false });
     }
 
     handleGlobalKeyDown = (e) => {
@@ -116,6 +123,7 @@ export class Desktop extends Component {
         document.removeEventListener("click", this.hideAllContextMenu);
         window.removeEventListener("keydown", this.handleGlobalKeyDown);
         window.removeEventListener("ubuntu-toggle-spotlight", this.toggleSpotlight);
+        window.removeEventListener("portfolio-open-orby", this.openOrby);
     }
 
     checkContextMenu = (e) => {
@@ -555,6 +563,21 @@ export class Desktop extends Component {
 
                 {/* At a Glance Widget */}
                 <AtAGlanceWidget />
+
+                {/* Floating Orby Voice Assistant Launcher */}
+                <div className="fixed bottom-4 right-5 z-30">
+                    <OrbyFloatingLauncher
+                        onClick={this.openOrby}
+                        label="Talk to Orby — Voice AI"
+                    />
+                </div>
+
+                {/* Orby Voice Assistant Stage Overlay */}
+                <OrbyAssistant
+                    isOpen={this.state.orbyOpen}
+                    onClose={() => this.setState({ orbyOpen: false })}
+                    onOpenApp={this.openApp}
+                />
 
                 {/* Window Area */}
                 <div className="absolute top-8 left-0 right-0 h-[calc(100%-2rem)] w-full bg-transparent" data-context="desktop-area">
