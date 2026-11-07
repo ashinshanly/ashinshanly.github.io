@@ -595,7 +595,7 @@ export function TalkToAsh({ openApp }) {
                 }
 
                 const audio = audioElRef.current;
-                audio.src = `./audio/ash/${targetNodeId}.mp3`;
+                audio.src = `./audio/ash/${targetNodeId}.mp3?v=2`;
                 audio.playbackRate = voiceRate;
                 audio.currentTime = 0;
 
