@@ -5,7 +5,7 @@ const PORTFOLIO_SHORTCUTS = [
     { id: 'about-ashin', label: 'Projects & Research', subtitle: 'About Ashin • Deep Learning & CV', badge: 'Portfolio' },
     { id: 'about-ashin', label: 'Work Experience', subtitle: 'About Ashin • Software Engineering', badge: 'Portfolio' },
     { id: 'about-ashin', label: 'Technical Skills', subtitle: 'Python, C++, Spark, Distributed Systems', badge: 'Portfolio' },
-    { id: 'pixel-hud', label: 'GuestBook Matrix', subtitle: '64×64 Collaborative Neon Canvas', badge: 'Interactive' },
+    { id: 'pixel-hud', label: 'Starlight GuestBook', subtitle: 'Interactive Cosmic Constellation', badge: 'Interactive' },
     { id: 'terminal', label: 'Bash Terminal', subtitle: 'Run shell commands (ls, cd, code)', badge: 'System' },
     { id: 'gedit', label: 'Contact Ashin', subtitle: 'Send a direct message', badge: 'Contact' },
 ];

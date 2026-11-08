@@ -198,7 +198,7 @@ const ASH_DIALOGUE_GRAPH = {
     project_guestbook: {
         id: 'project_guestbook',
         mood: 'starry',
-        text: '[[card:guestbook]]GuestBook is a live 64 by 64 neon pixel matrix where every cell plays a musical note.',
+        text: '[[card:guestbook]]GuestBook is an interactive star constellation where every visitor note shines in the night sky.',
         choices: 'after_project',
         appId: 'pixel-hud',
         tracksHeard: true,
@@ -335,10 +335,10 @@ const STORY_CARDS = {
     },
     guestbook: {
         title: 'GuestBook',
-        tag: '64×64 Matrix',
+        tag: 'Star Constellation',
         accent: 'from-cyan-500/25 via-fuchsia-500/15 to-emerald-500/15',
         border: 'border-cyan-400/35',
-        icon: '🎨',
+        icon: '✨',
     },
     hobbies: {
         title: 'Beyond Code',
