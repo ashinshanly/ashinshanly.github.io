@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { db } from '../../config/firebase';
 import { ref, onValue, set } from 'firebase/database';
 
-const STORAGE_KEY = 'cosmic_guestbook_stars_v2';
+const STORAGE_KEY = 'cosmic_guestbook_stars_v3';
 const AUTHOR_KEY = 'cosmic_guestbook_author_v2';
 
 const VIBE_ROLES = [
@@ -44,51 +44,15 @@ const VIBE_ROLES = [
     },
 ];
 
-const SEED_STARS = [
+const FALLBACK_STAR = [
     {
-        id: 'seed_1',
-        name: 'Arjun M.',
+        id: 'tx_1787422039621_qbryo',
+        name: 'Ashin',
         role: 'dev',
-        message: 'The Ubuntu + Android dual OS setup is super slick. Loved talking to Ash!',
-        x: 0.24,
-        y: 0.32,
-        timestamp: Date.now() - 1000 * 60 * 60 * 18,
-    },
-    {
-        id: 'seed_2',
-        name: 'Sarah K.',
-        role: 'recruiter',
-        message: 'One of the most creative engineering portfolios I have come across this year.',
-        x: 0.48,
-        y: 0.24,
-        timestamp: Date.now() - 1000 * 60 * 60 * 11,
-    },
-    {
-        id: 'seed_3',
-        name: 'Rohan V.',
-        role: 'friend',
-        message: 'IITGN represent! Lumina and the voice assistant are next level.',
-        x: 0.73,
-        y: 0.34,
-        timestamp: Date.now() - 1000 * 60 * 60 * 6,
-    },
-    {
-        id: 'seed_4',
-        name: 'Elena R.',
-        role: 'explorer',
-        message: 'Poked Ash four times and found the dizzy easter egg. Brilliant touch!',
-        x: 0.35,
-        y: 0.58,
-        timestamp: Date.now() - 1000 * 60 * 60 * 3,
-    },
-    {
-        id: 'seed_5',
-        name: 'Vikram S.',
-        role: 'dev',
-        message: 'Clean terminal commands and super smooth 60fps animations throughout.',
-        x: 0.64,
-        y: 0.61,
-        timestamp: Date.now() - 1000 * 60 * 50,
+        message: 'Hey, thanks for visiting :)',
+        x: 0.5,
+        y: 0.45,
+        timestamp: 1787422039621,
     },
 ];
 
@@ -153,12 +117,16 @@ function normalizeStarItem(raw, fallbackKey) {
             ? raw.nx
             : typeof raw.x === 'number' && raw.x > 0 && raw.x < 1
             ? raw.x
+            : typeof raw.x === 'number' && raw.x >= 1 && raw.x <= 63
+            ? Number((0.16 + (raw.x / 63) * 0.68).toFixed(3))
             : fallbackPos.x;
     const ny =
         typeof raw.ny === 'number' && raw.ny >= 0.1 && raw.ny <= 0.85
             ? raw.ny
             : typeof raw.y === 'number' && raw.y > 0 && raw.y < 1
             ? raw.y
+            : typeof raw.y === 'number' && raw.y >= 1 && raw.y <= 63
+            ? Number((0.18 + (raw.y / 63) * 0.52).toFixed(3))
             : fallbackPos.y;
 
     return {
@@ -173,8 +141,8 @@ function normalizeStarItem(raw, fallbackKey) {
 }
 
 export function PixelHud() {
-    const [stars, setStars] = useState(SEED_STARS);
-    const [selectedStarId, setSelectedStarId] = useState(SEED_STARS[0].id);
+    const [stars, setStars] = useState(FALLBACK_STAR);
+    const [selectedStarId, setSelectedStarId] = useState(FALLBACK_STAR[0].id);
     const [hoveredStarId, setHoveredStarId] = useState(null);
     const [filterRole, setFilterRole] = useState('all');
     const [viewMode, setViewMode] = useState('sky'); // 'sky' | 'wall'
@@ -244,17 +212,14 @@ export function PixelHud() {
                         });
                     }
                     remoteList.sort((a, b) => b.timestamp - a.timestamp);
+                    const finalStars = remoteList.length > 0 ? remoteList.slice(0, 50) : FALLBACK_STAR;
 
-                    // Merge remote stars with seed stars so constellation always feels rich
-                    const existingIds = new Set(remoteList.map((s) => s.id));
-                    const merged = [
-                        ...remoteList,
-                        ...SEED_STARS.filter((s) => !existingIds.has(s.id)),
-                    ].slice(0, 36);
-
-                    setStars(merged);
+                    setStars(finalStars);
+                    setSelectedStarId((prevId) =>
+                        finalStars.some((s) => s.id === prevId) ? prevId : finalStars[0].id
+                    );
                     try {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(finalStars));
                     } catch {
                         // Ignore
                     }
@@ -320,7 +285,7 @@ export function PixelHud() {
             visibleStars.find((s) => s.id === selectedStarId) ||
             visibleStars[0] ||
             stars[0] ||
-            SEED_STARS[0]
+            FALLBACK_STAR[0]
         );
     }, [visibleStars, stars, selectedStarId]);
 
